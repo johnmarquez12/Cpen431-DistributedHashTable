@@ -5,26 +5,28 @@ import ca.NetSysLab.ProtocolBuffers.KeyValueResponse;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 
-import java.util.Arrays;
 import java.util.concurrent.Callable;
+
+import static com.s36906949.CPEN431.A4.App.freeMemory;
 
 
 public class Application implements Callable<ByteString> {
 
     private final byte[] payload;
     private KeyValueRequest.KVRequest request;
-    private KeyValueResponse.KVResponse response;
+    private KeyValueResponse.KVResponse.Builder response;
 
     public Application(byte[] payload) {
         this.payload = payload;
-        System.out.print("Received payload: ");
-        System.out.println(Arrays.toString(payload));
     }
 
     @Override
     public ByteString call() throws InvalidProtocolBufferException {
-        System.out.println("Miss");
+        // Start building a response object
+        response = KeyValueResponse.KVResponse.newBuilder()
+            .setErrCode(Codes.Errs.SUCCESS);
 
+        // TODO: do something if this fails
         request = KeyValueRequest.KVRequest.parseFrom(payload);
 
         /*
@@ -43,8 +45,6 @@ public class Application implements Callable<ByteString> {
 
          */
 
-        System.out.printf("Requested cmd number is %d%n", request.getCommand());
-
         switch (request.getCommand()) {
             case Codes.Commands.PUT -> cmdPut();
             case Codes.Commands.GET -> cmdGet();
@@ -58,83 +58,96 @@ public class Application implements Callable<ByteString> {
             default -> cmdError();
         }
 
-
-
-        System.out.printf("(Err %d) Calculated response: %s%n",
-            response.getErrCode(), Arrays.toString(response.toByteArray()));
-
-        return response.toByteString();
+        return response.build().toByteString();
     }
 
-
-
     void cmdPut() {
+        if(keyInvalid()) return;
+        if(valueInvalid()) return;
+        if (freeMemory() <= KeyValueStore.MAX_KEY_LENGTH + request.getValue().size()) {
+            response.setErrCode(Codes.Errs.OUT_OF_SPACE);
+            System.err.println("OUT OF SPACE!!");
+            return;
+        }
+
         // TODO: do some error checking
+
         KeyValueStore.getInstance().put(
             request.getKey(),
             request.getValue(),
             request.getVersion()
         );
-
-        response = KeyValueResponse.KVResponse.newBuilder()
-            .setErrCode(Codes.Errs.SUCCESS)
-            .build();
     }
 
     void cmdGet() {
-        KeyValueStore.ValueWrapper value =
-            KeyValueStore.getInstance().get(request.getKey());
+        if(keyInvalid()) return;
 
-        response = KeyValueResponse.KVResponse.newBuilder()
-            .setErrCode(Codes.Errs.SUCCESS)
-            .setValue(value.value)
-            .setVersion(value.version)
-            .build();
+        try {
+            KeyValueStore.ValueWrapper value = KeyValueStore.getInstance()
+                .get(request.getKey());
+
+            response.setValue(value.value).setVersion(value.version);
+        } catch (KeyValueStore.NoKeyError e) {
+            response.setErrCode(Codes.Errs.KEY_DOES_NOT_EXIST);
+        }
     }
 
     void cmdRemove() {
-        KeyValueStore.getInstance().remove(request.getKey());
+        if(keyInvalid()) return;
 
-        response = KeyValueResponse.KVResponse.newBuilder().build();
+        try {
+            KeyValueStore.getInstance().remove(request.getKey());
+        } catch (KeyValueStore.NoKeyError e) {
+            response.setErrCode(Codes.Errs.KEY_DOES_NOT_EXIST);
+        }
     }
 
-    void cmdShutdown() {}
+    void cmdShutdown() {
+        System.exit(0);
+    }
 
     void cmdWipeout() {
         KeyValueStore.getInstance().wipeout();
 
-        response = KeyValueResponse.KVResponse.newBuilder()
-            .build();
+        // TODO: make sure this is correct behavior
+        RequestReplyCache.getInstance().wipeout();
 
+        System.gc();
     }
 
     void cmdIsAlive() {
-        response = KeyValueResponse.KVResponse.newBuilder()
-            .setErrCode(Codes.Errs.SUCCESS)
-            .build();
+        // No Op
     }
 
     void cmdGetPID() {
         long pid = ProcessHandle.current().pid();
 
-        response = KeyValueResponse.KVResponse.newBuilder()
-            .setErrCode(Codes.Errs.SUCCESS)
-            .setPid((int) pid)
-            .build();
+        response.setPid((int) pid);
     }
 
     void cmdGetMembershipCount() {
         int memCount = KeyValueStore.getInstance().getMembershipSize();
 
-        response = KeyValueResponse.KVResponse.newBuilder()
-            .setErrCode(Codes.Errs.SUCCESS)
-            .setMembershipCount(memCount)
-            .build();
+        response.setMembershipCount(memCount);
     }
 
     void cmdError() {
-        response = KeyValueResponse.KVResponse.newBuilder()
-            .setErrCode(Codes.Errs.CMD_UNKNOWN)
-            .build();
+        response.setErrCode(Codes.Errs.CMD_UNKNOWN);
+    }
+
+    private boolean keyInvalid() {
+        if (request.getKey().size() > KeyValueStore.MAX_KEY_LENGTH) {
+            response.setErrCode(Codes.Errs.KEY_INVALID);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean valueInvalid() {
+        if (request.getValue().size() > KeyValueStore.MAX_VALUE_LENGTH) {
+            response.setErrCode(Codes.Errs.VALUE_INVALID);
+            return true;
+        }
+        return false;
     }
 }

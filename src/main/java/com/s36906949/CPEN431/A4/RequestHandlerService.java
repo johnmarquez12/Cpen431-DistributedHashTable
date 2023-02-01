@@ -25,6 +25,14 @@ public class RequestHandlerService extends Thread {
     }
 
     public void run() {
+//        long totalMemory = Runtime.getRuntime().totalMemory();
+//        long maxMemory = Runtime.getRuntime().maxMemory();
+//        long freeMemory = Runtime.getRuntime().freeMemory();
+//        int activeThreads = Thread.activeCount();
+//
+//        System.out.printf("[MEM (%10s)] Free: %,8d kB | Total: %,8d kB | Threads: %2d | Free of total: %3d%% | Membership count: %d %n",
+//            Thread.currentThread().getName(),freeMemory/1024, totalMemory/1024, activeThreads, freeMemory*100/totalMemory, KeyValueStore.getInstance().getMembershipSize());
+
         Message.Msg request;
         byte[] messageID, applicationRequestPayload;
         CRC32 crc32 = new CRC32();
@@ -60,8 +68,15 @@ public class RequestHandlerService extends Thread {
             throw new RuntimeException(e);
             // TODO: log/kill thread or something
         }
+        /*
+        // For now, we want to really SEE this error. Later, we'll catch it.
+        catch (OutOfMemoryError e) {
+            System.err.println("[MEM] Out of memory");
+            throw new RuntimeException(e);
+            // TODO: kill thread
+        }
+         */
 
-        System.out.printf("Response: %s%n", Arrays.toString(applicationResponse.toByteArray()));
 
         crc32.reset();
         crc32.update(messageID);
@@ -82,8 +97,6 @@ public class RequestHandlerService extends Thread {
             DatagramPacket packet =
                 new DatagramPacket(response, response.length,
                     responseAddress, responsePort);
-
-            System.out.printf("Responding from %d", socket.getLocalPort());
 
             socket.send(packet);
         } catch (IOException e) {

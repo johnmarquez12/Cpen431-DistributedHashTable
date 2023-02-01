@@ -7,6 +7,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class KeyValueStore {
 
+    public static class NoKeyError extends Exception {}
+
+
     public static class ValueWrapper {
         public ByteString value;
         public int version;
@@ -17,8 +20,11 @@ public class KeyValueStore {
         }
     }
 
+    public static final int MAX_KEY_LENGTH = 32;
+    public static final int MAX_VALUE_LENGTH = 10_000;
+
     private static KeyValueStore INSTANCE;
-    private ConcurrentHashMap<ByteString, ValueWrapper> store;
+    private final ConcurrentHashMap<ByteString, ValueWrapper> store;
 
     private KeyValueStore() {
         store = new ConcurrentHashMap<>();
@@ -32,19 +38,19 @@ public class KeyValueStore {
         return INSTANCE;
     }
 
-    public void put(ByteString key, ByteString value) {
-        put(key, value, 0);
-    }
-
     public void put(ByteString key, ByteString value, int version) {
         store.put(key, new ValueWrapper(value, version));
     }
 
-    public ValueWrapper get(ByteString key) {
+    public ValueWrapper get(ByteString key) throws NoKeyError {
+        ValueWrapper val = store.get(key);
+        if (val == null) throw new NoKeyError();
+
         return store.get(key);
     }
 
-    public void remove(ByteString key) {
+    public void remove(ByteString key) throws NoKeyError {
+        if (!store.containsKey(key)) throw new NoKeyError();
         store.remove(key);
     }
 

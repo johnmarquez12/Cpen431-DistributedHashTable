@@ -30,9 +30,24 @@ public class RequestReplyCache {
 
     public ByteString get(ByteString messageID, Callable<ByteString> callable)
         throws ExecutionException {
-        System.out.printf("Cache: Looking... %s%n",
-            byteArrayToHexString(messageID.toByteArray()));
+        ByteString response = cache.getIfPresent(messageID);
 
-        return cache.get(messageID, callable);
+        if (response == null) {
+            try {
+                response = callable.call();
+
+            } catch (Exception e) {
+                throw new ExecutionException(e);
+            }
+            cache.put(messageID, response);
+        }
+
+        return response;
+//        return cache.get(messageID, callable);
+    }
+
+    public void wipeout() {
+        cache.invalidateAll();
+        cache.cleanUp();
     }
 }
