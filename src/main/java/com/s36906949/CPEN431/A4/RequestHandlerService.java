@@ -9,22 +9,27 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.Arrays;
+import java.util.Queue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.zip.CRC32;
 
-public class RequestHandlerService extends Thread {
+public class RequestHandlerService {
     private final InetAddress responseAddress;
     private final int responsePort;
     private final byte[] requestPayload;
 
-    public RequestHandlerService(InetAddress address, int port, byte[] packetPayload) {
+    private Queue<ReplyThread.Reply> replies;
+
+    public RequestHandlerService(InetAddress address, int port, byte[] packetPayload, Queue<ReplyThread.Reply> replies) {
         responseAddress = address;
         responsePort = port;
         requestPayload = packetPayload;
+        this.replies = replies;
     }
 
-    public void run() {
+    public void run() throws InterruptedException {
 //        long totalMemory = Runtime.getRuntime().totalMemory();
 //        long maxMemory = Runtime.getRuntime().maxMemory();
 //        long freeMemory = Runtime.getRuntime().freeMemory();
@@ -77,34 +82,9 @@ public class RequestHandlerService extends Thread {
         }
          */
 
-
-        crc32.reset();
-        crc32.update(messageID);
-        crc32.update(applicationResponse.asReadOnlyByteBuffer());
-
-        Message.Msg responseMsg = Message.Msg.newBuilder()
-            .setMessageID(request.getMessageID())
-            .setPayload(applicationResponse)
-            .setCheckSum(crc32.getValue())
-            .build();
-
-        byte[] response = responseMsg.toByteArray();
-
-        DatagramSocket socket = null;
-        try {
-            socket = new DatagramSocket();
-
-            DatagramPacket packet =
-                new DatagramPacket(response, response.length,
-                    responseAddress, responsePort);
-
-            socket.send(packet);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (socket != null && !socket.isClosed())
-                socket.close();
-        }
+//        ReplyThread Stuff
+        replies.add(new ReplyThread.Reply(messageID, applicationResponse,
+            responseAddress, responsePort));
     }
 
     public Message.Msg getMessage() throws InvalidProtocolBufferException {

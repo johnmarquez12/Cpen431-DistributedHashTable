@@ -1,35 +1,40 @@
 package com.s36906949.CPEN431.A4;
 
-import com.google.protobuf.ByteString;
-
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.SocketException;
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
 
-import static com.s36906949.CPEN431.A4.App.trueFreeMemory;
-import static java.lang.Math.*;
+public class UDPServer {
 
-public class UDPServerThread extends Thread {
+    public static class Request {
+        public InetAddress address;
+        public int port;
+        public byte[] payload;
 
-    public final int port = 5555;
-    private DatagramSocket socket;
-
-    public UDPServerThread() throws IOException {
-        this("UDPServer");
+        public Request(InetAddress address, int port, byte[] payload) {
+            this.address = address;
+            this.port = port;
+            this.payload = payload;
+        }
     }
 
-    public UDPServerThread(String name) throws IOException {
-        super(name);
-        socket = new DatagramSocket(port);
-
-    }
-
-    public void run() {
+    public static void run(int port) throws SocketException, InterruptedException {
         long last_free = 0;
+
         byte[] buf = new byte[65567];
+        DatagramSocket socket = new DatagramSocket(port);
+
         DatagramPacket packet = new DatagramPacket(buf, buf.length);
+
+        Queue<Request> requests = new LinkedBlockingQueue<>();
+
+        new ApplicationThread(requests).start();
 
         while(true) {
             try {
@@ -60,12 +65,11 @@ public class UDPServerThread extends Thread {
                 InetAddress senderAddress = packet.getAddress();
                 int senderPort = packet.getPort();
 
-                // Todo: make pool of threads instead
-                new RequestHandlerService(
+                requests.add(new Request(
                     senderAddress,
                     senderPort,
                     Arrays.copyOf(packet.getData(), packet.getLength())
-                ).start();
+                ));
 
             } catch (IOException e) {
                 e.printStackTrace();

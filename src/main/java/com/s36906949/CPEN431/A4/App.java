@@ -8,9 +8,9 @@ import java.io.IOException;
  */
 public class App 
 {
-    public static void main( String[] args ) throws IOException {
+    public static void main( String[] args ) throws Exception {
         System.out.println( "Hello World!" );
-        new UDPServerThread().start();
+        UDPServer.run(5555);
     }
 
     public static long freeMemory() {
