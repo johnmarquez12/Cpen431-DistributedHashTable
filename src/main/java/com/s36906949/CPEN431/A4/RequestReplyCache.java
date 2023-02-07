@@ -6,17 +6,16 @@ import com.google.protobuf.ByteString;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-
-import static com.matei.eece411.util.StringUtils.byteArrayToHexString;
+import java.util.concurrent.TimeUnit;
 
 public class RequestReplyCache {
 
     private static RequestReplyCache INSTANCE;
-    private Cache<ByteString, ByteString> cache;
+    private final Cache<ByteString, ByteString> cache;
 
     private RequestReplyCache() {
         cache = CacheBuilder.newBuilder()
-//            .expireAfterAccess(1, TimeUnit.SECONDS)
+            .expireAfterAccess(1, TimeUnit.SECONDS)
             .build();
     }
 
@@ -43,7 +42,6 @@ public class RequestReplyCache {
         }
 
         return response;
-//        return cache.get(messageID, callable);
     }
 
     public void wipeout() {

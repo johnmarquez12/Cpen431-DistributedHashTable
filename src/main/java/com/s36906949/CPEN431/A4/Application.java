@@ -61,10 +61,15 @@ public class Application implements Callable<ByteString> {
         return response.build().toByteString();
     }
 
+    private boolean outOfMemory() {
+        return freeMemory() <= KeyValueStore.MAX_KEY_LENGTH + request.getValue().size();
+    }
+
     void cmdPut() {
         if(keyInvalid()) return;
         if(valueInvalid()) return;
-        if (freeMemory() <= KeyValueStore.MAX_KEY_LENGTH + request.getValue().size()) {
+        if(outOfMemory()) System.gc();
+        if (outOfMemory()) {
             response.setErrCode(Codes.Errs.OUT_OF_SPACE);
             System.err.println("OUT OF SPACE!!");
             return;
