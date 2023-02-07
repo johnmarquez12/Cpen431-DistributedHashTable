@@ -9,16 +9,15 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.Queue;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.zip.CRC32;
 
 public class ReplyThread extends Thread {
 
     public static class Reply {
-        public byte[] messageID;
-        public ByteString applicationResponse;
-        public InetAddress responseAddress;
-        public int responsePort;
+        public final byte[] messageID;
+        public final ByteString applicationResponse;
+        public final InetAddress responseAddress;
+        public final int responsePort;
 
         public Reply(byte[] messageID, ByteString applicationResponse,
                      InetAddress responseAddress, int responsePort) {
@@ -29,7 +28,7 @@ public class ReplyThread extends Thread {
         }
     }
 
-    private Queue<Reply> replies;
+    private final Queue<Reply> replies;
 
     public ReplyThread(Queue<Reply> replies) {
         super("ReplyThread");

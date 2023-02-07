@@ -1,12 +1,11 @@
 package com.s36906949.CPEN431.A4;
 
-import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class ApplicationThread extends Thread {
 
-    private Queue<UDPServer.Request> requests;
+    private final Queue<UDPServer.Request> requests;
 
     public ApplicationThread(Queue<UDPServer.Request> requests) {
         super("ApplicationThread");
@@ -22,16 +21,12 @@ public class ApplicationThread extends Thread {
             UDPServer.Request request = requests.poll();
             if (request == null) continue;
 
-            try {
-                new RequestHandlerService(
-                    request.address,
-                    request.port,
-                    request.payload,
-                    replies
-                ).run();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+            new RequestHandlerService(
+                request.address,
+                request.port,
+                request.payload,
+                replies
+            ).run();
         }
     }
 }

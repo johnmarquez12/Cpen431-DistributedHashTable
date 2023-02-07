@@ -4,15 +4,9 @@ import ca.NetSysLab.ProtocolBuffers.Message;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 
-import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.util.Arrays;
 import java.util.Queue;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.zip.CRC32;
 
 public class RequestHandlerService {
@@ -20,7 +14,7 @@ public class RequestHandlerService {
     private final int responsePort;
     private final byte[] requestPayload;
 
-    private Queue<ReplyThread.Reply> replies;
+    private final Queue<ReplyThread.Reply> replies;
 
     public RequestHandlerService(InetAddress address, int port, byte[] packetPayload, Queue<ReplyThread.Reply> replies) {
         responseAddress = address;
@@ -29,15 +23,7 @@ public class RequestHandlerService {
         this.replies = replies;
     }
 
-    public void run() throws InterruptedException {
-//        long totalMemory = Runtime.getRuntime().totalMemory();
-//        long maxMemory = Runtime.getRuntime().maxMemory();
-//        long freeMemory = Runtime.getRuntime().freeMemory();
-//        int activeThreads = Thread.activeCount();
-//
-//        System.out.printf("[MEM (%10s)] Free: %,8d kB | Total: %,8d kB | Threads: %2d | Free of total: %3d%% | Membership count: %d %n",
-//            Thread.currentThread().getName(),freeMemory/1024, totalMemory/1024, activeThreads, freeMemory*100/totalMemory, KeyValueStore.getInstance().getMembershipSize());
-
+    public void run() {
         Message.Msg request;
         byte[] messageID, applicationRequestPayload;
         CRC32 crc32 = new CRC32();

@@ -11,8 +11,8 @@ public class KeyValueStore {
 
 
     public static class ValueWrapper {
-        public ByteString value;
-        public int version;
+        public final ByteString value;
+        public final int version;
 
         ValueWrapper(ByteString value, int version) {
             this.value = value;

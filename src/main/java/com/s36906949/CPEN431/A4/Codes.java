@@ -27,12 +27,18 @@ class Codes {
         static final int OUT_OF_SPACE = 0x02;
 
         /**
-         * Temporary system overload. The system is operational but decides to refuse the operation due to temporary overload that consumes internal resources (e.g., full internal buffers, too many in-flight requests).  Otherwise said, this error code indicates that, if nothing happens and no new requests are accepted for a while, the system will likely to return to a functioning state. This is a signal so that a well behaved client will wait for some overloadWaitTime (in milliseconds) and either continue or retry the same operation.
+         * Temporary system overload. The system is operational but decides to refuse
+         * the operation due to temporary overload that consumes internal resources
+         * (e.g., full internal buffers, too many in-flight requests).  Otherwise said,
+         * this error code indicates that, if nothing happens and no new requests are accepted
+         * for a while, the system will likely to return to a functioning state. This is
+         * a signal so that a well-behaved client will wait for some overloadWaitTime
+         * (in milliseconds) and either continue or retry the same operation.
          */
         static final int TEMP_SYS_OVERLOAD = 0x03;
 
         /**
-         * Internal KVStore failure - a catch-all for all other situations where your KVStore has determined that something is wrong and it can not recover from the failure.
+         * Internal KVStore failure - a catch-all for all other situations where your KVStore has determined that something is wrong, and it can not recover from the failure.
          */
         static final int KVSTORE_FAIL = 0x04;
 

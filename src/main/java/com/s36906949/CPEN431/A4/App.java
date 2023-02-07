@@ -1,7 +1,5 @@
 package com.s36906949.CPEN431.A4;
 
-import java.io.IOException;
-
 /**
  * Hello world!
  *
