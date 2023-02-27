@@ -7,4 +7,16 @@ message KVRequest {
     optional bytes key = 2;
     optional bytes value = 3;
     optional int32 version = 4;
+    optional InternalRequest internalRequest = 5;
+}
+
+message Client {
+    bytes clientIp = 1;
+    int32 clientPort = 2;
+}
+
+message InternalRequest {
+    Client client = 1;
+    optional bytes originalMessageId = 2;
+    // other data such as node/heartbeat info
 }
