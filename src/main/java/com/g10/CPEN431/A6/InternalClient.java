@@ -1,5 +1,6 @@
 package com.g10.CPEN431.A6;
 
+
 import java.io.IOException;
 import java.net.*;
 
@@ -11,18 +12,13 @@ public class InternalClient {
      */
     public record InternalRequest(byte[] payload, InetAddress nodeAddress, int nodePort) { }
 
-    private final InternalRequest internalRequest;
     private static final int TIMEOUT = 100;
     private static final int MAX_TIMEOUT = 1000;
     private static final int NUM_RETRIES = 3;
 
-    public InternalClient(InternalRequest internalRequest) {
-        this.internalRequest = internalRequest;
-    }
-
 
     // TODO: instead of returning byte array, return a protobuf Message or new protobuf we define
-    public byte[] sendRequest() {
+    public static byte[] sendRequest(InternalRequest internalRequest) {
         int timeout = TIMEOUT;
 
         DatagramPacket packetToSend = new DatagramPacket(
@@ -58,11 +54,9 @@ public class InternalClient {
         return new byte[0];
     }
 
-
     // TODO: verify checksum
 //    private boolean verifyInternalResponseValid() {
 //        return true;
 //    }
-
 
 }
