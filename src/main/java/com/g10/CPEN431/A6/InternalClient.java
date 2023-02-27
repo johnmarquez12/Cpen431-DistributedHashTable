@@ -24,48 +24,51 @@ public class InternalClient {
     private static final int NUM_RETRIES = 3;
     public static final int REQUEST_ID_SIZE = 16;
 
+    public static ByteString sendRequest(InternalRequest internalRequest) throws IOException {
 
-    // TODO: should we return a message?
-    public static byte[] sendRequest(InternalRequest internalRequest) throws IOException {
-        int timeout = TIMEOUT;
+        try (DatagramSocket socket = new DatagramSocket()) {
 
-        byte[] requestId = generateRequestId(internalRequest.nodeAddress, internalRequest.nodePort);
-        long checksum = generateCheckSum(requestId, internalRequest.payload);
+            int timeout = TIMEOUT;
 
-        Message.Msg requestMessage = Message.Msg.newBuilder()
-                .setMessageID(ByteString.copyFrom(requestId))
-                .setPayload(ByteString.copyFrom(internalRequest.payload))
-                .setCheckSum(checksum)
-                .build();
+            byte[] requestId = generateRequestId(internalRequest.nodeAddress, internalRequest.nodePort);
+            long checksum = generateCheckSum(requestId, internalRequest.payload);
 
-        byte[] message = requestMessage.toByteArray();
+            Message.Msg requestMessage = Message.Msg.newBuilder()
+                    .setMessageID(ByteString.copyFrom(requestId))
+                    .setPayload(ByteString.copyFrom(internalRequest.payload))
+                    .setCheckSum(checksum)
+                    .build();
 
-        DatagramPacket packetToSend = new DatagramPacket(
-                message,
-                message.length,
-                internalRequest.nodeAddress,
-                internalRequest.nodePort
-        );
+            byte[] message = requestMessage.toByteArray();
 
-        for (int i = 0; i <= NUM_RETRIES; i++) {
-            try (DatagramSocket socket = new DatagramSocket()) {
+            DatagramPacket packetToSend = new DatagramPacket(
+                    message,
+                    message.length,
+                    internalRequest.nodeAddress,
+                    internalRequest.nodePort
+            );
 
-                socket.setSoTimeout(timeout);
-                socket.send(packetToSend);
+            for (int i = 0; i <= NUM_RETRIES; i++) {
+                try {
+                    socket.setSoTimeout(timeout);
+                    socket.send(packetToSend);
 
-                byte[] buffer = new byte[16384];
-                DatagramPacket receivePacket = new DatagramPacket(buffer, buffer.length);
+                    byte[] buffer = new byte[16384];
+                    DatagramPacket receivePacket = new DatagramPacket(buffer, buffer.length);
 
-                socket.receive(receivePacket);
+                    socket.receive(receivePacket);
 
-                Message.Msg replyMessage = Message.Msg.parseFrom(receivePacket.getData());
+                    Message.Msg replyMessage = Message.Msg.parseFrom(receivePacket.getData());
 
-                if (isResponseValid(requestMessage, replyMessage))
-                    return receivePacket.getData();
+                    if (isResponseValid(requestMessage, replyMessage))
+                        return replyMessage.getPayload();
 
-            } catch (SocketTimeoutException soe) {
-                timeout = Math.min(timeout * 2, MAX_TIMEOUT);
+                } catch (SocketTimeoutException soe) {
+                    timeout = Math.min(timeout * 2, MAX_TIMEOUT);
+                }
             }
+        } catch (SocketException se) {
+            throw new RuntimeException(se);
         }
 
         // out of retries, throw timeout
