@@ -2,7 +2,6 @@ package com.g10.CPEN431.A6;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.time.ZonedDateTime;
 import java.util.Map;
 import java.util.Random;
 import java.util.TreeMap;
@@ -27,13 +26,13 @@ public class NodePool {
 
         // todo: should port be "short" instead of "int"?
         public int port;
-        public ZonedDateTime ts;
+        public long epochMillis = 0; // System.currentTimeMillis()
 
         @Override
         public String toString() {
             return "Heartbeat{" +
                 host + ":" + port +
-                (ts == null ? "" : ", ts=" + ts) +
+                (epochMillis == 0 ? "" : ", epochMillis=" + epochMillis) +
                 '}';
         }
     }
