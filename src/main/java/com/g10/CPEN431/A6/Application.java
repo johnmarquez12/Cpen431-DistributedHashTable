@@ -63,9 +63,34 @@ public class Application implements Callable<ByteString> {
         return App.freeMemory() <= KeyValueStore.MAX_KEY_LENGTH + request.getValue().size();
     }
 
+    boolean divertRequest() {
+        Host serviceHost = NodePool.getInstance().getHostFromId(request.getKey().hashCode());
+        if (serviceHost.equals(NodePool.getInstance().getMyHost())) {
+            return false;
+        }
+
+        /*
+        TODO: actually divert the request!
+
+            send to B using same messageId as original
+              At B:
+                - B caches, B responds
+
+              At A:
+                - Send using Internal Request (no retries required)
+                - DONT CACHE, DONT RESPOND, DO NOT PASS GO, DO NOT COLLECT $200
+         */
+
+
+        return true;
+    }
+
     void cmdPut() {
         if(keyInvalid()) return;
         if(valueInvalid()) return;
+
+        if(divertRequest()) return;
+
         if(outOfMemory()) System.gc();
         if (outOfMemory()) {
             response.setErrCode(Codes.Errs.OUT_OF_SPACE);
@@ -85,6 +110,8 @@ public class Application implements Callable<ByteString> {
     void cmdGet() {
         if(keyInvalid()) return;
 
+        if(divertRequest()) return;
+
         try {
             KeyValueStore.ValueWrapper value = KeyValueStore.getInstance()
                 .get(request.getKey());
@@ -97,6 +124,8 @@ public class Application implements Callable<ByteString> {
 
     void cmdRemove() {
         if(keyInvalid()) return;
+
+        if(divertRequest()) return;
 
         try {
             KeyValueStore.getInstance().remove(request.getKey());

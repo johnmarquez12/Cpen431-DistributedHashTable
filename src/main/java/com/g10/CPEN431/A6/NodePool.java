@@ -1,9 +1,5 @@
 package com.g10.CPEN431.A6;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.Map;
-import java.util.Random;
 import java.util.TreeMap;
 
 public class NodePool {
@@ -63,7 +59,7 @@ public class NodePool {
         return INSTANCE;
     }
 
-    public Host getNodesFromId(int id) {
+    public Host getHostFromId(int id) {
         int myId = id % CIRCLE_SIZE;
         if (myId > nodes.lastKey()){
            return nodes.firstEntry().getValue().host;

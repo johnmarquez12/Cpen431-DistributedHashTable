@@ -5,8 +5,6 @@ import org.junit.Test;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Arrays;
-import java.util.Map;
 
 import static org.junit.Assert.*;
 
@@ -30,11 +28,11 @@ public class NodePoolTest {
     @Test
     public void testGetNodesById() {
         assertEquals(servers[1],
-            NodePool.getInstance().getNodesFromId(NodePool.CIRCLE_SIZE/3 - 1));
+            NodePool.getInstance().getHostFromId(NodePool.CIRCLE_SIZE/3 - 1));
         assertEquals(servers[2],
-            NodePool.getInstance().getNodesFromId(NodePool.CIRCLE_SIZE/3 + 5));
+            NodePool.getInstance().getHostFromId(NodePool.CIRCLE_SIZE/3 + 5));
         assertEquals(servers[0],
-            NodePool.getInstance().getNodesFromId(NodePool.CIRCLE_SIZE - 1));
+            NodePool.getInstance().getHostFromId(NodePool.CIRCLE_SIZE - 1));
     }
 
     private InetAddress getMyHost() throws UnknownHostException {
