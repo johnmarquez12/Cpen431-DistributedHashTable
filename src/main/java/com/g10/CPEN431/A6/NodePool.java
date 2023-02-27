@@ -12,26 +12,16 @@ public class NodePool {
     public static final int CIRCLE_SIZE = 128;
 
     public static class Heartbeat {
-        public Heartbeat(String host, int port) {
-            try {
-                this.host = InetAddress.getByName(host);
-            } catch (UnknownHostException e) {
-                // TODO: what do we wanna do with this error?
-                throw new RuntimeException(e);
-            }
-            this.port = port;
+        public Heartbeat(Host host) {
+            this.host = host;
         }
 
-        public InetAddress host;
-
-        // todo: should port be "short" instead of "int"?
-        public int port;
+        public Host host;
         public long epochMillis = 0; // System.currentTimeMillis()
 
         @Override
         public String toString() {
-            return "Heartbeat{" +
-                host + ":" + port +
+            return "Heartbeat{" + host +
                 (epochMillis == 0 ? "" : ", epochMillis=" + epochMillis) +
                 '}';
         }
@@ -40,32 +30,29 @@ public class NodePool {
 
 
     // Note: we need an array of heatbeats in case two nodes share an id.
-    private final TreeMap<Integer, Heartbeat[]> nodes;
-    private final int myNodeId;
+    private final TreeMap<Integer, Heartbeat> nodes;
+    private Host me;
 
-    private NodePool() {
+    private NodePool(Host me, Host[] servers) {
         // Todo: figure out how we initially populate the tree
         //       For now, we'll stick some dummy data in it
+        this.me = me;
+
         nodes = new TreeMap<>();
 
-        Random rand = new Random();
+        int spacing = CIRCLE_SIZE / servers.length;
 
-        myNodeId = rand.nextInt() % CIRCLE_SIZE;
-
-        // TODO: when adding an id, ensure its between 0 and circleSize
-
-        nodes.put(7, new Heartbeat[] { new Heartbeat("google.com", 1) });
-        nodes.put(18, new Heartbeat[] { new Heartbeat("bing.com", 2) });
-        nodes.put(99, new Heartbeat[] { new Heartbeat("microsoft.com", 3) });
-        nodes.put(1, new Heartbeat[] { new Heartbeat("google.com", 4) });
+        for (int i = 0; i < servers.length; i++) {
+            nodes.put(i * spacing, new Heartbeat(servers[i]));
+        }
     }
 
-    public static NodePool create() {
+    public static NodePool create(Host me, Host[] servers) {
         if (INSTANCE != null) {
             throw new RuntimeException("The NodePool has already been created");
         }
 
-        return INSTANCE = new NodePool();
+        return INSTANCE = new NodePool(me, servers);
     }
 
     public static NodePool getInstance() {
@@ -76,24 +63,16 @@ public class NodePool {
         return INSTANCE;
     }
 
-    public Map.Entry<Integer, Heartbeat[]> getNodesFromId(int id) {
+    public Host getNodesFromId(int id) {
         int myId = id % CIRCLE_SIZE;
         if (myId > nodes.lastKey()){
-           return nodes.firstEntry();
+           return nodes.firstEntry().getValue().host;
         }
 
-        return nodes.ceilingEntry(myId);
+        return nodes.ceilingEntry(myId).getValue().host;
     }
 
-    public int getMyNodeId() {
-        return myNodeId;
-    }
-
-    /**
-     * NOTE: You really shouldn't use this method. Instead, do this manually,
-     * so you don't need to search the tree if false.
-     */
-    public boolean iShouldService(int id) {
-        return getNodesFromId(id).getKey() == getMyNodeId();
+    public Host getMyHost() {
+        return me;
     }
 }

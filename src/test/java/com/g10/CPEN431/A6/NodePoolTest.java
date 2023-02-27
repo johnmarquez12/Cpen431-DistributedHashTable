@@ -3,23 +3,41 @@ package com.g10.CPEN431.A6;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Map;
 
+import static org.junit.Assert.*;
+
 
 public class NodePoolTest {
+    InetAddress tmp = InetAddress.getByName("localhost");
+
+    Host[] servers = {new Host(tmp, 1), new Host(tmp, 5555), new Host(tmp, 3)};
+
+    public NodePoolTest() throws UnknownHostException {}
+
 
     @Before
-    public void setup() {
-        NodePool.create();
+    public void setup() throws UnknownHostException {
+        int port = 5555;
+        Host me = new Host(getMyHost(), port);
+
+        NodePool.create(me, servers);
     }
 
     @Test
     public void testGetNodesById() {
-        System.out.println("Hello world!");
-        Map.Entry<Integer, NodePool.Heartbeat[]> x =
-            NodePool.getInstance().getNodesFromId(128+8);
-        System.out.println(x.getKey());
-        System.out.println(Arrays.toString(x.getValue()));
+        assertEquals(servers[1],
+            NodePool.getInstance().getNodesFromId(NodePool.CIRCLE_SIZE/3 - 1));
+        assertEquals(servers[2],
+            NodePool.getInstance().getNodesFromId(NodePool.CIRCLE_SIZE/3 + 5));
+        assertEquals(servers[0],
+            NodePool.getInstance().getNodesFromId(NodePool.CIRCLE_SIZE - 1));
+    }
+
+    private InetAddress getMyHost() throws UnknownHostException {
+        return InetAddress.getLocalHost();
     }
 }
