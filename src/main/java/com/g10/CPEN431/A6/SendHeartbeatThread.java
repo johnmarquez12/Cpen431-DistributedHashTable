@@ -69,11 +69,9 @@ public class SendHeartbeatThread extends Thread {
     }
 
     private byte[] generateHeartbeatPayload() {
-        List<InternalRequest.Heartbeat> protoHeartbeats = generateProtobufHeartbeats();
-
         InternalRequest.InternalRequestWrapper request =
             InternalRequest.InternalRequestWrapper.newBuilder()
-            .addAllHeartbeats(protoHeartbeats)
+            .addAllHeartbeats(generateProtobufHeartbeats())
             .build();
 
         return request.toByteArray();

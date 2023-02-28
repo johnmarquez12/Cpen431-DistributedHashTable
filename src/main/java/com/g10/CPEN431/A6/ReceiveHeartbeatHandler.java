@@ -5,16 +5,14 @@ import com.google.protobuf.InvalidProtocolBufferException;
 
 public class ReceiveHeartbeatHandler extends Thread {
 
-    private byte[] payload;
+    private final byte[] payload;
     private final NodePool nodePool;
-    private final Host myHost;
     private InternalRequest.InternalRequestWrapper response;
 
     public ReceiveHeartbeatHandler(byte[] payload) {
         super("ReceiveHeartbeatHandler");
         this.payload = payload;
         this.nodePool = NodePool.getInstance();
-        this.myHost = nodePool.getMyHost();
     }
 
     public void run() {
