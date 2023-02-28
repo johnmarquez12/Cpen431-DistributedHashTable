@@ -5,6 +5,8 @@ import org.junit.Test;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -33,6 +35,23 @@ public class NodePoolTest {
             NodePool.getInstance().getHostFromId(NodePool.CIRCLE_SIZE/3 + 5));
         assertEquals(servers[0],
             NodePool.getInstance().getHostFromId(NodePool.CIRCLE_SIZE - 1));
+    }
+
+    @Test
+    public void testUpdateTimeStamp() {
+        List<NodePool.Heartbeat> heartbeats = new ArrayList<>(NodePool.getInstance().getAllHeartbeats());
+
+        for (NodePool.Heartbeat heartbeat : heartbeats) {
+            assertEquals(0, heartbeat.epochMillis);
+
+            NodePool.getInstance().updateTimeStampFromId(heartbeat.id, 10L * heartbeat.id);
+            assertEquals(10L * heartbeat.id, heartbeat.epochMillis);
+
+            //Set smaller value; shouldn't update
+            NodePool.getInstance().updateTimeStampFromId(heartbeat.id, 5L * heartbeat.id);
+            assertEquals(10L * heartbeat.id, heartbeat.epochMillis);
+        }
+
     }
 
     private InetAddress getMyHost() throws UnknownHostException {

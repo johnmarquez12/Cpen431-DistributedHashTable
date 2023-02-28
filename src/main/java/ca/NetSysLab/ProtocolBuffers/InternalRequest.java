@@ -72,7 +72,7 @@ public final class InternalRequest {
     }
 
     public static final int IP_FIELD_NUMBER = 1;
-    private com.google.protobuf.ByteString ip_;
+    private com.google.protobuf.ByteString ip_ = com.google.protobuf.ByteString.EMPTY;
     /**
      * <code>bytes ip = 1;</code>
      * @return The ip.
@@ -83,7 +83,7 @@ public final class InternalRequest {
     }
 
     public static final int PORT_FIELD_NUMBER = 2;
-    private int port_;
+    private int port_ = 0;
     /**
      * <code>int32 port = 2;</code>
      * @return The port.
@@ -292,10 +292,9 @@ public final class InternalRequest {
       @java.lang.Override
       public Builder clear() {
         super.clear();
+        bitField0_ = 0;
         ip_ = com.google.protobuf.ByteString.EMPTY;
-
         port_ = 0;
-
         return this;
       }
 
@@ -322,10 +321,19 @@ public final class InternalRequest {
       @java.lang.Override
       public ca.NetSysLab.ProtocolBuffers.InternalRequest.Host buildPartial() {
         ca.NetSysLab.ProtocolBuffers.InternalRequest.Host result = new ca.NetSysLab.ProtocolBuffers.InternalRequest.Host(this);
-        result.ip_ = ip_;
-        result.port_ = port_;
+        if (bitField0_ != 0) { buildPartial0(result); }
         onBuilt();
         return result;
+      }
+
+      private void buildPartial0(ca.NetSysLab.ProtocolBuffers.InternalRequest.Host result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.ip_ = ip_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.port_ = port_;
+        }
       }
 
       @java.lang.Override
@@ -406,12 +414,12 @@ public final class InternalRequest {
                 break;
               case 10: {
                 ip_ = input.readBytes();
-
+                bitField0_ |= 0x00000001;
                 break;
               } // case 10
               case 16: {
                 port_ = input.readInt32();
-
+                bitField0_ |= 0x00000002;
                 break;
               } // case 16
               default: {
@@ -429,6 +437,7 @@ public final class InternalRequest {
         } // finally
         return this;
       }
+      private int bitField0_;
 
       private com.google.protobuf.ByteString ip_ = com.google.protobuf.ByteString.EMPTY;
       /**
@@ -445,11 +454,9 @@ public final class InternalRequest {
        * @return This builder for chaining.
        */
       public Builder setIp(com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
+        if (value == null) { throw new NullPointerException(); }
         ip_ = value;
+        bitField0_ |= 0x00000001;
         onChanged();
         return this;
       }
@@ -458,7 +465,7 @@ public final class InternalRequest {
        * @return This builder for chaining.
        */
       public Builder clearIp() {
-        
+        bitField0_ = (bitField0_ & ~0x00000001);
         ip_ = getDefaultInstance().getIp();
         onChanged();
         return this;
@@ -481,6 +488,7 @@ public final class InternalRequest {
       public Builder setPort(int value) {
         
         port_ = value;
+        bitField0_ |= 0x00000002;
         onChanged();
         return this;
       }
@@ -489,7 +497,7 @@ public final class InternalRequest {
        * @return This builder for chaining.
        */
       public Builder clearPort() {
-        
+        bitField0_ = (bitField0_ & ~0x00000002);
         port_ = 0;
         onChanged();
         return this;
@@ -578,6 +586,12 @@ public final class InternalRequest {
     ca.NetSysLab.ProtocolBuffers.InternalRequest.HostOrBuilder getHostOrBuilder();
 
     /**
+     * <code>int32 id = 2;</code>
+     * @return The id.
+     */
+    int getId();
+
+    /**
      * <code>int64 epochMillis = 3;</code>
      * @return The epochMillis.
      */
@@ -646,11 +660,22 @@ public final class InternalRequest {
      */
     @java.lang.Override
     public ca.NetSysLab.ProtocolBuffers.InternalRequest.HostOrBuilder getHostOrBuilder() {
-      return getHost();
+      return host_ == null ? ca.NetSysLab.ProtocolBuffers.InternalRequest.Host.getDefaultInstance() : host_;
+    }
+
+    public static final int ID_FIELD_NUMBER = 2;
+    private int id_ = 0;
+    /**
+     * <code>int32 id = 2;</code>
+     * @return The id.
+     */
+    @java.lang.Override
+    public int getId() {
+      return id_;
     }
 
     public static final int EPOCHMILLIS_FIELD_NUMBER = 3;
-    private long epochMillis_;
+    private long epochMillis_ = 0L;
     /**
      * <code>int64 epochMillis = 3;</code>
      * @return The epochMillis.
@@ -677,6 +702,9 @@ public final class InternalRequest {
       if (host_ != null) {
         output.writeMessage(1, getHost());
       }
+      if (id_ != 0) {
+        output.writeInt32(2, id_);
+      }
       if (epochMillis_ != 0L) {
         output.writeInt64(3, epochMillis_);
       }
@@ -692,6 +720,10 @@ public final class InternalRequest {
       if (host_ != null) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(1, getHost());
+      }
+      if (id_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(2, id_);
       }
       if (epochMillis_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
@@ -717,6 +749,8 @@ public final class InternalRequest {
         if (!getHost()
             .equals(other.getHost())) return false;
       }
+      if (getId()
+          != other.getId()) return false;
       if (getEpochMillis()
           != other.getEpochMillis()) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
@@ -734,6 +768,8 @@ public final class InternalRequest {
         hash = (37 * hash) + HOST_FIELD_NUMBER;
         hash = (53 * hash) + getHost().hashCode();
       }
+      hash = (37 * hash) + ID_FIELD_NUMBER;
+      hash = (53 * hash) + getId();
       hash = (37 * hash) + EPOCHMILLIS_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getEpochMillis());
@@ -865,14 +901,14 @@ public final class InternalRequest {
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        if (hostBuilder_ == null) {
-          host_ = null;
-        } else {
-          host_ = null;
+        bitField0_ = 0;
+        host_ = null;
+        if (hostBuilder_ != null) {
+          hostBuilder_.dispose();
           hostBuilder_ = null;
         }
+        id_ = 0;
         epochMillis_ = 0L;
-
         return this;
       }
 
@@ -899,14 +935,24 @@ public final class InternalRequest {
       @java.lang.Override
       public ca.NetSysLab.ProtocolBuffers.InternalRequest.Heartbeat buildPartial() {
         ca.NetSysLab.ProtocolBuffers.InternalRequest.Heartbeat result = new ca.NetSysLab.ProtocolBuffers.InternalRequest.Heartbeat(this);
-        if (hostBuilder_ == null) {
-          result.host_ = host_;
-        } else {
-          result.host_ = hostBuilder_.build();
-        }
-        result.epochMillis_ = epochMillis_;
+        if (bitField0_ != 0) { buildPartial0(result); }
         onBuilt();
         return result;
+      }
+
+      private void buildPartial0(ca.NetSysLab.ProtocolBuffers.InternalRequest.Heartbeat result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.host_ = hostBuilder_ == null
+              ? host_
+              : hostBuilder_.build();
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.id_ = id_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.epochMillis_ = epochMillis_;
+        }
       }
 
       @java.lang.Override
@@ -956,6 +1002,9 @@ public final class InternalRequest {
         if (other.hasHost()) {
           mergeHost(other.getHost());
         }
+        if (other.getId() != 0) {
+          setId(other.getId());
+        }
         if (other.getEpochMillis() != 0L) {
           setEpochMillis(other.getEpochMillis());
         }
@@ -989,12 +1038,17 @@ public final class InternalRequest {
                 input.readMessage(
                     getHostFieldBuilder().getBuilder(),
                     extensionRegistry);
-
+                bitField0_ |= 0x00000001;
                 break;
               } // case 10
+              case 16: {
+                id_ = input.readInt32();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 16
               case 24: {
                 epochMillis_ = input.readInt64();
-
+                bitField0_ |= 0x00000004;
                 break;
               } // case 24
               default: {
@@ -1012,6 +1066,7 @@ public final class InternalRequest {
         } // finally
         return this;
       }
+      private int bitField0_;
 
       private ca.NetSysLab.ProtocolBuffers.InternalRequest.Host host_;
       private com.google.protobuf.SingleFieldBuilderV3<
@@ -1021,7 +1076,7 @@ public final class InternalRequest {
        * @return Whether the host field is set.
        */
       public boolean hasHost() {
-        return hostBuilder_ != null || host_ != null;
+        return ((bitField0_ & 0x00000001) != 0);
       }
       /**
        * <code>.Host host = 1;</code>
@@ -1043,11 +1098,11 @@ public final class InternalRequest {
             throw new NullPointerException();
           }
           host_ = value;
-          onChanged();
         } else {
           hostBuilder_.setMessage(value);
         }
-
+        bitField0_ |= 0x00000001;
+        onChanged();
         return this;
       }
       /**
@@ -1057,11 +1112,11 @@ public final class InternalRequest {
           ca.NetSysLab.ProtocolBuffers.InternalRequest.Host.Builder builderForValue) {
         if (hostBuilder_ == null) {
           host_ = builderForValue.build();
-          onChanged();
         } else {
           hostBuilder_.setMessage(builderForValue.build());
         }
-
+        bitField0_ |= 0x00000001;
+        onChanged();
         return this;
       }
       /**
@@ -1069,38 +1124,38 @@ public final class InternalRequest {
        */
       public Builder mergeHost(ca.NetSysLab.ProtocolBuffers.InternalRequest.Host value) {
         if (hostBuilder_ == null) {
-          if (host_ != null) {
-            host_ =
-              ca.NetSysLab.ProtocolBuffers.InternalRequest.Host.newBuilder(host_).mergeFrom(value).buildPartial();
+          if (((bitField0_ & 0x00000001) != 0) &&
+            host_ != null &&
+            host_ != ca.NetSysLab.ProtocolBuffers.InternalRequest.Host.getDefaultInstance()) {
+            getHostBuilder().mergeFrom(value);
           } else {
             host_ = value;
           }
-          onChanged();
         } else {
           hostBuilder_.mergeFrom(value);
         }
-
+        bitField0_ |= 0x00000001;
+        onChanged();
         return this;
       }
       /**
        * <code>.Host host = 1;</code>
        */
       public Builder clearHost() {
-        if (hostBuilder_ == null) {
-          host_ = null;
-          onChanged();
-        } else {
-          host_ = null;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        host_ = null;
+        if (hostBuilder_ != null) {
+          hostBuilder_.dispose();
           hostBuilder_ = null;
         }
-
+        onChanged();
         return this;
       }
       /**
        * <code>.Host host = 1;</code>
        */
       public ca.NetSysLab.ProtocolBuffers.InternalRequest.Host.Builder getHostBuilder() {
-        
+        bitField0_ |= 0x00000001;
         onChanged();
         return getHostFieldBuilder().getBuilder();
       }
@@ -1132,6 +1187,38 @@ public final class InternalRequest {
         return hostBuilder_;
       }
 
+      private int id_ ;
+      /**
+       * <code>int32 id = 2;</code>
+       * @return The id.
+       */
+      @java.lang.Override
+      public int getId() {
+        return id_;
+      }
+      /**
+       * <code>int32 id = 2;</code>
+       * @param value The id to set.
+       * @return This builder for chaining.
+       */
+      public Builder setId(int value) {
+        
+        id_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 id = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearId() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        id_ = 0;
+        onChanged();
+        return this;
+      }
+
       private long epochMillis_ ;
       /**
        * <code>int64 epochMillis = 3;</code>
@@ -1149,6 +1236,7 @@ public final class InternalRequest {
       public Builder setEpochMillis(long value) {
         
         epochMillis_ = value;
+        bitField0_ |= 0x00000004;
         onChanged();
         return this;
       }
@@ -1157,7 +1245,7 @@ public final class InternalRequest {
        * @return This builder for chaining.
        */
       public Builder clearEpochMillis() {
-        
+        bitField0_ = (bitField0_ & ~0x00000004);
         epochMillis_ = 0L;
         onChanged();
         return this;
@@ -1379,6 +1467,7 @@ public final class InternalRequest {
     }
 
     public static final int HEARTBEATS_FIELD_NUMBER = 3;
+    @SuppressWarnings("serial")
     private java.util.List<ca.NetSysLab.ProtocolBuffers.InternalRequest.Heartbeat> heartbeats_;
     /**
      * <code>repeated .Heartbeat heartbeats = 3;</code>
@@ -1648,18 +1737,17 @@ public final class InternalRequest {
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        if (clientBuilder_ == null) {
-          client_ = null;
-        } else {
-          clientBuilder_.clear();
+        bitField0_ = 0;
+        client_ = null;
+        if (clientBuilder_ != null) {
+          clientBuilder_.dispose();
+          clientBuilder_ = null;
         }
-        bitField0_ = (bitField0_ & ~0x00000001);
-        if (requestBuilder_ == null) {
-          request_ = null;
-        } else {
-          requestBuilder_.clear();
+        request_ = null;
+        if (requestBuilder_ != null) {
+          requestBuilder_.dispose();
+          requestBuilder_ = null;
         }
-        bitField0_ = (bitField0_ & ~0x00000002);
         if (heartbeatsBuilder_ == null) {
           heartbeats_ = java.util.Collections.emptyList();
         } else {
@@ -1693,24 +1781,13 @@ public final class InternalRequest {
       @java.lang.Override
       public ca.NetSysLab.ProtocolBuffers.InternalRequest.InternalRequestWrapper buildPartial() {
         ca.NetSysLab.ProtocolBuffers.InternalRequest.InternalRequestWrapper result = new ca.NetSysLab.ProtocolBuffers.InternalRequest.InternalRequestWrapper(this);
-        int from_bitField0_ = bitField0_;
-        int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000001) != 0)) {
-          if (clientBuilder_ == null) {
-            result.client_ = client_;
-          } else {
-            result.client_ = clientBuilder_.build();
-          }
-          to_bitField0_ |= 0x00000001;
-        }
-        if (((from_bitField0_ & 0x00000002) != 0)) {
-          if (requestBuilder_ == null) {
-            result.request_ = request_;
-          } else {
-            result.request_ = requestBuilder_.build();
-          }
-          to_bitField0_ |= 0x00000002;
-        }
+        buildPartialRepeatedFields(result);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartialRepeatedFields(ca.NetSysLab.ProtocolBuffers.InternalRequest.InternalRequestWrapper result) {
         if (heartbeatsBuilder_ == null) {
           if (((bitField0_ & 0x00000004) != 0)) {
             heartbeats_ = java.util.Collections.unmodifiableList(heartbeats_);
@@ -1720,9 +1797,24 @@ public final class InternalRequest {
         } else {
           result.heartbeats_ = heartbeatsBuilder_.build();
         }
-        result.bitField0_ = to_bitField0_;
-        onBuilt();
-        return result;
+      }
+
+      private void buildPartial0(ca.NetSysLab.ProtocolBuffers.InternalRequest.InternalRequestWrapper result) {
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.client_ = clientBuilder_ == null
+              ? client_
+              : clientBuilder_.build();
+          to_bitField0_ |= 0x00000001;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.request_ = requestBuilder_ == null
+              ? request_
+              : requestBuilder_.build();
+          to_bitField0_ |= 0x00000002;
+        }
+        result.bitField0_ |= to_bitField0_;
       }
 
       @java.lang.Override
@@ -1901,11 +1993,11 @@ public final class InternalRequest {
             throw new NullPointerException();
           }
           client_ = value;
-          onChanged();
         } else {
           clientBuilder_.setMessage(value);
         }
         bitField0_ |= 0x00000001;
+        onChanged();
         return this;
       }
       /**
@@ -1915,11 +2007,11 @@ public final class InternalRequest {
           ca.NetSysLab.ProtocolBuffers.InternalRequest.Host.Builder builderForValue) {
         if (clientBuilder_ == null) {
           client_ = builderForValue.build();
-          onChanged();
         } else {
           clientBuilder_.setMessage(builderForValue.build());
         }
         bitField0_ |= 0x00000001;
+        onChanged();
         return this;
       }
       /**
@@ -1928,31 +2020,30 @@ public final class InternalRequest {
       public Builder mergeClient(ca.NetSysLab.ProtocolBuffers.InternalRequest.Host value) {
         if (clientBuilder_ == null) {
           if (((bitField0_ & 0x00000001) != 0) &&
-              client_ != null &&
-              client_ != ca.NetSysLab.ProtocolBuffers.InternalRequest.Host.getDefaultInstance()) {
-            client_ =
-              ca.NetSysLab.ProtocolBuffers.InternalRequest.Host.newBuilder(client_).mergeFrom(value).buildPartial();
+            client_ != null &&
+            client_ != ca.NetSysLab.ProtocolBuffers.InternalRequest.Host.getDefaultInstance()) {
+            getClientBuilder().mergeFrom(value);
           } else {
             client_ = value;
           }
-          onChanged();
         } else {
           clientBuilder_.mergeFrom(value);
         }
         bitField0_ |= 0x00000001;
+        onChanged();
         return this;
       }
       /**
        * <code>optional .Host client = 1;</code>
        */
       public Builder clearClient() {
-        if (clientBuilder_ == null) {
-          client_ = null;
-          onChanged();
-        } else {
-          clientBuilder_.clear();
-        }
         bitField0_ = (bitField0_ & ~0x00000001);
+        client_ = null;
+        if (clientBuilder_ != null) {
+          clientBuilder_.dispose();
+          clientBuilder_ = null;
+        }
+        onChanged();
         return this;
       }
       /**
@@ -2021,11 +2112,11 @@ public final class InternalRequest {
             throw new NullPointerException();
           }
           request_ = value;
-          onChanged();
         } else {
           requestBuilder_.setMessage(value);
         }
         bitField0_ |= 0x00000002;
+        onChanged();
         return this;
       }
       /**
@@ -2035,11 +2126,11 @@ public final class InternalRequest {
           ca.NetSysLab.ProtocolBuffers.KeyValueRequest.KVRequest.Builder builderForValue) {
         if (requestBuilder_ == null) {
           request_ = builderForValue.build();
-          onChanged();
         } else {
           requestBuilder_.setMessage(builderForValue.build());
         }
         bitField0_ |= 0x00000002;
+        onChanged();
         return this;
       }
       /**
@@ -2048,31 +2139,30 @@ public final class InternalRequest {
       public Builder mergeRequest(ca.NetSysLab.ProtocolBuffers.KeyValueRequest.KVRequest value) {
         if (requestBuilder_ == null) {
           if (((bitField0_ & 0x00000002) != 0) &&
-              request_ != null &&
-              request_ != ca.NetSysLab.ProtocolBuffers.KeyValueRequest.KVRequest.getDefaultInstance()) {
-            request_ =
-              ca.NetSysLab.ProtocolBuffers.KeyValueRequest.KVRequest.newBuilder(request_).mergeFrom(value).buildPartial();
+            request_ != null &&
+            request_ != ca.NetSysLab.ProtocolBuffers.KeyValueRequest.KVRequest.getDefaultInstance()) {
+            getRequestBuilder().mergeFrom(value);
           } else {
             request_ = value;
           }
-          onChanged();
         } else {
           requestBuilder_.mergeFrom(value);
         }
         bitField0_ |= 0x00000002;
+        onChanged();
         return this;
       }
       /**
        * <code>optional .KVRequest request = 2;</code>
        */
       public Builder clearRequest() {
-        if (requestBuilder_ == null) {
-          request_ = null;
-          onChanged();
-        } else {
-          requestBuilder_.clear();
-        }
         bitField0_ = (bitField0_ & ~0x00000002);
+        request_ = null;
+        if (requestBuilder_ != null) {
+          requestBuilder_.dispose();
+          requestBuilder_ = null;
+        }
+        onChanged();
         return this;
       }
       /**
@@ -2440,14 +2530,14 @@ public final class InternalRequest {
     java.lang.String[] descriptorData = {
       "\n\"src/protobuf/InternalRequest.proto\032\"sr" +
       "c/protobuf/KeyValueRequest.proto\" \n\004Host" +
-      "\022\n\n\002ip\030\001 \001(\014\022\014\n\004port\030\002 \001(\005\"5\n\tHeartbeat\022" +
-      "\023\n\004host\030\001 \001(\0132\005.Host\022\023\n\013epochMillis\030\003 \001(" +
-      "\003\"\215\001\n\026InternalRequestWrapper\022\032\n\006client\030\001" +
-      " \001(\0132\005.HostH\000\210\001\001\022 \n\007request\030\002 \001(\0132\n.KVRe" +
-      "questH\001\210\001\001\022\036\n\nheartbeats\030\003 \003(\0132\n.Heartbe" +
-      "atB\t\n\007_clientB\n\n\010_requestB/\n\034ca.NetSysLa" +
-      "b.ProtocolBuffersB\017InternalRequestb\006prot" +
-      "o3"
+      "\022\n\n\002ip\030\001 \001(\014\022\014\n\004port\030\002 \001(\005\"A\n\tHeartbeat\022" +
+      "\023\n\004host\030\001 \001(\0132\005.Host\022\n\n\002id\030\002 \001(\005\022\023\n\013epoc" +
+      "hMillis\030\003 \001(\003\"\215\001\n\026InternalRequestWrapper" +
+      "\022\032\n\006client\030\001 \001(\0132\005.HostH\000\210\001\001\022 \n\007request\030" +
+      "\002 \001(\0132\n.KVRequestH\001\210\001\001\022\036\n\nheartbeats\030\003 \003" +
+      "(\0132\n.HeartbeatB\t\n\007_clientB\n\n\010_requestB/\n" +
+      "\034ca.NetSysLab.ProtocolBuffersB\017InternalR" +
+      "equestb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -2465,7 +2555,7 @@ public final class InternalRequest {
     internal_static_Heartbeat_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Heartbeat_descriptor,
-        new java.lang.String[] { "Host", "EpochMillis", });
+        new java.lang.String[] { "Host", "Id", "EpochMillis", });
     internal_static_InternalRequestWrapper_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_InternalRequestWrapper_fieldAccessorTable = new

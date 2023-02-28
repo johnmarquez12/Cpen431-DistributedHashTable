@@ -12,6 +12,7 @@ message Host {
 
 message Heartbeat {
   Host host = 1;
+  int32 id = 2;
   int64 epochMillis = 3;
 }
 
