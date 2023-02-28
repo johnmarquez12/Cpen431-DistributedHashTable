@@ -24,21 +24,13 @@ public class InternalClient {
     private static final int NUM_RETRIES = 3;
     public static final int REQUEST_ID_SIZE = 16;
 
-    public static ByteString sendRequest(InternalRequest internalRequest) throws IOException {
+    public static ByteString sendInternalRequestWithRetry(InternalRequest internalRequest) throws IOException {
 
         try (DatagramSocket socket = new DatagramSocket()) {
 
             int timeout = TIMEOUT;
 
-            byte[] requestId = generateRequestId(internalRequest.nodeAddress, internalRequest.nodePort);
-            long checksum = generateCheckSum(requestId, internalRequest.payload);
-
-            Message.Msg requestMessage = Message.Msg.newBuilder()
-                    .setMessageID(ByteString.copyFrom(requestId))
-                    .setPayload(ByteString.copyFrom(internalRequest.payload))
-                    .setCheckSum(checksum)
-                    .build();
-
+            Message.Msg requestMessage = generateMessage(internalRequest);
             byte[] message = requestMessage.toByteArray();
 
             DatagramPacket packetToSend = new DatagramPacket(
@@ -73,6 +65,40 @@ public class InternalClient {
 
         // out of retries, throw timeout
         throw new SocketTimeoutException("Out of retries");
+    }
+
+    public static void sendInternalRequest(InternalRequest internalRequest) {
+
+        try (DatagramSocket socket = new DatagramSocket()) {
+
+            Message.Msg requestMessage = generateMessage(internalRequest);
+            byte[] message = requestMessage.toByteArray();
+
+            DatagramPacket packetToSend = new DatagramPacket(
+                    message,
+                    message.length,
+                    internalRequest.nodeAddress,
+                    internalRequest.nodePort
+            );
+
+            socket.send(packetToSend);
+
+        } catch (IOException se) {
+
+            // Do we want to pass IOException up?
+            throw new RuntimeException(se);
+        }
+    }
+
+    private static Message.Msg generateMessage(InternalRequest internalRequest) {
+        byte[] requestId = generateRequestId(internalRequest.nodeAddress, internalRequest.nodePort);
+        long checksum = generateCheckSum(requestId, internalRequest.payload);
+
+        return Message.Msg.newBuilder()
+                .setMessageID(ByteString.copyFrom(requestId))
+                .setPayload(ByteString.copyFrom(internalRequest.payload))
+                .setCheckSum(checksum)
+                .build();
     }
 
     private static boolean isResponseValid(Message.Msg request, Message.Msg reply) {

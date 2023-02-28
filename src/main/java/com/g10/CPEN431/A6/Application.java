@@ -1,10 +1,12 @@
 package com.g10.CPEN431.A6;
 
+import ca.NetSysLab.ProtocolBuffers.InternalRequest;
 import ca.NetSysLab.ProtocolBuffers.KeyValueRequest;
 import ca.NetSysLab.ProtocolBuffers.KeyValueResponse;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 
+import java.net.InetAddress;
 import java.util.concurrent.Callable;
 
 
@@ -14,8 +16,13 @@ public class Application implements Callable<ByteString> {
     private KeyValueRequest.KVRequest request;
     private KeyValueResponse.KVResponse.Builder response;
 
-    public Application(byte[] payload) {
+    private final InetAddress clientAddress;
+    private final int clientPort;
+
+    public Application(byte[] payload, InetAddress clientAddress, int clientPort) {
         this.payload = payload;
+        this.clientAddress = clientAddress;
+        this.clientPort = clientPort;
     }
 
     @Override
@@ -65,9 +72,21 @@ public class Application implements Callable<ByteString> {
 
     boolean divertRequest() {
         Host serviceHost = NodePool.getInstance().getHostFromId(request.getKey().hashCode());
-        if (serviceHost.equals(NodePool.getInstance().getMyHost())) {
+
+        if (serviceHost.equals(NodePool.getInstance().getMyHost()))
             return false;
-        }
+
+        InternalRequest.Host clientData = InternalRequest.Host.newBuilder()
+                .setIp(ByteString.copyFrom(clientAddress.getAddress()))
+                .setPort(clientPort)
+                .build();
+
+        InternalRequest.InternalRequestWrapper internalRequestWrapper = InternalRequest.InternalRequestWrapper.newBuilder()
+                .setRequest(request)
+                .setClient(clientData)
+                .build();
+
+        InternalClient.sendInternalRequest(new InternalClient.InternalRequest(internalRequestWrapper.toByteArray(), serviceHost.address(), serviceHost.port()));
 
         /*
         TODO: actually divert the request!
@@ -80,7 +99,6 @@ public class Application implements Callable<ByteString> {
                 - Send using Internal Request (no retries required)
                 - DONT CACHE, DONT RESPOND, DO NOT PASS GO, DO NOT COLLECT $200
          */
-
 
         return true;
     }

@@ -20,5 +20,8 @@ message Heartbeat {
 message InternalRequestWrapper {
   optional Host client = 1;
   optional KVRequest request = 2;
-  repeated Heartbeat heartbeats = 3;
+
+  // do we need this?
+  optional bytes messageId = 3;
+  repeated Heartbeat heartbeats = 4;
 }
