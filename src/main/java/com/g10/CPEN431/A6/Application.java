@@ -32,7 +32,10 @@ public class Application implements Callable<ByteString> {
             .setErrCode(Codes.Errs.SUCCESS);
 
         // TODO: do something if this fails
+
+        // TODO: also check if request is of type InternalRequest or KVRequest
         request = KeyValueRequest.KVRequest.parseFrom(payload);
+
 
         /*
         0x01 - Put: This is a put operation.

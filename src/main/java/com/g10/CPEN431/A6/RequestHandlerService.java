@@ -53,7 +53,9 @@ public class RequestHandlerService {
             applicationResponse = RequestReplyCache.getInstance().get(
                 request.getMessageID(),
                 // TODO: maybe applicationRequestPayload should be weak ref?
-                new Application(applicationRequestPayload)
+
+                // TODO: not all requests have to be cached (ie. diverted requests)
+                new Application(applicationRequestPayload, responseAddress, responsePort)
             );
         } catch (ExecutionException e) {
             throw new RuntimeException(e);
