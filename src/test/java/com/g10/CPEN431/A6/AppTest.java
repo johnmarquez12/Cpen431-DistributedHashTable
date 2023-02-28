@@ -6,6 +6,13 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.junit.Test;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.List;
+
+import static com.g10.CPEN431.A6.App.parseServerFile;
+import static org.junit.Assert.*;
+
 /**
  * Unit test for simple App.
  */
@@ -22,5 +29,20 @@ public class AppTest {
         KeyValueResponse.KVResponse y = KeyValueResponse.KVResponse.parseFrom(x.toByteString());
 
         System.out.println(y.getErrCode());
+    }
+
+    @Test
+    public void testParseServerFile() throws UnknownHostException {
+        List<Host> servers = parseServerFile(
+            "src/test/java/com/g10/CPEN431/A6/serverListTest.txt");
+
+        assertEquals(5, servers.size());
+
+        assertEquals(new Host(InetAddress.getByName("localhost"), 5555),
+            servers.get(0));
+        assertEquals(new Host(InetAddress.getByName("localhost"), 1234),
+            servers.get(1));
+        assertEquals(new Host(InetAddress.getByName("ece.ubc.ca"), 90),
+            servers.get(4));
     }
 }
