@@ -6,7 +6,6 @@ import com.google.protobuf.ByteString;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.Queue;
 import java.util.zip.CRC32;
@@ -16,15 +15,13 @@ public class ReplyThread extends Thread {
     public static class Reply {
         public final byte[] messageID;
         public final ByteString applicationResponse;
-        public final InetAddress responseAddress;
-        public final int responsePort;
+        public final Host responseHost;
 
         public Reply(byte[] messageID, ByteString applicationResponse,
-                     InetAddress responseAddress, int responsePort) {
+                     Host responseHost) {
             this.messageID = messageID;
             this.applicationResponse = applicationResponse;
-            this.responseAddress = responseAddress;
-            this.responsePort = responsePort;
+            this.responseHost = responseHost;
         }
     }
 
@@ -68,7 +65,7 @@ public class ReplyThread extends Thread {
             try {
                 DatagramPacket packet =
                     new DatagramPacket(response, response.length,
-                        reply.responseAddress, reply.responsePort);
+                        reply.responseHost.address(), reply.responseHost.port());
 
                 socket.send(packet);
             } catch (IOException e) {

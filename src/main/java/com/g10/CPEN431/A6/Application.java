@@ -1,5 +1,6 @@
 package com.g10.CPEN431.A6;
 
+import ca.NetSysLab.ProtocolBuffers.InternalRequest;
 import ca.NetSysLab.ProtocolBuffers.KeyValueRequest;
 import ca.NetSysLab.ProtocolBuffers.KeyValueResponse;
 import com.google.protobuf.ByteString;
@@ -8,18 +9,24 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import java.util.concurrent.Callable;
 
 
-public class Application implements Callable<ByteString> {
+public class Application implements Callable<Application.ApplicationResponse> {
 
     private final byte[] payload;
     private KeyValueRequest.KVRequest request;
     private KeyValueResponse.KVResponse.Builder response;
 
-    public Application(byte[] payload) {
+    private final Host client;
+    private ApplicationResponse appResponse;
+
+    public record ApplicationResponse(boolean shouldCache, ByteString messageData, Host replyTo) {}
+
+    public Application(byte[] payload, Host client) {
         this.payload = payload;
+        this.client = client;
     }
 
     @Override
-    public ByteString call() throws InvalidProtocolBufferException {
+    public ApplicationResponse call() throws InvalidProtocolBufferException {
         // Start building a response object
         response = KeyValueResponse.KVResponse.newBuilder()
             .setErrCode(Codes.Errs.SUCCESS);
@@ -56,7 +63,12 @@ public class Application implements Callable<ByteString> {
             default -> cmdError();
         }
 
-        return response.build().toByteString();
+        if (appResponse == null) {
+            appResponse = new ApplicationResponse(true,
+                response.build().toByteString(), client);
+        }
+
+        return appResponse;
     }
 
     private boolean outOfMemory() {
@@ -69,18 +81,13 @@ public class Application implements Callable<ByteString> {
             return false;
         }
 
-        /*
-        TODO: actually divert the request!
+        ByteString messageData = request.toBuilder().setIr(
+            InternalRequest.InternalRequestWrapper.newBuilder().setClient(
+                client.toProtobuf()
+            ).build()
+        ).build().toByteString();
 
-            send to B using same messageId as original
-              At B:
-                - B caches, B responds
-
-              At A:
-                - Send using Internal Request (no retries required)
-                - DONT CACHE, DONT RESPOND, DO NOT PASS GO, DO NOT COLLECT $200
-         */
-
+        appResponse = new ApplicationResponse(false, messageData, serviceHost);
 
         return true;
     }

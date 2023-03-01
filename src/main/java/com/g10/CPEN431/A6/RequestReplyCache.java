@@ -27,21 +27,25 @@ public class RequestReplyCache {
         return INSTANCE;
     }
 
-    public ByteString get(ByteString messageID, Callable<ByteString> callable)
+    public Application.ApplicationResponse get(ByteString messageID, Callable<Application.ApplicationResponse> callable)
         throws ExecutionException {
         ByteString response = cache.getIfPresent(messageID);
+        Application.ApplicationResponse appResponse;
+
 
         if (response == null) {
             try {
-                response = callable.call();
-
+                appResponse = callable.call();
             } catch (Exception e) {
                 throw new ExecutionException(e);
             }
-            cache.put(messageID, response);
+            if(appResponse.shouldCache())
+                cache.put(messageID, appResponse.messageData());
+
+            return appResponse;
         }
 
-        return response;
+        return new Application.ApplicationResponse(true, response, null);
     }
 
     public void wipeout() {
