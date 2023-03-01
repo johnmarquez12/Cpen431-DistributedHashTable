@@ -1,6 +1,7 @@
 package com.g10.CPEN431.A6;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.TreeMap;
 
 public class NodePool {
@@ -33,23 +34,23 @@ public class NodePool {
     private final int log2Nodes;
     private Host me;
 
-    private NodePool(Host me, Host[] servers) {
+    private NodePool(Host me, List<Host> servers) {
         // Todo: figure out how we initially populate the tree
         //       For now, we'll stick some dummy data in it
         this.me = me;
 
         nodes = new TreeMap<>();
 
-        int spacing = CIRCLE_SIZE / servers.length;
+        int spacing = CIRCLE_SIZE / servers.size();
 
-        for (int i = 0; i < servers.length; i++) {
-            nodes.put(i * spacing, new Heartbeat(servers[i], i * spacing));
+        for (int i = 0; i < servers.size(); i++) {
+            nodes.put(i * spacing, new Heartbeat(servers.get(i), i * spacing));
         }
 
         log2Nodes = (int) (Math.log(nodes.size()) / Math.log(2));
     }
 
-    public static NodePool create(Host me, Host[] servers) {
+    public static NodePool create(Host me, List<Host> servers) {
         if (INSTANCE != null) {
             throw new RuntimeException("The NodePool has already been created");
         }
