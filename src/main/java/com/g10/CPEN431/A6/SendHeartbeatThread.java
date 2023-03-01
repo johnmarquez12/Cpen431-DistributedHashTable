@@ -1,8 +1,10 @@
 package com.g10.CPEN431.A6;
 import ca.NetSysLab.ProtocolBuffers.InternalRequest;
+import ca.NetSysLab.ProtocolBuffers.KeyValueRequest;
 import com.g10.CPEN431.A6.NodePool.Heartbeat;
 import com.google.protobuf.ByteString;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -10,18 +12,16 @@ import java.util.Random;
 public class SendHeartbeatThread extends Thread {
 
     //These values are arbitrary at the moment
-    public static final long SLEEP = 500;
-    public static final long MARGIN = 2;
+    public static final long SLEEP = 1000;
+    public static final long MARGIN = 5;
     private final NodePool nodePool;
 
     private final Host myHost;
-    private final List<Heartbeat> heartbeats;
 
     public SendHeartbeatThread() {
         super("SendHeartbeatThread");
         this.nodePool = NodePool.getInstance();
         this.myHost = nodePool.getMyHost();
-        this.heartbeats = new ArrayList<>(nodePool.getAllHeartbeats());
     }
 
     public void run() {
@@ -35,11 +35,19 @@ public class SendHeartbeatThread extends Thread {
                 continue;
             }
 
+            NodePool.getInstance().killDeadNodes();
+
             //TODO: send payload using InternalClient to destNode
-            //InternalClient.sendInternalRequest(new InternalClient.InternalRequest(
-                //generateHeartbeatPayload(), host.address(), host.port());
+            try {
+//                System.out.println("Sending heartbeat to "+host);
+                InternalClient.sendRequest(generateHeartbeatPayload(), host);
+            } catch (IOException e) {
+                System.err.println("Uh oh! Problem sending internal request");
+                System.err.println(e.getMessage());
+            }
 
             try {
+                // Todo: is there a better way to do this?
                 Thread.sleep(SLEEP);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
@@ -48,19 +56,12 @@ public class SendHeartbeatThread extends Thread {
     }
 
     private List<InternalRequest.Heartbeat> generateProtobufHeartbeats() {
+        List<NodePool.Heartbeat> heartbeats = new ArrayList<>(nodePool.getAllHeartbeats());
         List<InternalRequest.Heartbeat> protoHeartbeats = new ArrayList<>();
 
         for (Heartbeat heartbeat : heartbeats) {
-            if (heartbeat.host.equals(myHost)) {
-                heartbeat.epochMillis = System.currentTimeMillis();
-            }
-            InternalRequest.Host host = InternalRequest.Host.newBuilder()
-                .setIp(ByteString.copyFrom(heartbeat.host.address().getAddress()))
-                .setPort(heartbeat.host.port())
-                .build();
-
             protoHeartbeats.add(InternalRequest.Heartbeat.newBuilder()
-                .setHost(host)
+                .setHost(heartbeat.host.toProtobuf())
                 .setId(heartbeat.id)
                 .setEpochMillis(heartbeat.epochMillis)
                 .build());
@@ -74,6 +75,9 @@ public class SendHeartbeatThread extends Thread {
             .addAllHeartbeats(generateProtobufHeartbeats())
             .build();
 
-        return request.toByteArray();
+        return KeyValueRequest.KVRequest.newBuilder()
+            .setCommand(Codes.Commands.INTERNAL_REQUEST)
+            .setIr(request)
+            .build().toByteArray();
     }
 }

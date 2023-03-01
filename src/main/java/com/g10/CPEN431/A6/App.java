@@ -85,6 +85,8 @@ public class App
 
         NodePool.create(me, servers);
 
+        (new SendHeartbeatThread()).start();
+
         UDPServer.run(port);
     }
 
