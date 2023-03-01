@@ -6,6 +6,7 @@ import ca.NetSysLab.ProtocolBuffers.KeyValueResponse;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 
+import java.net.UnknownHostException;
 import java.util.concurrent.Callable;
 
 
@@ -15,7 +16,7 @@ public class Application implements Callable<Application.ApplicationResponse> {
     private KeyValueRequest.KVRequest request;
     private KeyValueResponse.KVResponse.Builder response;
 
-    private final Host client;
+    private Host client;
     private ApplicationResponse appResponse;
 
     public record ApplicationResponse(boolean shouldCache, ByteString messageData, Host replyTo) {}
@@ -26,13 +27,20 @@ public class Application implements Callable<Application.ApplicationResponse> {
     }
 
     @Override
-    public ApplicationResponse call() throws InvalidProtocolBufferException {
+    public ApplicationResponse call()
+        // TODO: maybe we don't want the UnknownHostException here. Not really
+        //       sure when it would happen...
+        throws InvalidProtocolBufferException, UnknownHostException {
         // Start building a response object
         response = KeyValueResponse.KVResponse.newBuilder()
             .setErrCode(Codes.Errs.SUCCESS);
 
         // TODO: do something if this fails
         request = KeyValueRequest.KVRequest.parseFrom(payload);
+
+        if(request.hasIr() && request.getIr().hasClient()) {
+            client = Host.fromProtobuf(request.getIr().getClient());
+        }
 
         /*
         0x01 - Put: This is a put operation.

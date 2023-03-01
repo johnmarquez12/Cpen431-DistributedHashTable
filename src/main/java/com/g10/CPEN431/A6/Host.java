@@ -5,6 +5,7 @@ import com.google.protobuf.ByteString;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Objects;
 
 public class Host {
 
@@ -35,5 +36,27 @@ public class Host {
         throws UnknownHostException {
         return new Host(InetAddress.getByAddress(host.getIp().toByteArray()),
             host.getPort());
+    }
+
+    @Override
+    public String toString() {
+        return "Host["+address+":"+port+"]";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Host host = (Host) o;
+        return port == host.port && address.equals(host.address);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(address, port);
     }
 }

@@ -64,6 +64,10 @@ public class NodePool {
 
     public Host getHostFromId(int id) {
         int myId = id % CIRCLE_SIZE;
+        if (myId < 0) {
+            myId += CIRCLE_SIZE;
+        }
+
         if (myId > nodes.lastKey()){
            return nodes.firstEntry().getValue().host;
         }
