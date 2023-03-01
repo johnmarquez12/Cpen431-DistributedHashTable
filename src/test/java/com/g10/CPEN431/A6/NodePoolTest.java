@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -12,7 +13,7 @@ import static org.junit.Assert.*;
 public class NodePoolTest {
     InetAddress tmp = InetAddress.getByName("localhost");
 
-    Host[] servers = {new Host(tmp, 1), new Host(tmp, 5555), new Host(tmp, 3)};
+    List<Host> servers = List.of(new Host(tmp, 1), new Host(tmp, 5555), new Host(tmp, 3));
 
     public NodePoolTest() throws UnknownHostException {}
 
@@ -27,11 +28,11 @@ public class NodePoolTest {
 
     @Test
     public void testGetNodesById() {
-        assertEquals(servers[1],
+        assertEquals(servers.get(1),
             NodePool.getInstance().getHostFromId(NodePool.CIRCLE_SIZE/3 - 1));
-        assertEquals(servers[2],
+        assertEquals(servers.get(2),
             NodePool.getInstance().getHostFromId(NodePool.CIRCLE_SIZE/3 + 5));
-        assertEquals(servers[0],
+        assertEquals(servers.get(0),
             NodePool.getInstance().getHostFromId(NodePool.CIRCLE_SIZE - 1));
     }
 

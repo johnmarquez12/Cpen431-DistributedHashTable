@@ -1,0 +1,5 @@
+localhost:5555
+localhost:1234
+google.com:80
+ubc.ca:55
+ece.ubc.ca:90
