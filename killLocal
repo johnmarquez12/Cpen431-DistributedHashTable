@@ -1,0 +1,11 @@
+#!/bin/bash
+
+pid_list=pids.txt
+
+while IFS= read -r line; do
+  if [ ! -z "$line" ]; then
+    kill -9 $line
+  fi
+done < $pid_list
+
+rm $pid_list

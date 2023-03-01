@@ -13,7 +13,7 @@ public class ReceiveHeartbeatHandler {
             nodePool.updateTimeStampFromId(heartbeat.getId(), heartbeat.getEpochMillis());
         }
 
-//        System.out.println("Updated heartbeats");
+        Logger.log("Updated heartbeats.");
 
         nodePool.killDeadNodes();
     }

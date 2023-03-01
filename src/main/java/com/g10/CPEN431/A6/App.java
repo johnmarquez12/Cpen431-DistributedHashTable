@@ -26,7 +26,7 @@ import java.util.List;
 public class App 
 {
     public static void main( String[] args ) throws Exception {
-        System.out.println( "Hello World!" );
+        Logger.log( "Hello World!" );
 
         Options options = new Options();
         Option portOption = new Option("p", "port", true,
@@ -74,8 +74,8 @@ public class App
         }
 
 
-        System.out.println(servers);
-        System.out.println(me);
+        Logger.log(servers);
+        Logger.log(me);
 
         if(!servers.contains(me)) {
             System.err.println("Current node ("+ me.address() +") cannot be found in server list!");

@@ -12,8 +12,8 @@ import java.util.Random;
 public class SendHeartbeatThread extends Thread {
 
     //These values are arbitrary at the moment
-    public static final long SLEEP = 1000;
-    public static final long MARGIN = 5;
+    public static final long SLEEP = 500;
+    public static final long MARGIN = 15;
     private final NodePool nodePool;
 
     private final Host myHost;
@@ -39,7 +39,7 @@ public class SendHeartbeatThread extends Thread {
 
             //TODO: send payload using InternalClient to destNode
             try {
-//                System.out.println("Sending heartbeat to "+host);
+                Logger.log("Sending heartbeat to "+host + ":  "+nodePool.getAllHeartbeats());
                 InternalClient.sendRequest(generateHeartbeatPayload(), host);
             } catch (IOException e) {
                 System.err.println("Uh oh! Problem sending internal request");

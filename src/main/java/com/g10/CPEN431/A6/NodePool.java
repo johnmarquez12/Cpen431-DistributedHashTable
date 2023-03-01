@@ -1,6 +1,9 @@
 package com.g10.CPEN431.A6;
 
 import java.lang.reflect.Field;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ConcurrentSkipListMap;
@@ -24,7 +27,8 @@ public class NodePool {
         @Override
         public String toString() {
             return "Heartbeat{("+id+") " + host +
-                (epochMillis == 0 ? "" : ", epochMillis=" + epochMillis) +
+                (epochMillis == 0 ? "" : ", timestamp=" + LocalDateTime.ofInstant(
+                    Instant.ofEpochMilli(epochMillis), ZoneId.systemDefault()).toLocalTime()) +
                 '}';
         }
     }
@@ -94,8 +98,8 @@ public class NodePool {
 
     public void updateTimeStampFromId(int id, long epochMillis) {
         if(!nodes.containsKey(id)) {
-//            System.err.printf("The ID (%d) given for updating timestamp doesn't exist%n",
-//                id);
+            Logger.log("The ID ("+id+") given for updating timestamp doesn't exist");
+            Logger.log("Here are the nodes that remain: "+ nodes);
             return;
         }
         nodes.get(id).epochMillis = Math.max(epochMillis, nodes.get(id).epochMillis);
@@ -107,9 +111,13 @@ public class NodePool {
         long now = System.currentTimeMillis();
 
         // TODO: Log when a node gets removed.
-        nodes.values().removeIf(heartbeat -> (now - heartbeat.epochMillis
-            >= SendHeartbeatThread.SLEEP * (log2Nodes() + SendHeartbeatThread.MARGIN))
-            && heartbeat.id != myId
+        nodes.values().removeIf(heartbeat -> {
+            boolean out = (now - heartbeat.epochMillis
+                    >= SendHeartbeatThread.SLEEP * (log2Nodes() + SendHeartbeatThread.MARGIN))
+                    && heartbeat.id != myId;
+            if (out) Logger.log("Deleted "+ heartbeat+" since " +(SendHeartbeatThread.SLEEP * (log2Nodes() + SendHeartbeatThread.MARGIN)) + "ms have passed");
+            return out;
+            }
         );
     }
 
@@ -118,6 +126,6 @@ public class NodePool {
     }
 
     private int log2Nodes() {
-        return (int) (Math.log(nodes.size()) / Math.log(2));
+        return (int) (Math.log(nodes.size()) / Math.log(2)) + 1;
     }
 }
