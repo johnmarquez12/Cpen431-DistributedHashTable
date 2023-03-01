@@ -12,13 +12,11 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class UDPServer {
 
     public static class Request {
-        public final InetAddress address;
-        public final int port;
+        public final Host requestHost;
         public final byte[] payload;
 
         public Request(InetAddress address, int port, byte[] payload) {
-            this.address = address;
-            this.port = port;
+            this.requestHost = new Host(address, port);
             this.payload = payload;
         }
     }

@@ -10,15 +10,13 @@ import java.util.concurrent.ExecutionException;
 import java.util.zip.CRC32;
 
 public class RequestHandlerService {
-    private final InetAddress responseAddress;
-    private final int responsePort;
+    private Host responseHost;
     private final byte[] requestPayload;
 
     private final Queue<ReplyThread.Reply> replies;
 
-    public RequestHandlerService(InetAddress address, int port, byte[] packetPayload, Queue<ReplyThread.Reply> replies) {
-        responseAddress = address;
-        responsePort = port;
+    public RequestHandlerService(Host requestHost, byte[] packetPayload, Queue<ReplyThread.Reply> replies) {
+        responseHost = requestHost;
         requestPayload = packetPayload;
         this.replies = replies;
     }
@@ -47,13 +45,13 @@ public class RequestHandlerService {
             // TODO: Kill thread
         }
 
-        ByteString applicationResponse;
+        Application.ApplicationResponse applicationResponse;
 
         try {
             applicationResponse = RequestReplyCache.getInstance().get(
                 request.getMessageID(),
                 // TODO: maybe applicationRequestPayload should be weak ref?
-                new Application(applicationRequestPayload)
+                new Application(applicationRequestPayload, responseHost)
             );
         } catch (ExecutionException e) {
             throw new RuntimeException(e);
@@ -69,8 +67,11 @@ public class RequestHandlerService {
          */
 
 //        ReplyThread Stuff
-        replies.add(new ReplyThread.Reply(messageID, applicationResponse,
-            responseAddress, responsePort));
+        if (applicationResponse.replyTo() != null) {
+            responseHost = applicationResponse.replyTo();
+        }
+
+        replies.add(new ReplyThread.Reply(messageID, applicationResponse.messageData(), responseHost));
     }
 
     public Message.Msg getMessage() throws InvalidProtocolBufferException {

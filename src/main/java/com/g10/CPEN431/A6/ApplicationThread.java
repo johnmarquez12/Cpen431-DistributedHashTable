@@ -22,8 +22,7 @@ public class ApplicationThread extends Thread {
             if (request == null) continue;
 
             new RequestHandlerService(
-                request.address,
-                request.port,
+                request.requestHost,
                 request.payload,
                 replies
             ).run();
