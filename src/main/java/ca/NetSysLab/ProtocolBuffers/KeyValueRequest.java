@@ -56,6 +56,21 @@ public final class KeyValueRequest {
      * @return The version.
      */
     int getVersion();
+
+    /**
+     * <code>optional .InternalRequestWrapper ir = 100;</code>
+     * @return Whether the ir field is set.
+     */
+    boolean hasIr();
+    /**
+     * <code>optional .InternalRequestWrapper ir = 100;</code>
+     * @return The ir.
+     */
+    ca.NetSysLab.ProtocolBuffers.InternalRequest.InternalRequestWrapper getIr();
+    /**
+     * <code>optional .InternalRequestWrapper ir = 100;</code>
+     */
+    ca.NetSysLab.ProtocolBuffers.InternalRequest.InternalRequestWrapperOrBuilder getIrOrBuilder();
   }
   /**
    * Protobuf type {@code KVRequest}
@@ -168,6 +183,32 @@ public final class KeyValueRequest {
       return version_;
     }
 
+    public static final int IR_FIELD_NUMBER = 100;
+    private ca.NetSysLab.ProtocolBuffers.InternalRequest.InternalRequestWrapper ir_;
+    /**
+     * <code>optional .InternalRequestWrapper ir = 100;</code>
+     * @return Whether the ir field is set.
+     */
+    @java.lang.Override
+    public boolean hasIr() {
+      return ((bitField0_ & 0x00000008) != 0);
+    }
+    /**
+     * <code>optional .InternalRequestWrapper ir = 100;</code>
+     * @return The ir.
+     */
+    @java.lang.Override
+    public ca.NetSysLab.ProtocolBuffers.InternalRequest.InternalRequestWrapper getIr() {
+      return ir_ == null ? ca.NetSysLab.ProtocolBuffers.InternalRequest.InternalRequestWrapper.getDefaultInstance() : ir_;
+    }
+    /**
+     * <code>optional .InternalRequestWrapper ir = 100;</code>
+     */
+    @java.lang.Override
+    public ca.NetSysLab.ProtocolBuffers.InternalRequest.InternalRequestWrapperOrBuilder getIrOrBuilder() {
+      return ir_ == null ? ca.NetSysLab.ProtocolBuffers.InternalRequest.InternalRequestWrapper.getDefaultInstance() : ir_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -194,6 +235,9 @@ public final class KeyValueRequest {
       if (((bitField0_ & 0x00000004) != 0)) {
         output.writeInt32(4, version_);
       }
+      if (((bitField0_ & 0x00000008) != 0)) {
+        output.writeMessage(100, getIr());
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -218,6 +262,10 @@ public final class KeyValueRequest {
       if (((bitField0_ & 0x00000004) != 0)) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(4, version_);
+      }
+      if (((bitField0_ & 0x00000008) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(100, getIr());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -251,6 +299,11 @@ public final class KeyValueRequest {
         if (getVersion()
             != other.getVersion()) return false;
       }
+      if (hasIr() != other.hasIr()) return false;
+      if (hasIr()) {
+        if (!getIr()
+            .equals(other.getIr())) return false;
+      }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -275,6 +328,10 @@ public final class KeyValueRequest {
       if (hasVersion()) {
         hash = (37 * hash) + VERSION_FIELD_NUMBER;
         hash = (53 * hash) + getVersion();
+      }
+      if (hasIr()) {
+        hash = (37 * hash) + IR_FIELD_NUMBER;
+        hash = (53 * hash) + getIr().hashCode();
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -393,13 +450,19 @@ public final class KeyValueRequest {
 
       // Construct using ca.NetSysLab.ProtocolBuffers.KeyValueRequest.KVRequest.newBuilder()
       private Builder() {
-
+        maybeForceBuilderInitialization();
       }
 
       private Builder(
           com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
-
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+          getIrFieldBuilder();
+        }
       }
       @java.lang.Override
       public Builder clear() {
@@ -412,6 +475,12 @@ public final class KeyValueRequest {
         bitField0_ = (bitField0_ & ~0x00000002);
         version_ = 0;
         bitField0_ = (bitField0_ & ~0x00000004);
+        if (irBuilder_ == null) {
+          ir_ = null;
+        } else {
+          irBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000008);
         return this;
       }
 
@@ -452,6 +521,14 @@ public final class KeyValueRequest {
         if (((from_bitField0_ & 0x00000004) != 0)) {
           result.version_ = version_;
           to_bitField0_ |= 0x00000004;
+        }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          if (irBuilder_ == null) {
+            result.ir_ = ir_;
+          } else {
+            result.ir_ = irBuilder_.build();
+          }
+          to_bitField0_ |= 0x00000008;
         }
         result.bitField0_ = to_bitField0_;
         onBuilt();
@@ -514,6 +591,9 @@ public final class KeyValueRequest {
         if (other.hasVersion()) {
           setVersion(other.getVersion());
         }
+        if (other.hasIr()) {
+          mergeIr(other.getIr());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -560,6 +640,13 @@ public final class KeyValueRequest {
                 bitField0_ |= 0x00000004;
                 break;
               } // case 32
+              case 802: {
+                input.readMessage(
+                    getIrFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 802
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -730,6 +817,126 @@ public final class KeyValueRequest {
         onChanged();
         return this;
       }
+
+      private ca.NetSysLab.ProtocolBuffers.InternalRequest.InternalRequestWrapper ir_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          ca.NetSysLab.ProtocolBuffers.InternalRequest.InternalRequestWrapper, ca.NetSysLab.ProtocolBuffers.InternalRequest.InternalRequestWrapper.Builder, ca.NetSysLab.ProtocolBuffers.InternalRequest.InternalRequestWrapperOrBuilder> irBuilder_;
+      /**
+       * <code>optional .InternalRequestWrapper ir = 100;</code>
+       * @return Whether the ir field is set.
+       */
+      public boolean hasIr() {
+        return ((bitField0_ & 0x00000008) != 0);
+      }
+      /**
+       * <code>optional .InternalRequestWrapper ir = 100;</code>
+       * @return The ir.
+       */
+      public ca.NetSysLab.ProtocolBuffers.InternalRequest.InternalRequestWrapper getIr() {
+        if (irBuilder_ == null) {
+          return ir_ == null ? ca.NetSysLab.ProtocolBuffers.InternalRequest.InternalRequestWrapper.getDefaultInstance() : ir_;
+        } else {
+          return irBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .InternalRequestWrapper ir = 100;</code>
+       */
+      public Builder setIr(ca.NetSysLab.ProtocolBuffers.InternalRequest.InternalRequestWrapper value) {
+        if (irBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ir_ = value;
+          onChanged();
+        } else {
+          irBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000008;
+        return this;
+      }
+      /**
+       * <code>optional .InternalRequestWrapper ir = 100;</code>
+       */
+      public Builder setIr(
+          ca.NetSysLab.ProtocolBuffers.InternalRequest.InternalRequestWrapper.Builder builderForValue) {
+        if (irBuilder_ == null) {
+          ir_ = builderForValue.build();
+          onChanged();
+        } else {
+          irBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000008;
+        return this;
+      }
+      /**
+       * <code>optional .InternalRequestWrapper ir = 100;</code>
+       */
+      public Builder mergeIr(ca.NetSysLab.ProtocolBuffers.InternalRequest.InternalRequestWrapper value) {
+        if (irBuilder_ == null) {
+          if (((bitField0_ & 0x00000008) != 0) &&
+              ir_ != null &&
+              ir_ != ca.NetSysLab.ProtocolBuffers.InternalRequest.InternalRequestWrapper.getDefaultInstance()) {
+            ir_ =
+              ca.NetSysLab.ProtocolBuffers.InternalRequest.InternalRequestWrapper.newBuilder(ir_).mergeFrom(value).buildPartial();
+          } else {
+            ir_ = value;
+          }
+          onChanged();
+        } else {
+          irBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000008;
+        return this;
+      }
+      /**
+       * <code>optional .InternalRequestWrapper ir = 100;</code>
+       */
+      public Builder clearIr() {
+        if (irBuilder_ == null) {
+          ir_ = null;
+          onChanged();
+        } else {
+          irBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000008);
+        return this;
+      }
+      /**
+       * <code>optional .InternalRequestWrapper ir = 100;</code>
+       */
+      public ca.NetSysLab.ProtocolBuffers.InternalRequest.InternalRequestWrapper.Builder getIrBuilder() {
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return getIrFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .InternalRequestWrapper ir = 100;</code>
+       */
+      public ca.NetSysLab.ProtocolBuffers.InternalRequest.InternalRequestWrapperOrBuilder getIrOrBuilder() {
+        if (irBuilder_ != null) {
+          return irBuilder_.getMessageOrBuilder();
+        } else {
+          return ir_ == null ?
+              ca.NetSysLab.ProtocolBuffers.InternalRequest.InternalRequestWrapper.getDefaultInstance() : ir_;
+        }
+      }
+      /**
+       * <code>optional .InternalRequestWrapper ir = 100;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          ca.NetSysLab.ProtocolBuffers.InternalRequest.InternalRequestWrapper, ca.NetSysLab.ProtocolBuffers.InternalRequest.InternalRequestWrapper.Builder, ca.NetSysLab.ProtocolBuffers.InternalRequest.InternalRequestWrapperOrBuilder> 
+          getIrFieldBuilder() {
+        if (irBuilder_ == null) {
+          irBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              ca.NetSysLab.ProtocolBuffers.InternalRequest.InternalRequestWrapper, ca.NetSysLab.ProtocolBuffers.InternalRequest.InternalRequestWrapper.Builder, ca.NetSysLab.ProtocolBuffers.InternalRequest.InternalRequestWrapperOrBuilder>(
+                  getIr(),
+                  getParentForChildren(),
+                  isClean());
+          ir_ = null;
+        }
+        return irBuilder_;
+      }
       @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -808,23 +1015,27 @@ public final class KeyValueRequest {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\"src/protobuf/KeyValueRequest.proto\"v\n\t" +
-      "KVRequest\022\017\n\007command\030\001 \001(\r\022\020\n\003key\030\002 \001(\014H" +
-      "\000\210\001\001\022\022\n\005value\030\003 \001(\014H\001\210\001\001\022\024\n\007version\030\004 \001(" +
-      "\005H\002\210\001\001B\006\n\004_keyB\010\n\006_valueB\n\n\010_versionB/\n\034" +
-      "ca.NetSysLab.ProtocolBuffersB\017KeyValueRe" +
-      "questb\006proto3"
+      "\n\"src/protobuf/KeyValueRequest.proto\032\"sr" +
+      "c/protobuf/InternalRequest.proto\"\247\001\n\tKVR" +
+      "equest\022\017\n\007command\030\001 \001(\r\022\020\n\003key\030\002 \001(\014H\000\210\001" +
+      "\001\022\022\n\005value\030\003 \001(\014H\001\210\001\001\022\024\n\007version\030\004 \001(\005H\002" +
+      "\210\001\001\022(\n\002ir\030d \001(\0132\027.InternalRequestWrapper" +
+      "H\003\210\001\001B\006\n\004_keyB\010\n\006_valueB\n\n\010_versionB\005\n\003_" +
+      "irB/\n\034ca.NetSysLab.ProtocolBuffersB\017KeyV" +
+      "alueRequestb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
+          ca.NetSysLab.ProtocolBuffers.InternalRequest.getDescriptor(),
         });
     internal_static_KVRequest_descriptor =
       getDescriptor().getMessageTypes().get(0);
     internal_static_KVRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_KVRequest_descriptor,
-        new java.lang.String[] { "Command", "Key", "Value", "Version", "Key", "Value", "Version", });
+        new java.lang.String[] { "Command", "Key", "Value", "Version", "Ir", "Key", "Value", "Version", "Ir", });
+    ca.NetSysLab.ProtocolBuffers.InternalRequest.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)

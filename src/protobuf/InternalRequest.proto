@@ -2,8 +2,6 @@ syntax = "proto3";
 option java_package = "ca.NetSysLab.ProtocolBuffers";
 option java_outer_classname = "InternalRequest";
 
-import "src/protobuf/KeyValueRequest.proto";
-
 
 message Host {
   bytes ip = 1;
@@ -16,10 +14,7 @@ message Heartbeat {
   int64 epochMillis = 3;
 }
 
-
-
 message InternalRequestWrapper {
   optional Host client = 1;
-  optional KVRequest request = 2;
-  repeated Heartbeat heartbeats = 3;
+  repeated Heartbeat heartbeats = 2;
 }
