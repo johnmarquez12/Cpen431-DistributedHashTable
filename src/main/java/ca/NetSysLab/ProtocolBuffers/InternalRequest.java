@@ -578,6 +578,12 @@ public final class InternalRequest {
     ca.NetSysLab.ProtocolBuffers.InternalRequest.HostOrBuilder getHostOrBuilder();
 
     /**
+     * <code>int32 id = 2;</code>
+     * @return The id.
+     */
+    int getId();
+
+    /**
      * <code>int64 epochMillis = 3;</code>
      * @return The epochMillis.
      */
@@ -649,6 +655,17 @@ public final class InternalRequest {
       return getHost();
     }
 
+    public static final int ID_FIELD_NUMBER = 2;
+    private int id_;
+    /**
+     * <code>int32 id = 2;</code>
+     * @return The id.
+     */
+    @java.lang.Override
+    public int getId() {
+      return id_;
+    }
+
     public static final int EPOCHMILLIS_FIELD_NUMBER = 3;
     private long epochMillis_;
     /**
@@ -677,6 +694,9 @@ public final class InternalRequest {
       if (host_ != null) {
         output.writeMessage(1, getHost());
       }
+      if (id_ != 0) {
+        output.writeInt32(2, id_);
+      }
       if (epochMillis_ != 0L) {
         output.writeInt64(3, epochMillis_);
       }
@@ -692,6 +712,10 @@ public final class InternalRequest {
       if (host_ != null) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(1, getHost());
+      }
+      if (id_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(2, id_);
       }
       if (epochMillis_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
@@ -717,6 +741,8 @@ public final class InternalRequest {
         if (!getHost()
             .equals(other.getHost())) return false;
       }
+      if (getId()
+          != other.getId()) return false;
       if (getEpochMillis()
           != other.getEpochMillis()) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
@@ -734,6 +760,8 @@ public final class InternalRequest {
         hash = (37 * hash) + HOST_FIELD_NUMBER;
         hash = (53 * hash) + getHost().hashCode();
       }
+      hash = (37 * hash) + ID_FIELD_NUMBER;
+      hash = (53 * hash) + getId();
       hash = (37 * hash) + EPOCHMILLIS_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getEpochMillis());
@@ -871,6 +899,8 @@ public final class InternalRequest {
           host_ = null;
           hostBuilder_ = null;
         }
+        id_ = 0;
+
         epochMillis_ = 0L;
 
         return this;
@@ -904,6 +934,7 @@ public final class InternalRequest {
         } else {
           result.host_ = hostBuilder_.build();
         }
+        result.id_ = id_;
         result.epochMillis_ = epochMillis_;
         onBuilt();
         return result;
@@ -956,6 +987,9 @@ public final class InternalRequest {
         if (other.hasHost()) {
           mergeHost(other.getHost());
         }
+        if (other.getId() != 0) {
+          setId(other.getId());
+        }
         if (other.getEpochMillis() != 0L) {
           setEpochMillis(other.getEpochMillis());
         }
@@ -992,6 +1026,11 @@ public final class InternalRequest {
 
                 break;
               } // case 10
+              case 16: {
+                id_ = input.readInt32();
+
+                break;
+              } // case 16
               case 24: {
                 epochMillis_ = input.readInt64();
 
@@ -1132,6 +1171,37 @@ public final class InternalRequest {
         return hostBuilder_;
       }
 
+      private int id_ ;
+      /**
+       * <code>int32 id = 2;</code>
+       * @return The id.
+       */
+      @java.lang.Override
+      public int getId() {
+        return id_;
+      }
+      /**
+       * <code>int32 id = 2;</code>
+       * @param value The id to set.
+       * @return This builder for chaining.
+       */
+      public Builder setId(int value) {
+        
+        id_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 id = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearId() {
+        
+        id_ = 0;
+        onChanged();
+        return this;
+      }
+
       private long epochMillis_ ;
       /**
        * <code>int64 epochMillis = 3;</code>
@@ -1246,40 +1316,25 @@ public final class InternalRequest {
     ca.NetSysLab.ProtocolBuffers.InternalRequest.HostOrBuilder getClientOrBuilder();
 
     /**
-     * <code>optional .KVRequest request = 2;</code>
-     * @return Whether the request field is set.
-     */
-    boolean hasRequest();
-    /**
-     * <code>optional .KVRequest request = 2;</code>
-     * @return The request.
-     */
-    ca.NetSysLab.ProtocolBuffers.KeyValueRequest.KVRequest getRequest();
-    /**
-     * <code>optional .KVRequest request = 2;</code>
-     */
-    ca.NetSysLab.ProtocolBuffers.KeyValueRequest.KVRequestOrBuilder getRequestOrBuilder();
-
-    /**
-     * <code>repeated .Heartbeat heartbeats = 3;</code>
+     * <code>repeated .Heartbeat heartbeats = 2;</code>
      */
     java.util.List<ca.NetSysLab.ProtocolBuffers.InternalRequest.Heartbeat> 
         getHeartbeatsList();
     /**
-     * <code>repeated .Heartbeat heartbeats = 3;</code>
+     * <code>repeated .Heartbeat heartbeats = 2;</code>
      */
     ca.NetSysLab.ProtocolBuffers.InternalRequest.Heartbeat getHeartbeats(int index);
     /**
-     * <code>repeated .Heartbeat heartbeats = 3;</code>
+     * <code>repeated .Heartbeat heartbeats = 2;</code>
      */
     int getHeartbeatsCount();
     /**
-     * <code>repeated .Heartbeat heartbeats = 3;</code>
+     * <code>repeated .Heartbeat heartbeats = 2;</code>
      */
     java.util.List<? extends ca.NetSysLab.ProtocolBuffers.InternalRequest.HeartbeatOrBuilder> 
         getHeartbeatsOrBuilderList();
     /**
-     * <code>repeated .Heartbeat heartbeats = 3;</code>
+     * <code>repeated .Heartbeat heartbeats = 2;</code>
      */
     ca.NetSysLab.ProtocolBuffers.InternalRequest.HeartbeatOrBuilder getHeartbeatsOrBuilder(
         int index);
@@ -1352,43 +1407,17 @@ public final class InternalRequest {
       return client_ == null ? ca.NetSysLab.ProtocolBuffers.InternalRequest.Host.getDefaultInstance() : client_;
     }
 
-    public static final int REQUEST_FIELD_NUMBER = 2;
-    private ca.NetSysLab.ProtocolBuffers.KeyValueRequest.KVRequest request_;
-    /**
-     * <code>optional .KVRequest request = 2;</code>
-     * @return Whether the request field is set.
-     */
-    @java.lang.Override
-    public boolean hasRequest() {
-      return ((bitField0_ & 0x00000002) != 0);
-    }
-    /**
-     * <code>optional .KVRequest request = 2;</code>
-     * @return The request.
-     */
-    @java.lang.Override
-    public ca.NetSysLab.ProtocolBuffers.KeyValueRequest.KVRequest getRequest() {
-      return request_ == null ? ca.NetSysLab.ProtocolBuffers.KeyValueRequest.KVRequest.getDefaultInstance() : request_;
-    }
-    /**
-     * <code>optional .KVRequest request = 2;</code>
-     */
-    @java.lang.Override
-    public ca.NetSysLab.ProtocolBuffers.KeyValueRequest.KVRequestOrBuilder getRequestOrBuilder() {
-      return request_ == null ? ca.NetSysLab.ProtocolBuffers.KeyValueRequest.KVRequest.getDefaultInstance() : request_;
-    }
-
-    public static final int HEARTBEATS_FIELD_NUMBER = 3;
+    public static final int HEARTBEATS_FIELD_NUMBER = 2;
     private java.util.List<ca.NetSysLab.ProtocolBuffers.InternalRequest.Heartbeat> heartbeats_;
     /**
-     * <code>repeated .Heartbeat heartbeats = 3;</code>
+     * <code>repeated .Heartbeat heartbeats = 2;</code>
      */
     @java.lang.Override
     public java.util.List<ca.NetSysLab.ProtocolBuffers.InternalRequest.Heartbeat> getHeartbeatsList() {
       return heartbeats_;
     }
     /**
-     * <code>repeated .Heartbeat heartbeats = 3;</code>
+     * <code>repeated .Heartbeat heartbeats = 2;</code>
      */
     @java.lang.Override
     public java.util.List<? extends ca.NetSysLab.ProtocolBuffers.InternalRequest.HeartbeatOrBuilder> 
@@ -1396,21 +1425,21 @@ public final class InternalRequest {
       return heartbeats_;
     }
     /**
-     * <code>repeated .Heartbeat heartbeats = 3;</code>
+     * <code>repeated .Heartbeat heartbeats = 2;</code>
      */
     @java.lang.Override
     public int getHeartbeatsCount() {
       return heartbeats_.size();
     }
     /**
-     * <code>repeated .Heartbeat heartbeats = 3;</code>
+     * <code>repeated .Heartbeat heartbeats = 2;</code>
      */
     @java.lang.Override
     public ca.NetSysLab.ProtocolBuffers.InternalRequest.Heartbeat getHeartbeats(int index) {
       return heartbeats_.get(index);
     }
     /**
-     * <code>repeated .Heartbeat heartbeats = 3;</code>
+     * <code>repeated .Heartbeat heartbeats = 2;</code>
      */
     @java.lang.Override
     public ca.NetSysLab.ProtocolBuffers.InternalRequest.HeartbeatOrBuilder getHeartbeatsOrBuilder(
@@ -1435,11 +1464,8 @@ public final class InternalRequest {
       if (((bitField0_ & 0x00000001) != 0)) {
         output.writeMessage(1, getClient());
       }
-      if (((bitField0_ & 0x00000002) != 0)) {
-        output.writeMessage(2, getRequest());
-      }
       for (int i = 0; i < heartbeats_.size(); i++) {
-        output.writeMessage(3, heartbeats_.get(i));
+        output.writeMessage(2, heartbeats_.get(i));
       }
       getUnknownFields().writeTo(output);
     }
@@ -1454,13 +1480,9 @@ public final class InternalRequest {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(1, getClient());
       }
-      if (((bitField0_ & 0x00000002) != 0)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(2, getRequest());
-      }
       for (int i = 0; i < heartbeats_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(3, heartbeats_.get(i));
+          .computeMessageSize(2, heartbeats_.get(i));
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -1482,11 +1504,6 @@ public final class InternalRequest {
         if (!getClient()
             .equals(other.getClient())) return false;
       }
-      if (hasRequest() != other.hasRequest()) return false;
-      if (hasRequest()) {
-        if (!getRequest()
-            .equals(other.getRequest())) return false;
-      }
       if (!getHeartbeatsList()
           .equals(other.getHeartbeatsList())) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
@@ -1503,10 +1520,6 @@ public final class InternalRequest {
       if (hasClient()) {
         hash = (37 * hash) + CLIENT_FIELD_NUMBER;
         hash = (53 * hash) + getClient().hashCode();
-      }
-      if (hasRequest()) {
-        hash = (37 * hash) + REQUEST_FIELD_NUMBER;
-        hash = (53 * hash) + getRequest().hashCode();
       }
       if (getHeartbeatsCount() > 0) {
         hash = (37 * hash) + HEARTBEATS_FIELD_NUMBER;
@@ -1641,7 +1654,6 @@ public final class InternalRequest {
         if (com.google.protobuf.GeneratedMessageV3
                 .alwaysUseFieldBuilders) {
           getClientFieldBuilder();
-          getRequestFieldBuilder();
           getHeartbeatsFieldBuilder();
         }
       }
@@ -1654,19 +1666,13 @@ public final class InternalRequest {
           clientBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000001);
-        if (requestBuilder_ == null) {
-          request_ = null;
-        } else {
-          requestBuilder_.clear();
-        }
-        bitField0_ = (bitField0_ & ~0x00000002);
         if (heartbeatsBuilder_ == null) {
           heartbeats_ = java.util.Collections.emptyList();
         } else {
           heartbeats_ = null;
           heartbeatsBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000004);
+        bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
 
@@ -1703,18 +1709,10 @@ public final class InternalRequest {
           }
           to_bitField0_ |= 0x00000001;
         }
-        if (((from_bitField0_ & 0x00000002) != 0)) {
-          if (requestBuilder_ == null) {
-            result.request_ = request_;
-          } else {
-            result.request_ = requestBuilder_.build();
-          }
-          to_bitField0_ |= 0x00000002;
-        }
         if (heartbeatsBuilder_ == null) {
-          if (((bitField0_ & 0x00000004) != 0)) {
+          if (((bitField0_ & 0x00000002) != 0)) {
             heartbeats_ = java.util.Collections.unmodifiableList(heartbeats_);
-            bitField0_ = (bitField0_ & ~0x00000004);
+            bitField0_ = (bitField0_ & ~0x00000002);
           }
           result.heartbeats_ = heartbeats_;
         } else {
@@ -1772,14 +1770,11 @@ public final class InternalRequest {
         if (other.hasClient()) {
           mergeClient(other.getClient());
         }
-        if (other.hasRequest()) {
-          mergeRequest(other.getRequest());
-        }
         if (heartbeatsBuilder_ == null) {
           if (!other.heartbeats_.isEmpty()) {
             if (heartbeats_.isEmpty()) {
               heartbeats_ = other.heartbeats_;
-              bitField0_ = (bitField0_ & ~0x00000004);
+              bitField0_ = (bitField0_ & ~0x00000002);
             } else {
               ensureHeartbeatsIsMutable();
               heartbeats_.addAll(other.heartbeats_);
@@ -1792,7 +1787,7 @@ public final class InternalRequest {
               heartbeatsBuilder_.dispose();
               heartbeatsBuilder_ = null;
               heartbeats_ = other.heartbeats_;
-              bitField0_ = (bitField0_ & ~0x00000004);
+              bitField0_ = (bitField0_ & ~0x00000002);
               heartbeatsBuilder_ = 
                 com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                    getHeartbeatsFieldBuilder() : null;
@@ -1835,13 +1830,6 @@ public final class InternalRequest {
                 break;
               } // case 10
               case 18: {
-                input.readMessage(
-                    getRequestFieldBuilder().getBuilder(),
-                    extensionRegistry);
-                bitField0_ |= 0x00000002;
-                break;
-              } // case 18
-              case 26: {
                 ca.NetSysLab.ProtocolBuffers.InternalRequest.Heartbeat m =
                     input.readMessage(
                         ca.NetSysLab.ProtocolBuffers.InternalRequest.Heartbeat.parser(),
@@ -1853,7 +1841,7 @@ public final class InternalRequest {
                   heartbeatsBuilder_.addMessage(m);
                 }
                 break;
-              } // case 26
+              } // case 18
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -1991,132 +1979,12 @@ public final class InternalRequest {
         return clientBuilder_;
       }
 
-      private ca.NetSysLab.ProtocolBuffers.KeyValueRequest.KVRequest request_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          ca.NetSysLab.ProtocolBuffers.KeyValueRequest.KVRequest, ca.NetSysLab.ProtocolBuffers.KeyValueRequest.KVRequest.Builder, ca.NetSysLab.ProtocolBuffers.KeyValueRequest.KVRequestOrBuilder> requestBuilder_;
-      /**
-       * <code>optional .KVRequest request = 2;</code>
-       * @return Whether the request field is set.
-       */
-      public boolean hasRequest() {
-        return ((bitField0_ & 0x00000002) != 0);
-      }
-      /**
-       * <code>optional .KVRequest request = 2;</code>
-       * @return The request.
-       */
-      public ca.NetSysLab.ProtocolBuffers.KeyValueRequest.KVRequest getRequest() {
-        if (requestBuilder_ == null) {
-          return request_ == null ? ca.NetSysLab.ProtocolBuffers.KeyValueRequest.KVRequest.getDefaultInstance() : request_;
-        } else {
-          return requestBuilder_.getMessage();
-        }
-      }
-      /**
-       * <code>optional .KVRequest request = 2;</code>
-       */
-      public Builder setRequest(ca.NetSysLab.ProtocolBuffers.KeyValueRequest.KVRequest value) {
-        if (requestBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          request_ = value;
-          onChanged();
-        } else {
-          requestBuilder_.setMessage(value);
-        }
-        bitField0_ |= 0x00000002;
-        return this;
-      }
-      /**
-       * <code>optional .KVRequest request = 2;</code>
-       */
-      public Builder setRequest(
-          ca.NetSysLab.ProtocolBuffers.KeyValueRequest.KVRequest.Builder builderForValue) {
-        if (requestBuilder_ == null) {
-          request_ = builderForValue.build();
-          onChanged();
-        } else {
-          requestBuilder_.setMessage(builderForValue.build());
-        }
-        bitField0_ |= 0x00000002;
-        return this;
-      }
-      /**
-       * <code>optional .KVRequest request = 2;</code>
-       */
-      public Builder mergeRequest(ca.NetSysLab.ProtocolBuffers.KeyValueRequest.KVRequest value) {
-        if (requestBuilder_ == null) {
-          if (((bitField0_ & 0x00000002) != 0) &&
-              request_ != null &&
-              request_ != ca.NetSysLab.ProtocolBuffers.KeyValueRequest.KVRequest.getDefaultInstance()) {
-            request_ =
-              ca.NetSysLab.ProtocolBuffers.KeyValueRequest.KVRequest.newBuilder(request_).mergeFrom(value).buildPartial();
-          } else {
-            request_ = value;
-          }
-          onChanged();
-        } else {
-          requestBuilder_.mergeFrom(value);
-        }
-        bitField0_ |= 0x00000002;
-        return this;
-      }
-      /**
-       * <code>optional .KVRequest request = 2;</code>
-       */
-      public Builder clearRequest() {
-        if (requestBuilder_ == null) {
-          request_ = null;
-          onChanged();
-        } else {
-          requestBuilder_.clear();
-        }
-        bitField0_ = (bitField0_ & ~0x00000002);
-        return this;
-      }
-      /**
-       * <code>optional .KVRequest request = 2;</code>
-       */
-      public ca.NetSysLab.ProtocolBuffers.KeyValueRequest.KVRequest.Builder getRequestBuilder() {
-        bitField0_ |= 0x00000002;
-        onChanged();
-        return getRequestFieldBuilder().getBuilder();
-      }
-      /**
-       * <code>optional .KVRequest request = 2;</code>
-       */
-      public ca.NetSysLab.ProtocolBuffers.KeyValueRequest.KVRequestOrBuilder getRequestOrBuilder() {
-        if (requestBuilder_ != null) {
-          return requestBuilder_.getMessageOrBuilder();
-        } else {
-          return request_ == null ?
-              ca.NetSysLab.ProtocolBuffers.KeyValueRequest.KVRequest.getDefaultInstance() : request_;
-        }
-      }
-      /**
-       * <code>optional .KVRequest request = 2;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          ca.NetSysLab.ProtocolBuffers.KeyValueRequest.KVRequest, ca.NetSysLab.ProtocolBuffers.KeyValueRequest.KVRequest.Builder, ca.NetSysLab.ProtocolBuffers.KeyValueRequest.KVRequestOrBuilder> 
-          getRequestFieldBuilder() {
-        if (requestBuilder_ == null) {
-          requestBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              ca.NetSysLab.ProtocolBuffers.KeyValueRequest.KVRequest, ca.NetSysLab.ProtocolBuffers.KeyValueRequest.KVRequest.Builder, ca.NetSysLab.ProtocolBuffers.KeyValueRequest.KVRequestOrBuilder>(
-                  getRequest(),
-                  getParentForChildren(),
-                  isClean());
-          request_ = null;
-        }
-        return requestBuilder_;
-      }
-
       private java.util.List<ca.NetSysLab.ProtocolBuffers.InternalRequest.Heartbeat> heartbeats_ =
         java.util.Collections.emptyList();
       private void ensureHeartbeatsIsMutable() {
-        if (!((bitField0_ & 0x00000004) != 0)) {
+        if (!((bitField0_ & 0x00000002) != 0)) {
           heartbeats_ = new java.util.ArrayList<ca.NetSysLab.ProtocolBuffers.InternalRequest.Heartbeat>(heartbeats_);
-          bitField0_ |= 0x00000004;
+          bitField0_ |= 0x00000002;
          }
       }
 
@@ -2124,7 +1992,7 @@ public final class InternalRequest {
           ca.NetSysLab.ProtocolBuffers.InternalRequest.Heartbeat, ca.NetSysLab.ProtocolBuffers.InternalRequest.Heartbeat.Builder, ca.NetSysLab.ProtocolBuffers.InternalRequest.HeartbeatOrBuilder> heartbeatsBuilder_;
 
       /**
-       * <code>repeated .Heartbeat heartbeats = 3;</code>
+       * <code>repeated .Heartbeat heartbeats = 2;</code>
        */
       public java.util.List<ca.NetSysLab.ProtocolBuffers.InternalRequest.Heartbeat> getHeartbeatsList() {
         if (heartbeatsBuilder_ == null) {
@@ -2134,7 +2002,7 @@ public final class InternalRequest {
         }
       }
       /**
-       * <code>repeated .Heartbeat heartbeats = 3;</code>
+       * <code>repeated .Heartbeat heartbeats = 2;</code>
        */
       public int getHeartbeatsCount() {
         if (heartbeatsBuilder_ == null) {
@@ -2144,7 +2012,7 @@ public final class InternalRequest {
         }
       }
       /**
-       * <code>repeated .Heartbeat heartbeats = 3;</code>
+       * <code>repeated .Heartbeat heartbeats = 2;</code>
        */
       public ca.NetSysLab.ProtocolBuffers.InternalRequest.Heartbeat getHeartbeats(int index) {
         if (heartbeatsBuilder_ == null) {
@@ -2154,7 +2022,7 @@ public final class InternalRequest {
         }
       }
       /**
-       * <code>repeated .Heartbeat heartbeats = 3;</code>
+       * <code>repeated .Heartbeat heartbeats = 2;</code>
        */
       public Builder setHeartbeats(
           int index, ca.NetSysLab.ProtocolBuffers.InternalRequest.Heartbeat value) {
@@ -2171,7 +2039,7 @@ public final class InternalRequest {
         return this;
       }
       /**
-       * <code>repeated .Heartbeat heartbeats = 3;</code>
+       * <code>repeated .Heartbeat heartbeats = 2;</code>
        */
       public Builder setHeartbeats(
           int index, ca.NetSysLab.ProtocolBuffers.InternalRequest.Heartbeat.Builder builderForValue) {
@@ -2185,7 +2053,7 @@ public final class InternalRequest {
         return this;
       }
       /**
-       * <code>repeated .Heartbeat heartbeats = 3;</code>
+       * <code>repeated .Heartbeat heartbeats = 2;</code>
        */
       public Builder addHeartbeats(ca.NetSysLab.ProtocolBuffers.InternalRequest.Heartbeat value) {
         if (heartbeatsBuilder_ == null) {
@@ -2201,7 +2069,7 @@ public final class InternalRequest {
         return this;
       }
       /**
-       * <code>repeated .Heartbeat heartbeats = 3;</code>
+       * <code>repeated .Heartbeat heartbeats = 2;</code>
        */
       public Builder addHeartbeats(
           int index, ca.NetSysLab.ProtocolBuffers.InternalRequest.Heartbeat value) {
@@ -2218,7 +2086,7 @@ public final class InternalRequest {
         return this;
       }
       /**
-       * <code>repeated .Heartbeat heartbeats = 3;</code>
+       * <code>repeated .Heartbeat heartbeats = 2;</code>
        */
       public Builder addHeartbeats(
           ca.NetSysLab.ProtocolBuffers.InternalRequest.Heartbeat.Builder builderForValue) {
@@ -2232,7 +2100,7 @@ public final class InternalRequest {
         return this;
       }
       /**
-       * <code>repeated .Heartbeat heartbeats = 3;</code>
+       * <code>repeated .Heartbeat heartbeats = 2;</code>
        */
       public Builder addHeartbeats(
           int index, ca.NetSysLab.ProtocolBuffers.InternalRequest.Heartbeat.Builder builderForValue) {
@@ -2246,7 +2114,7 @@ public final class InternalRequest {
         return this;
       }
       /**
-       * <code>repeated .Heartbeat heartbeats = 3;</code>
+       * <code>repeated .Heartbeat heartbeats = 2;</code>
        */
       public Builder addAllHeartbeats(
           java.lang.Iterable<? extends ca.NetSysLab.ProtocolBuffers.InternalRequest.Heartbeat> values) {
@@ -2261,12 +2129,12 @@ public final class InternalRequest {
         return this;
       }
       /**
-       * <code>repeated .Heartbeat heartbeats = 3;</code>
+       * <code>repeated .Heartbeat heartbeats = 2;</code>
        */
       public Builder clearHeartbeats() {
         if (heartbeatsBuilder_ == null) {
           heartbeats_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000004);
+          bitField0_ = (bitField0_ & ~0x00000002);
           onChanged();
         } else {
           heartbeatsBuilder_.clear();
@@ -2274,7 +2142,7 @@ public final class InternalRequest {
         return this;
       }
       /**
-       * <code>repeated .Heartbeat heartbeats = 3;</code>
+       * <code>repeated .Heartbeat heartbeats = 2;</code>
        */
       public Builder removeHeartbeats(int index) {
         if (heartbeatsBuilder_ == null) {
@@ -2287,14 +2155,14 @@ public final class InternalRequest {
         return this;
       }
       /**
-       * <code>repeated .Heartbeat heartbeats = 3;</code>
+       * <code>repeated .Heartbeat heartbeats = 2;</code>
        */
       public ca.NetSysLab.ProtocolBuffers.InternalRequest.Heartbeat.Builder getHeartbeatsBuilder(
           int index) {
         return getHeartbeatsFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .Heartbeat heartbeats = 3;</code>
+       * <code>repeated .Heartbeat heartbeats = 2;</code>
        */
       public ca.NetSysLab.ProtocolBuffers.InternalRequest.HeartbeatOrBuilder getHeartbeatsOrBuilder(
           int index) {
@@ -2304,7 +2172,7 @@ public final class InternalRequest {
         }
       }
       /**
-       * <code>repeated .Heartbeat heartbeats = 3;</code>
+       * <code>repeated .Heartbeat heartbeats = 2;</code>
        */
       public java.util.List<? extends ca.NetSysLab.ProtocolBuffers.InternalRequest.HeartbeatOrBuilder> 
            getHeartbeatsOrBuilderList() {
@@ -2315,14 +2183,14 @@ public final class InternalRequest {
         }
       }
       /**
-       * <code>repeated .Heartbeat heartbeats = 3;</code>
+       * <code>repeated .Heartbeat heartbeats = 2;</code>
        */
       public ca.NetSysLab.ProtocolBuffers.InternalRequest.Heartbeat.Builder addHeartbeatsBuilder() {
         return getHeartbeatsFieldBuilder().addBuilder(
             ca.NetSysLab.ProtocolBuffers.InternalRequest.Heartbeat.getDefaultInstance());
       }
       /**
-       * <code>repeated .Heartbeat heartbeats = 3;</code>
+       * <code>repeated .Heartbeat heartbeats = 2;</code>
        */
       public ca.NetSysLab.ProtocolBuffers.InternalRequest.Heartbeat.Builder addHeartbeatsBuilder(
           int index) {
@@ -2330,7 +2198,7 @@ public final class InternalRequest {
             index, ca.NetSysLab.ProtocolBuffers.InternalRequest.Heartbeat.getDefaultInstance());
       }
       /**
-       * <code>repeated .Heartbeat heartbeats = 3;</code>
+       * <code>repeated .Heartbeat heartbeats = 2;</code>
        */
       public java.util.List<ca.NetSysLab.ProtocolBuffers.InternalRequest.Heartbeat.Builder> 
            getHeartbeatsBuilderList() {
@@ -2343,7 +2211,7 @@ public final class InternalRequest {
           heartbeatsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
               ca.NetSysLab.ProtocolBuffers.InternalRequest.Heartbeat, ca.NetSysLab.ProtocolBuffers.InternalRequest.Heartbeat.Builder, ca.NetSysLab.ProtocolBuffers.InternalRequest.HeartbeatOrBuilder>(
                   heartbeats_,
-                  ((bitField0_ & 0x00000004) != 0),
+                  ((bitField0_ & 0x00000002) != 0),
                   getParentForChildren(),
                   isClean());
           heartbeats_ = null;
@@ -2438,21 +2306,18 @@ public final class InternalRequest {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\"src/protobuf/InternalRequest.proto\032\"sr" +
-      "c/protobuf/KeyValueRequest.proto\" \n\004Host" +
-      "\022\n\n\002ip\030\001 \001(\014\022\014\n\004port\030\002 \001(\005\"5\n\tHeartbeat\022" +
-      "\023\n\004host\030\001 \001(\0132\005.Host\022\023\n\013epochMillis\030\003 \001(" +
-      "\003\"\215\001\n\026InternalRequestWrapper\022\032\n\006client\030\001" +
-      " \001(\0132\005.HostH\000\210\001\001\022 \n\007request\030\002 \001(\0132\n.KVRe" +
-      "questH\001\210\001\001\022\036\n\nheartbeats\030\003 \003(\0132\n.Heartbe" +
-      "atB\t\n\007_clientB\n\n\010_requestB/\n\034ca.NetSysLa" +
-      "b.ProtocolBuffersB\017InternalRequestb\006prot" +
-      "o3"
+      "\n\"src/protobuf/InternalRequest.proto\" \n\004" +
+      "Host\022\n\n\002ip\030\001 \001(\014\022\014\n\004port\030\002 \001(\005\"A\n\tHeartb" +
+      "eat\022\023\n\004host\030\001 \001(\0132\005.Host\022\n\n\002id\030\002 \001(\005\022\023\n\013" +
+      "epochMillis\030\003 \001(\003\"_\n\026InternalRequestWrap" +
+      "per\022\032\n\006client\030\001 \001(\0132\005.HostH\000\210\001\001\022\036\n\nheart" +
+      "beats\030\002 \003(\0132\n.HeartbeatB\t\n\007_clientB/\n\034ca" +
+      ".NetSysLab.ProtocolBuffersB\017InternalRequ" +
+      "estb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
-          ca.NetSysLab.ProtocolBuffers.KeyValueRequest.getDescriptor(),
         });
     internal_static_Host_descriptor =
       getDescriptor().getMessageTypes().get(0);
@@ -2465,14 +2330,13 @@ public final class InternalRequest {
     internal_static_Heartbeat_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Heartbeat_descriptor,
-        new java.lang.String[] { "Host", "EpochMillis", });
+        new java.lang.String[] { "Host", "Id", "EpochMillis", });
     internal_static_InternalRequestWrapper_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_InternalRequestWrapper_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_InternalRequestWrapper_descriptor,
-        new java.lang.String[] { "Client", "Request", "Heartbeats", "Client", "Request", });
-    ca.NetSysLab.ProtocolBuffers.KeyValueRequest.getDescriptor();
+        new java.lang.String[] { "Client", "Heartbeats", "Client", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)
