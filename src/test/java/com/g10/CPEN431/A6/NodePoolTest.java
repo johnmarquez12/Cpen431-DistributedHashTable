@@ -11,6 +11,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.*;
 
@@ -52,31 +53,36 @@ public class NodePoolTest {
     public void testUpdateTimeStamp() {
         List<NodePool.Heartbeat> heartbeats = new ArrayList<>(NodePool.getInstance().getAllHeartbeats());
 
-        for (NodePool.Heartbeat heartbeat : heartbeats) {
-            assertEquals(0, heartbeat.epochMillis);
+        long now = System.currentTimeMillis();
 
-            NodePool.getInstance().updateTimeStampFromId(heartbeat.id, 10L * heartbeat.id);
-            assertEquals(10L * heartbeat.id, heartbeat.epochMillis);
+        for (NodePool.Heartbeat heartbeat : heartbeats) {
+            NodePool.getInstance().updateTimeStampFromId(heartbeat.id, now + 10000L);
+            assertEquals(now + 10000L, heartbeat.epochMillis);
 
             //Set smaller value; shouldn't update
-            NodePool.getInstance().updateTimeStampFromId(heartbeat.id, 5L * heartbeat.id);
-            assertEquals(10L * heartbeat.id, heartbeat.epochMillis);
+            NodePool.getInstance().updateTimeStampFromId(heartbeat.id, now);
+            assertEquals(now + 10000L, heartbeat.epochMillis);
         }
 
     }
 
     @Test
     public void testKillDeadNodes() {
+
+        NodePool.getInstance().getAllHeartbeats().forEach(heartbeat -> heartbeat.epochMillis = 0);
+
         NodePool.getInstance().updateTimeStampFromId(0, System.currentTimeMillis());
 
         NodePool.getInstance().killDeadNodes();
 
-        assertEquals(1, NodePool.getInstance().getAllHeartbeats().size());
+        // node 0, and me
+        assertEquals(2, NodePool.getInstance().getAllHeartbeats().size());
 
         assertEquals(0, NodePool.getInstance().getAllHeartbeats().get(0).id);
+        assertEquals(NodePool.getInstance().getMyId(), NodePool.getInstance().getAllHeartbeats().get(1).id);
     }
 
-    private static InetAddress getMyHost() throws UnknownHostException {
-        return InetAddress.getLocalHost();
+    private static InetAddress getMyHost() {
+        return InetAddress.getLoopbackAddress();
     }
 }

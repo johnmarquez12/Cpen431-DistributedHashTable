@@ -14,15 +14,16 @@ public class NodePool {
         public Heartbeat(Host host, int id) {
             this.host = host;
             this.id = id;
+            this.epochMillis = System.currentTimeMillis();
         }
 
         public Host host;
-        public long epochMillis = 0; // System.currentTimeMillis()
+        public long epochMillis;
         public int id;
 
         @Override
         public String toString() {
-            return "Heartbeat{" + host +
+            return "Heartbeat{("+id+") " + host +
                 (epochMillis == 0 ? "" : ", epochMillis=" + epochMillis) +
                 '}';
         }
@@ -31,6 +32,7 @@ public class NodePool {
     // Note: we need an array of heatbeats in case two nodes share an id.
     private final ConcurrentSkipListMap<Integer, Heartbeat> nodes;
     private final Host me;
+    private int myId;
 
     private NodePool(Host me, List<Host> servers) {
         // Todo: figure out how we initially populate the tree
@@ -42,6 +44,9 @@ public class NodePool {
         int spacing = CIRCLE_SIZE / servers.size();
 
         for (int i = 0; i < servers.size(); i++) {
+            if(servers.get(i).equals(me)) {
+                myId = i * spacing;
+            }
             nodes.put(i * spacing, new Heartbeat(servers.get(i), i * spacing));
         }
     }
@@ -79,23 +84,33 @@ public class NodePool {
         return me;
     }
 
+    public int getMyId() { return myId; }
+
     public List<Heartbeat> getAllHeartbeats() {
+        updateTimeStampFromId(myId, System.currentTimeMillis());
+
         return nodes.values().stream().toList();
     }
 
     public void updateTimeStampFromId(int id, long epochMillis) {
         if(!nodes.containsKey(id)) {
-            throw new RuntimeException(
-                "The ID given for updating timestamp doesn't exist");
+//            System.err.printf("The ID (%d) given for updating timestamp doesn't exist%n",
+//                id);
+            return;
         }
         nodes.get(id).epochMillis = Math.max(epochMillis, nodes.get(id).epochMillis);
     }
 
     public void killDeadNodes() {
+        updateTimeStampFromId(myId, System.currentTimeMillis());
+
         long now = System.currentTimeMillis();
 
-        nodes.values().removeIf(heartbeat -> now - heartbeat.epochMillis
-            >= SendHeartbeatThread.SLEEP * (log2Nodes() + SendHeartbeatThread.MARGIN));
+        // TODO: Log when a node gets removed.
+        nodes.values().removeIf(heartbeat -> (now - heartbeat.epochMillis
+            >= SendHeartbeatThread.SLEEP * (log2Nodes() + SendHeartbeatThread.MARGIN))
+            && heartbeat.id != myId
+        );
     }
 
     private int log2Nodes() {

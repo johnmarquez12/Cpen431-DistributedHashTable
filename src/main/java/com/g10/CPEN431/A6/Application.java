@@ -67,6 +67,7 @@ public class Application implements Callable<Application.ApplicationResponse> {
             case Codes.Commands.IS_ALIVE -> cmdIsAlive();
             case Codes.Commands.GET_PID -> cmdGetPID();
             case Codes.Commands.GET_MEMBERSHIP_COUNT -> cmdGetMembershipCount();
+            case Codes.Commands.INTERNAL_REQUEST -> cmdInternalRequest();
 
             default -> cmdError();
         }
@@ -180,6 +181,12 @@ public class Application implements Callable<Application.ApplicationResponse> {
 
     void cmdError() {
         response.setErrCode(Codes.Errs.CMD_UNKNOWN);
+    }
+
+    void cmdInternalRequest() {
+        if(request.hasIr() && request.getIr().getHeartbeatsCount() > 0) {
+            ReceiveHeartbeatHandler.updateHeartbeats(request.getIr().getHeartbeatsList());
+        }
     }
 
     private boolean keyInvalid() {

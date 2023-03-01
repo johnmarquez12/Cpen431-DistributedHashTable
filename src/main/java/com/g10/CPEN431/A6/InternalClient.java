@@ -5,37 +5,24 @@ import ca.NetSysLab.ProtocolBuffers.Message;
 import com.google.protobuf.ByteString;
 
 import java.io.IOException;
-import java.net.*;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.SocketException;
 import java.nio.ByteBuffer;
-import java.util.Arrays;
 import java.util.Random;
 import java.util.zip.CRC32;
 
 public class InternalClient {
-
-    /**
-     * @param payload note this payload will be probably be a new protobuf or Message
-     * @
-     */
-    public record InternalRequest(byte[] payload, InetAddress nodeAddress, int nodePort) { }
-
-    private static final int TIMEOUT = 100;
-    private static final int MAX_TIMEOUT = 1000;
-    private static final int NUM_RETRIES = 3;
-    public static final int REQUEST_ID_SIZE = 16;
-
-    public static ByteString sendRequest(InternalRequest internalRequest) throws IOException {
+    public static void sendRequest(byte[] payload, Host recipient) throws IOException {
 
         try (DatagramSocket socket = new DatagramSocket()) {
 
-            int timeout = TIMEOUT;
-
-            byte[] requestId = generateRequestId(internalRequest.nodeAddress, internalRequest.nodePort);
-            long checksum = generateCheckSum(requestId, internalRequest.payload);
+            byte[] requestId = generateRequestId(recipient);
+            long checksum = generateCheckSum(requestId, payload);
 
             Message.Msg requestMessage = Message.Msg.newBuilder()
                     .setMessageID(ByteString.copyFrom(requestId))
-                    .setPayload(ByteString.copyFrom(internalRequest.payload))
+                    .setPayload(ByteString.copyFrom(payload))
                     .setCheckSum(checksum)
                     .build();
 
@@ -44,68 +31,32 @@ public class InternalClient {
             DatagramPacket packetToSend = new DatagramPacket(
                     message,
                     message.length,
-                    internalRequest.nodeAddress,
-                    internalRequest.nodePort
+                    recipient.address(),
+                    recipient.port()
             );
 
-            for (int i = 0; i <= NUM_RETRIES; i++) {
-                try {
-                    socket.setSoTimeout(timeout);
-                    socket.send(packetToSend);
-
-                    byte[] buffer = new byte[16384];
-                    DatagramPacket receivePacket = new DatagramPacket(buffer, buffer.length);
-
-                    socket.receive(receivePacket);
-
-                    Message.Msg replyMessage = Message.Msg.parseFrom(receivePacket.getData());
-
-                    if (isResponseValid(requestMessage, replyMessage))
-                        return replyMessage.getPayload();
-
-                } catch (SocketTimeoutException soe) {
-                    timeout = Math.min(timeout * 2, MAX_TIMEOUT);
-                }
-            }
+            socket.send(packetToSend);
         } catch (SocketException se) {
             throw new RuntimeException(se);
         }
-
-        // out of retries, throw timeout
-        throw new SocketTimeoutException("Out of retries");
     }
 
-    private static boolean isResponseValid(Message.Msg request, Message.Msg reply) {
-        byte[] requestId = request.getMessageID().toByteArray();
-        byte[] replyId = reply.getMessageID().toByteArray();
+    private static byte[] generateRequestId(Host recipient) {
+        ByteBuffer bb = ByteBuffer.allocate(16);
 
-        CRC32 replyCheckSum = new CRC32();
-        replyCheckSum.update(replyId);
-        replyCheckSum.update(reply.getPayload().toByteArray());
-
-        return Arrays.equals(requestId, replyId) && replyCheckSum.getValue() == reply.getCheckSum();
-    }
-
-    private static byte[] generateRequestId(InetAddress address, int port) {
-
-        byte[] ipToByteArray = address.getAddress();
-
-        byte[] portToByteArray = new byte[2];
-        portToByteArray[0] = (byte) (port & 0xFF);
-        portToByteArray[1] = (byte) ((port >> 8) & 0xFF);
+        bb.put(recipient.address().getAddress(), 0, 4);
+        bb.putShort((short) recipient.port());
 
         byte[] randomBytes = new byte[2];
         new Random().nextBytes(randomBytes);
 
-        byte[] requestTimeByteArray = ByteBuffer.allocate(Long.BYTES).putLong(System.nanoTime()).array();
+        Random rd = new Random();
+        bb.putShort((short) rd.nextInt());
+        bb.putLong(System.nanoTime());
 
-        return ByteBuffer
-                .allocate(REQUEST_ID_SIZE)
-                .put(ipToByteArray)
-                .put(portToByteArray)
-                .put(randomBytes)
-                .put(requestTimeByteArray)
-                .array();
+        if(bb.hasRemaining()) throw new RuntimeException("Missing bytes in unique ID");
+
+        return bb.array();
     }
 
     private static long generateCheckSum(byte[] requestId, byte[] payload) {

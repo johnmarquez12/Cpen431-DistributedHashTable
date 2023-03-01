@@ -11,6 +11,7 @@ class Codes {
         static final int IS_ALIVE = 0x06;
         static final int GET_PID = 0x07;
         static final int GET_MEMBERSHIP_COUNT = 0x08;
+        static final int INTERNAL_REQUEST = 0x55;
     }
 
     static class Errs {
