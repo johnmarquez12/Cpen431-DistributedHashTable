@@ -113,6 +113,10 @@ public class NodePool {
         );
     }
 
+    public int membershipCount() {
+        return nodes.size();
+    }
+
     private int log2Nodes() {
         return (int) (Math.log(nodes.size()) / Math.log(2));
     }

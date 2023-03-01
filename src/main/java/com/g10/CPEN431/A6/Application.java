@@ -174,7 +174,7 @@ public class Application implements Callable<Application.ApplicationResponse> {
     }
 
     void cmdGetMembershipCount() {
-        int memCount = KeyValueStore.getInstance().getMembershipSize();
+        int memCount = NodePool.getInstance().membershipCount();
 
         response.setMembershipCount(memCount);
     }
