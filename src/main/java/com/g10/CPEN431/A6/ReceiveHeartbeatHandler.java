@@ -3,19 +3,12 @@ package com.g10.CPEN431.A6;
 import ca.NetSysLab.ProtocolBuffers.InternalRequest;
 import com.google.protobuf.InvalidProtocolBufferException;
 
-public class ReceiveHeartbeatHandler extends Thread {
+public class ReceiveHeartbeatHandler {
+    public static void updateHeartbeats(byte[] payload) {
+        NodePool nodePool = NodePool.getInstance();
 
-    private final byte[] payload;
-    private final NodePool nodePool;
-    private InternalRequest.InternalRequestWrapper response;
+        InternalRequest.InternalRequestWrapper response = null;
 
-    public ReceiveHeartbeatHandler(byte[] payload) {
-        super("ReceiveHeartbeatHandler");
-        this.payload = payload;
-        this.nodePool = NodePool.getInstance();
-    }
-
-    public void run() {
         try {
             response = InternalRequest.InternalRequestWrapper.parseFrom(payload);
         } catch (InvalidProtocolBufferException e) {
@@ -25,5 +18,7 @@ public class ReceiveHeartbeatHandler extends Thread {
         for(InternalRequest.Heartbeat heartbeat : response.getHeartbeatsList()){
             nodePool.updateTimeStampFromId(heartbeat.getId(), heartbeat.getEpochMillis());
         }
+
+        nodePool.killDeadNodes();
     }
 }
