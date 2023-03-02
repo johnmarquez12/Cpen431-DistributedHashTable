@@ -45,7 +45,7 @@ public class RequestReplyCache {
             return appResponse;
         }
 
-        return new Application.ApplicationResponse(true, response, null);
+        return new Application.ApplicationResponse(true,true, response, null);
     }
 
     public void wipeout() {

@@ -19,7 +19,7 @@ public class Application implements Callable<Application.ApplicationResponse> {
     private Host client;
     private ApplicationResponse appResponse;
 
-    public record ApplicationResponse(boolean shouldCache, ByteString messageData, Host replyTo) {}
+    public record ApplicationResponse(boolean shouldReply, boolean shouldCache, ByteString messageData, Host replyTo) {}
 
     public Application(byte[] payload, Host client) {
         this.payload = payload;
@@ -73,7 +73,7 @@ public class Application implements Callable<Application.ApplicationResponse> {
         }
 
         if (appResponse == null) {
-            appResponse = new ApplicationResponse(true,
+            appResponse = new ApplicationResponse(true, true,
                 response.build().toByteString(), client);
         }
 
@@ -96,7 +96,7 @@ public class Application implements Callable<Application.ApplicationResponse> {
             ).build()
         ).build().toByteString();
 
-        appResponse = new ApplicationResponse(false, messageData, serviceHost);
+        appResponse = new ApplicationResponse(true, false, messageData, serviceHost);
 
         return true;
     }
@@ -187,6 +187,7 @@ public class Application implements Callable<Application.ApplicationResponse> {
         if(request.hasIr() && request.getIr().getHeartbeatsCount() > 0) {
             ReceiveHeartbeatHandler.updateHeartbeats(request.getIr().getHeartbeatsList());
         }
+        appResponse = new ApplicationResponse(false, false, null, null);
     }
 
     private boolean keyInvalid() {

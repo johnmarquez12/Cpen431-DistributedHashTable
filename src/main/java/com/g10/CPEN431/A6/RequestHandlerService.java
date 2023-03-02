@@ -70,8 +70,9 @@ public class RequestHandlerService {
         if (applicationResponse.replyTo() != null) {
             responseHost = applicationResponse.replyTo();
         }
-
-        replies.add(new ReplyThread.Reply(messageID, applicationResponse.messageData(), responseHost));
+        if(applicationResponse.shouldReply()){
+            replies.add(new ReplyThread.Reply(messageID, applicationResponse.messageData(), responseHost));
+        }
     }
 
     public Message.Msg getMessage() throws InvalidProtocolBufferException {
