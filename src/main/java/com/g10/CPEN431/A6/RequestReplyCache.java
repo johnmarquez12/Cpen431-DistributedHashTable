@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 public class RequestReplyCache {
 
     private static RequestReplyCache INSTANCE;
-    private final Cache<ByteString, ByteString> cache;
+    private final Cache<ByteString, Application.ApplicationResponse> cache;
 
     private RequestReplyCache() {
         cache = CacheBuilder.newBuilder()
@@ -29,23 +29,21 @@ public class RequestReplyCache {
 
     public Application.ApplicationResponse get(ByteString messageID, Callable<Application.ApplicationResponse> callable)
         throws ExecutionException {
-        ByteString response = cache.getIfPresent(messageID);
-        Application.ApplicationResponse appResponse;
-
+        Application.ApplicationResponse response = cache.getIfPresent(messageID);
 
         if (response == null) {
             try {
-                appResponse = callable.call();
+                response = callable.call();
             } catch (Exception e) {
                 throw new ExecutionException(e);
             }
-            if(appResponse.shouldCache())
-                cache.put(messageID, appResponse.messageData());
+            if(response.shouldCache())
+                cache.put(messageID, response);
 
-            return appResponse;
+            return response;
         }
 
-        return new Application.ApplicationResponse(true, response, null);
+        return response;
     }
 
     public void wipeout() {
