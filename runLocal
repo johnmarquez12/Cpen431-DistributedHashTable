@@ -8,7 +8,7 @@ echo "" > pids.txt
 while read -r line; do
   hostArr=(${line//:/ })
 
-  java -Xmx64m -jar A6.jar -s $server_file -p ${hostArr[1]} -l > "logs/${hostArr[0]}.${hostArr[1]}.log" &
+  java -Xmx64m -jar A7.jar -s $server_file -p ${hostArr[1]} > "logs/${hostArr[0]}.${hostArr[1]}.log" &
   echo "Started ${hostArr[0]}:${hostArr[1]} with pid $!" >> deploy.log
   echo "$!" >> pids.txt
   echo "Started ${hostArr[0]}:${hostArr[1]} with pid $!"
