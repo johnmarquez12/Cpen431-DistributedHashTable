@@ -187,6 +187,8 @@ public class Application implements Callable<Application.ApplicationResponse> {
         if(request.hasIr() && request.getIr().getHeartbeatsCount() > 0) {
             ReceiveHeartbeatHandler.updateHeartbeats(request.getIr().getHeartbeatsList());
         }
+
+        appResponse = new ApplicationResponse(false, null, null);
     }
 
     private boolean keyInvalid() {
