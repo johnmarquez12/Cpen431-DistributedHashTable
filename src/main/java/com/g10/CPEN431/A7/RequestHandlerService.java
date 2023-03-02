@@ -1,10 +1,8 @@
-package com.g10.CPEN431.A6;
+package com.g10.CPEN431.A7;
 
 import ca.NetSysLab.ProtocolBuffers.Message;
-import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 
-import java.net.InetAddress;
 import java.util.Queue;
 import java.util.concurrent.ExecutionException;
 import java.util.zip.CRC32;

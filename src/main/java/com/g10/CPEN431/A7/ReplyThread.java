@@ -1,4 +1,4 @@
-package com.g10.CPEN431.A6;
+package com.g10.CPEN431.A7;
 
 import ca.NetSysLab.ProtocolBuffers.Message;
 import com.google.protobuf.ByteString;

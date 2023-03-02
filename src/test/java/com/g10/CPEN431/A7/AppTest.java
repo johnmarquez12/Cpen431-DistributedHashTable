@@ -1,16 +1,14 @@
-package com.g10.CPEN431.A6;
+package com.g10.CPEN431.A7;
 
 import ca.NetSysLab.ProtocolBuffers.KeyValueResponse;
 import com.google.protobuf.InvalidProtocolBufferException;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 import org.junit.Test;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.List;
 
-import static com.g10.CPEN431.A6.App.parseServerFile;
+import static com.g10.CPEN431.A7.App.parseServerFile;
 import static org.junit.Assert.*;
 
 /**
@@ -34,7 +32,7 @@ public class AppTest {
     @Test
     public void testParseServerFile() throws UnknownHostException {
         List<Host> servers = parseServerFile(
-            "src/test/java/com/g10/CPEN431/A6/serverListTest.txt");
+            "src/test/java/com/g10/CPEN431/A7/serverListTest.txt");
 
         assertEquals(5, servers.size());
 
