@@ -27,7 +27,7 @@ public class UDPServer {
 
         DatagramPacket packet = new DatagramPacket(buf, buf.length);
 
-        Queue<Request> requests = new LinkedBlockingQueue<>();
+        LinkedBlockingQueue<Request> requests = new LinkedBlockingQueue<>();
 
         new ApplicationThread(requests).start();
 

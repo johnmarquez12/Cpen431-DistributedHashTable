@@ -8,6 +8,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.zip.CRC32;
 
 public class ReplyThread extends Thread {
@@ -25,9 +26,9 @@ public class ReplyThread extends Thread {
         }
     }
 
-    private final Queue<Reply> replies;
+    private final LinkedBlockingQueue<Reply> replies;
 
-    public ReplyThread(Queue<Reply> replies) {
+    public ReplyThread(LinkedBlockingQueue<Reply> replies) {
         super("ReplyThread");
         this.replies = replies;
     }
@@ -43,31 +44,28 @@ public class ReplyThread extends Thread {
 
 
         while(true) {
-            Reply reply = replies.poll();
-            if (reply == null) {
-                Thread.yield();
-                continue;
-            }
-
-
-            crc32.reset();
-            crc32.update(reply.messageID);
-            crc32.update(reply.applicationResponse.asReadOnlyByteBuffer());
-
-            Message.Msg responseMsg = Message.Msg.newBuilder()
-                .setMessageID(ByteString.copyFrom(reply.messageID))
-                .setPayload(reply.applicationResponse)
-                .setCheckSum(crc32.getValue())
-                .build();
-
-            byte[] response = responseMsg.toByteArray();
-
             try {
+                Reply reply = replies.take();
+                crc32.reset();
+                crc32.update(reply.messageID);
+                crc32.update(reply.applicationResponse.asReadOnlyByteBuffer());
+
+                Message.Msg responseMsg = Message.Msg.newBuilder()
+                        .setMessageID(ByteString.copyFrom(reply.messageID))
+                        .setPayload(reply.applicationResponse)
+                        .setCheckSum(crc32.getValue())
+                        .build();
+
+                byte[] response = responseMsg.toByteArray();
+
                 DatagramPacket packet =
-                    new DatagramPacket(response, response.length,
-                        reply.responseHost.address(), reply.responseHost.port());
+                        new DatagramPacket(response, response.length,
+                                reply.responseHost.address(), reply.responseHost.port());
 
                 socket.send(packet);
+
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             } catch (IOException e) {
                 e.printStackTrace();
             }
