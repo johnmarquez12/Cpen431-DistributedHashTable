@@ -19,7 +19,10 @@ public class ApplicationThread extends Thread {
 
         while(true) {
             UDPServer.Request request = requests.poll();
-            if (request == null) continue;
+            if (request == null) {
+                Thread.yield();
+                continue;
+            }
 
             new RequestHandlerService(
                 request.requestHost,
