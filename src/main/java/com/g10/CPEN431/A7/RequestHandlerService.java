@@ -3,6 +3,7 @@ package com.g10.CPEN431.A7;
 import ca.NetSysLab.ProtocolBuffers.Message;
 import com.google.protobuf.InvalidProtocolBufferException;
 
+import java.net.DatagramSocket;
 import java.util.Queue;
 import java.util.concurrent.ExecutionException;
 import java.util.zip.CRC32;
@@ -10,13 +11,15 @@ import java.util.zip.CRC32;
 public class RequestHandlerService {
     private Host responseHost;
     private final byte[] requestPayload;
+    private final DatagramSocket socket;
 
-    private final Queue<ReplyThread.Reply> replies;
+    //private final Queue<ReplyThread.Reply> replies;
 
-    public RequestHandlerService(Host requestHost, byte[] packetPayload, Queue<ReplyThread.Reply> replies) {
+    public RequestHandlerService(Host requestHost, byte[] packetPayload, DatagramSocket socket) {
         responseHost = requestHost;
         requestPayload = packetPayload;
-        this.replies = replies;
+        //this.replies = replies;
+        this.socket = socket;
     }
 
     public void run() {
@@ -65,10 +68,14 @@ public class RequestHandlerService {
          */
 
         // ReplyThread Stuff
+
         if (applicationResponse.replyTo() != null) {
-            replies.add(new ReplyThread.Reply(messageID,
+            /*replies.add(new ReplyThread.Reply(messageID,
                 applicationResponse.messageData(),
-                applicationResponse.replyTo()));
+                applicationResponse.replyTo()));*/
+            new ReplyThread(new ReplyThread.Reply(messageID,
+                    applicationResponse.messageData(),
+                    applicationResponse.replyTo()), socket).run();
         }
     }
 

@@ -10,7 +10,7 @@ import java.net.SocketException;
 import java.util.Queue;
 import java.util.zip.CRC32;
 
-public class ReplyThread extends Thread {
+public class ReplyThread {
 
     public static class Reply {
         public final byte[] messageID;
@@ -25,24 +25,28 @@ public class ReplyThread extends Thread {
         }
     }
 
-    private final Queue<Reply> replies;
+    //private final Queue<Reply> replies;
+    private Reply reply;
+    private DatagramSocket socket;
 
-    public ReplyThread(Queue<Reply> replies) {
-        super("ReplyThread");
-        this.replies = replies;
+    public ReplyThread(Reply reply, DatagramSocket socket) {
+        //super("ReplyThread");
+        //this.replies = replies;
+        this.reply = reply;
+        this.socket = socket;
     }
 
     public void run() {
         CRC32 crc32 = new CRC32();
-        DatagramSocket socket;
+        /*DatagramSocket socket;
         try {
             socket = new DatagramSocket();
         } catch (SocketException e) {
             throw new RuntimeException(e);
-        }
+        }*/
 
 
-        while(true) {
+        /*while(true) {
             Reply reply = replies.poll();
             if (reply == null) {
                 Thread.yield();
@@ -71,6 +75,27 @@ public class ReplyThread extends Thread {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }*/
+        crc32.reset();
+        crc32.update(reply.messageID);
+        crc32.update(reply.applicationResponse.asReadOnlyByteBuffer());
+
+        Message.Msg responseMsg = Message.Msg.newBuilder()
+                .setMessageID(ByteString.copyFrom(reply.messageID))
+                .setPayload(reply.applicationResponse)
+                .setCheckSum(crc32.getValue())
+                .build();
+
+        byte[] response = responseMsg.toByteArray();
+
+        try {
+            DatagramPacket packet =
+                    new DatagramPacket(response, response.length,
+                            reply.responseHost.address(), reply.responseHost.port());
+
+            socket.send(packet);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
