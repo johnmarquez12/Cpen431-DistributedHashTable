@@ -7,8 +7,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
-import java.util.Queue;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 import java.util.zip.CRC32;
 
 public class ReplyThread extends Thread {
@@ -26,9 +25,9 @@ public class ReplyThread extends Thread {
         }
     }
 
-    private final LinkedBlockingQueue<Reply> replies;
+    private final BlockingQueue<Reply> replies;
 
-    public ReplyThread(LinkedBlockingQueue<Reply> replies) {
+    public ReplyThread(BlockingQueue<Reply> replies) {
         super("ReplyThread");
         this.replies = replies;
     }
@@ -44,9 +43,16 @@ public class ReplyThread extends Thread {
 
 
         while(true) {
-            try {
-                Reply reply = replies.take();
 
+            Reply reply = null;
+
+            try {
+                reply = replies.take();
+            } catch (InterruptedException e) {
+                Logger.err(e.getMessage());
+            }
+
+            if (reply != null) {
                 crc32.reset();
                 crc32.update(reply.messageID);
                 crc32.update(reply.applicationResponse.asReadOnlyByteBuffer());
@@ -59,17 +65,15 @@ public class ReplyThread extends Thread {
 
                 byte[] response = responseMsg.toByteArray();
 
-                DatagramPacket packet =
-                        new DatagramPacket(response, response.length,
-                                reply.responseHost.address(), reply.responseHost.port());
+                try {
+                    DatagramPacket packet =
+                            new DatagramPacket(response, response.length,
+                                    reply.responseHost.address(), reply.responseHost.port());
 
-                socket.send(packet);
-
-            } catch (InterruptedException e) {
-                System.err.println("Error reading reply from queue");
-                System.err.println(e.getMessage());
-            } catch (IOException e) {
-                e.printStackTrace();
+                    socket.send(packet);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

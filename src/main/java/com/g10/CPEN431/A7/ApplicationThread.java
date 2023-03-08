@@ -1,35 +1,37 @@
 package com.g10.CPEN431.A7;
 
-import java.util.Queue;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class ApplicationThread extends Thread {
 
-    private final LinkedBlockingQueue<UDPServer.Request> requests;
+    private final BlockingQueue<UDPServer.Request> requests;
 
-    public ApplicationThread(LinkedBlockingQueue<UDPServer.Request> requests) {
+    public ApplicationThread(BlockingQueue<UDPServer.Request> requests) {
         super("ApplicationThread");
         this.requests = requests;
     }
 
     public void run() {
-        LinkedBlockingQueue<ReplyThread.Reply> replies = new LinkedBlockingQueue<>();
+        BlockingQueue<ReplyThread.Reply> replies = new LinkedBlockingQueue<>();
 
         new ReplyThread(replies).start();
 
         while(true) {
-            try {
-                UDPServer.Request request = requests.take();
+            UDPServer.Request request = null;
 
+            try {
+                request = requests.take();
+            } catch (InterruptedException e) {
+                Logger.err(e.getMessage());
+            }
+
+            if (request != null)
                 new RequestHandlerService(
                         request.requestHost,
                         request.payload,
                         replies
                 ).run();
-            } catch (InterruptedException e) {
-                System.err.println("Error reading request from queue");
-                System.err.println(e.getMessage());
-            }
         }
     }
 }
