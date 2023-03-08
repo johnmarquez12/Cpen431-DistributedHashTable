@@ -6,7 +6,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.Arrays;
-import java.util.Queue;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class UDPServer {
@@ -27,7 +27,7 @@ public class UDPServer {
 
         DatagramPacket packet = new DatagramPacket(buf, buf.length);
 
-        Queue<Request> requests = new LinkedBlockingQueue<>();
+        BlockingQueue<Request> requests = new LinkedBlockingQueue<>();
 
         new ApplicationThread(requests).start();
 

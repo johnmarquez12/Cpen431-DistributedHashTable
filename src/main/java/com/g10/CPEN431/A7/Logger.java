@@ -10,4 +10,10 @@ public class Logger {
 
         System.out.println("["+now+"] "+message);
     }
+
+    public static void err(Object message) {
+        LocalTime now = LocalTime.now(ZoneId.systemDefault());
+
+        System.err.println("["+now+"] "+message);
+    }
 }
