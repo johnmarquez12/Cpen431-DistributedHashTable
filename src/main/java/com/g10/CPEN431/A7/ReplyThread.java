@@ -46,6 +46,7 @@ public class ReplyThread extends Thread {
         while(true) {
             try {
                 Reply reply = replies.take();
+
                 crc32.reset();
                 crc32.update(reply.messageID);
                 crc32.update(reply.applicationResponse.asReadOnlyByteBuffer());
@@ -65,7 +66,8 @@ public class ReplyThread extends Thread {
                 socket.send(packet);
 
             } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+                System.err.println("Error reading reply from queue");
+                System.err.println(e.getMessage());
             } catch (IOException e) {
                 e.printStackTrace();
             }

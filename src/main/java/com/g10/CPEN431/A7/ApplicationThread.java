@@ -27,7 +27,8 @@ public class ApplicationThread extends Thread {
                         replies
                 ).run();
             } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+                System.err.println("Error reading request from queue");
+                System.err.println(e.getMessage());
             }
         }
     }
