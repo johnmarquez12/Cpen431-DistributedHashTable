@@ -168,9 +168,7 @@ public class Application implements Callable<Application.ApplicationResponse> {
     }
 
     void cmdGetPID() {
-        long pid = ProcessHandle.current().pid();
-
-        response.setPid((int) pid);
+        response.setPid((int) App.pid);
     }
 
     void cmdGetMembershipCount() {
