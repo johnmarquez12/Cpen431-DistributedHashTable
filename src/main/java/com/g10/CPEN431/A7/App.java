@@ -25,6 +25,8 @@ import java.util.List;
  */
 public class App 
 {
+    public static long pid = ProcessHandle.current().pid();
+
     public static void main( String[] args ) throws Exception {
         Logger.log( "Hello World!" );
 
