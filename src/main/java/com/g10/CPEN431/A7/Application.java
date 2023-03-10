@@ -157,7 +157,6 @@ public class Application implements Callable<Application.ApplicationResponse> {
     void cmdWipeout() {
         KeyValueStore.getInstance().wipeout();
 
-        // TODO: make sure this is correct behavior
         RequestReplyCache.getInstance().wipeout();
 
         System.gc();
@@ -172,7 +171,7 @@ public class Application implements Callable<Application.ApplicationResponse> {
     }
 
     void cmdGetMembershipCount() {
-        int memCount = NodePool.getInstance().membershipCount();
+        int memCount = NodePool.getInstance().aliveNodeCount();
 
         response.setMembershipCount(memCount);
     }

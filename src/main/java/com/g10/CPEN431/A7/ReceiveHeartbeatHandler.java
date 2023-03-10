@@ -13,7 +13,5 @@ public class ReceiveHeartbeatHandler {
         }
 
         Logger.log("Updated heartbeats.");
-
-        nodePool.killDeadNodes();
     }
 }

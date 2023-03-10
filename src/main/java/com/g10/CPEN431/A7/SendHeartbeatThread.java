@@ -15,28 +15,30 @@ public class SendHeartbeatThread extends Thread {
     public static final long MARGIN = 20;
     private final NodePool nodePool;
 
-    private final Host myHost;
+    private final int myId;
 
     public SendHeartbeatThread() {
         super("SendHeartbeatThread");
         this.nodePool = NodePool.getInstance();
-        this.myHost = nodePool.getMyHost();
+        this.myId = nodePool.getMyId();
     }
 
     public void run() {
         Random rand = new Random();
 
-        while(true) {
-            int destNode = rand.nextInt() % NodePool.CIRCLE_SIZE;
-            Host host = nodePool.getHostFromId(destNode);
+        if (nodePool.totalNodeCount() < 2) {
+            return;
+        }
 
-            if(host.equals(myHost)) {
+        while(true) {
+            int destNode = rand.nextInt(nodePool.totalNodeCount());
+
+            if(destNode == myId) {
                 continue;
             }
 
-            NodePool.getInstance().killDeadNodes();
+            Host host = nodePool.getHostFromIndex(destNode);
 
-            //TODO: send payload using InternalClient to destNode
             try {
                 Logger.log("Sending heartbeat to "+host + ":  "+nodePool.getAllHeartbeats());
                 InternalClient.sendRequest(generateHeartbeatPayload(), host);

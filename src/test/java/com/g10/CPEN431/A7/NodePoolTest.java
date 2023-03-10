@@ -70,10 +70,10 @@ public class NodePoolTest {
 
         NodePool.getInstance().updateTimeStampFromId(0, System.currentTimeMillis());
 
-        NodePool.getInstance().killDeadNodes();
+        NodePool.getInstance().getAllHeartbeats();
 
         // node 0, and me
-        assertEquals(2, NodePool.getInstance().getAllHeartbeats().size());
+        assertEquals(2, NodePool.getInstance().aliveNodeCount());
 
         assertEquals(0, NodePool.getInstance().getAllHeartbeats().get(0).id);
         assertEquals(NodePool.getInstance().getMyId(), NodePool.getInstance().getAllHeartbeats().get(1).id);
