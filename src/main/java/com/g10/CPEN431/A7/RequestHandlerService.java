@@ -8,7 +8,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.zip.CRC32;
 
 public class RequestHandlerService {
-    private Host responseHost;
+    private final Host responseHost;
     private final byte[] requestPayload;
 
     private final Queue<ReplyThread.Reply> replies;

@@ -6,14 +6,20 @@ import java.time.ZoneId;
 public class Logger {
 
     public static void log(Object message) {
-        LocalTime now = LocalTime.now(ZoneId.systemDefault());
+        System.out.println("["+now()+"] "+message);
+    }
 
-        System.out.println("["+now+"] "+message);
+    public static void log(String format, Object... args) {
+        System.out.print("["+now()+"] ");
+        System.out.printf(format, args);
     }
 
     public static void err(Object message) {
-        LocalTime now = LocalTime.now(ZoneId.systemDefault());
 
-        System.err.println("["+now+"] "+message);
+        System.err.println("["+now()+"] (!) "+message);
+    }
+
+    private static LocalTime now() {
+        return LocalTime.now(ZoneId.systemDefault());
     }
 }

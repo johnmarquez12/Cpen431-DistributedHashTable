@@ -7,44 +7,20 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.BlockingQueue;
 
 // TODO: Should this be a thread??
 // Since we may send many keys over, our rejoin function could take a while to run
 public class KeyTransferHandler {
 
-    public static void sendKeys(int idToSendTo) throws IOException {
+    public static void sendKeys(BlockingQueue<KeyTransferSenderThread.KeyTransfer> keysToSend, NodePool.Heartbeat recipient) {
         NodePool nodePool = NodePool.getInstance();
-        KeyValueStore keyValueStore = KeyValueStore.getInstance();
+        KeyValueStore kvStore = KeyValueStore.getInstance();
 
-        List<Map.Entry<ByteString, KeyValueStore.ValueWrapper>> keysToSend = new ArrayList<>();
+        for (Map.Entry<ByteString, KeyValueStore.ValueWrapper> entry : kvStore.keySet()) {
+            if (nodePool.getIdFromKey(entry.getKey().hashCode()) != recipient.id) continue;
 
-        for (Map.Entry<ByteString, KeyValueStore.ValueWrapper> entry : keyValueStore.keySet()) {
-            if (nodePool.getIdFromKey(entry.getKey().hashCode()) == idToSendTo) {
-                keysToSend.add(entry);
-
-                try {
-                    // TODO: what do with this error
-                    keyValueStore.remove(entry.getKey());
-                } catch (KeyValueStore.NoKeyError noKeyError) {
-                    Logger.log(noKeyError.getMessage());
-                }
-            }
-        }
-
-        for (Map.Entry<ByteString, KeyValueStore.ValueWrapper> key : keysToSend) {
-            byte[] requestPayload = generateKVRequest(key);
-            // TODO: Verify message received from other node and maybe retry?
-            InternalClient.sendRequestWithRetries(requestPayload, nodePool.getHostFromId(idToSendTo));
+            keysToSend.add(new KeyTransferSenderThread.KeyTransfer(recipient, entry));
         }
     }
-
-    private static byte[] generateKVRequest(Map.Entry<ByteString, KeyValueStore.ValueWrapper> keyToSend) {
-        return KeyValueRequest.KVRequest.newBuilder()
-                .setCommand(Codes.Commands.PUT)
-                .setKey(keyToSend.getKey())
-                .setValue(keyToSend.getValue().value)
-                .setVersion(keyToSend.getValue().version)
-                .build().toByteArray();
-    }
-
 }

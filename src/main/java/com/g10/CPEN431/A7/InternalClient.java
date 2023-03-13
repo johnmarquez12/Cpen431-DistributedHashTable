@@ -1,6 +1,7 @@
 package com.g10.CPEN431.A7;
 
 
+import ca.NetSysLab.ProtocolBuffers.KeyValueResponse;
 import ca.NetSysLab.ProtocolBuffers.Message;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
@@ -48,7 +49,7 @@ public class InternalClient {
         }
     }
 
-    public static byte[] sendRequestWithRetries(byte[] payload, Host recipient) throws IOException {
+    public static KeyValueResponse.KVResponse sendRequestWithRetries(byte[] payload, Host recipient) throws IOException {
         DatagramSocket socket;
         try {
             socket = new DatagramSocket();
@@ -122,7 +123,7 @@ public class InternalClient {
         // This should never occur, but we have it to help Intellij with typechecking
         if (resp == null) throw new SocketException("Protobuf message not fully initialized");
 
-        return resp.getPayload().toByteArray();
+        return KeyValueResponse.KVResponse.parseFrom(resp.getPayload());
     }
 
     private static byte[] generateRequestId(Host recipient) {

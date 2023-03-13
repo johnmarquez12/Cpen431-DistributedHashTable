@@ -16,6 +16,7 @@ import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -100,7 +101,8 @@ public class App
             throw new RuntimeException(e);
         }
 
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream(), "UTF-8"))) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream(),
+            StandardCharsets.UTF_8))) {
             return InetAddress.getByName(reader.readLine());
         } catch (IOException e) {
             throw new RuntimeException(e);
