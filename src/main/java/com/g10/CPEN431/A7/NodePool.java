@@ -156,25 +156,20 @@ public class NodePool {
     }
 
     private void rejoined(Heartbeat hb) {
-        try {
-            if (shouldHandleTransfer(hb)) {
-                actuallyRejoin(hb);
-                KeyTransferHandler.sendKeys(hb.id);
-            } else {
-                actuallyRejoin(hb);
-            }
-        } catch (IOException e) {
-            // TODO: this is really hacky since we keep passing up IOEXception, lets find another way to do this lol
-            Logger.err(e.getMessage());
-        }
-    }
-
-    private void actuallyRejoin(Heartbeat hb) {
         nodes.put(hb.id, hb.host);
         // get next alive node since this node may contain data that should
         // belong to the rejoining node. If I am that node, handle it.
         hb.deleted = false;
         Logger.log("Server "+hb.id+" has tried to rejoin");
+
+        if (shouldHandleTransfer(hb)) {
+            try {
+                KeyTransferHandler.sendKeys(hb.id);
+            } catch (IOException e) {
+                // TODO: this is really hacky since we keep passing up IOEXception, lets find another way to do this lol
+                Logger.err(e.getMessage());
+            }
+        }
     }
 
     private void removeNode(Heartbeat hb) {
@@ -188,12 +183,11 @@ public class NodePool {
     }
 
     private boolean shouldHandleTransfer(Heartbeat hb) {
-        return myId == getIdFromId(hb.id);
+        return myId == getIdFromKey(hb.id + 1);
     }
 
-    // ?? this name is a little weird lol
-    public int getIdFromId(int id) {
-        int myId = id % CIRCLE_SIZE;
+    public int getIdFromKey(int key) {
+        int myId = key % CIRCLE_SIZE;
         if (myId < 0) {
             myId += CIRCLE_SIZE;
         }
