@@ -3,6 +3,8 @@ package com.g10.CPEN431.A7;
 import com.google.protobuf.ByteString;
 
 import java.util.Enumeration;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class KeyValueStore {
@@ -64,5 +66,9 @@ public class KeyValueStore {
 
     public int getMembershipSize() {
         return store.size();
+    }
+
+    public Set<Map.Entry<ByteString, ValueWrapper>> keySet() {
+        return store.entrySet();
     }
 }

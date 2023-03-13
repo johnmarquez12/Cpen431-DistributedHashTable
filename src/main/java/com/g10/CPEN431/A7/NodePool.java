@@ -1,5 +1,6 @@
 package com.g10.CPEN431.A7;
 
+import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -155,7 +156,20 @@ public class NodePool {
     }
 
     private void rejoined(Heartbeat hb) {
-        // TODO: handle a rejoin (give keys back if needed)
+        try {
+            if (shouldHandleTransfer(hb)) {
+                actuallyRejoin(hb);
+                KeyTransferHandler.sendKeys(hb.id);
+            } else {
+                actuallyRejoin(hb);
+            }
+        } catch (IOException e) {
+            // TODO: this is really hacky since we keep passing up IOEXception, lets find another way to do this lol
+            Logger.err(e.getMessage());
+        }
+    }
+
+    private void actuallyRejoin(Heartbeat hb) {
         nodes.put(hb.id, hb.host);
         // get next alive node since this node may contain data that should
         // belong to the rejoining node. If I am that node, handle it.
@@ -171,5 +185,23 @@ public class NodePool {
 
     private int indexFrom(int id) {
         return id / spacing;
+    }
+
+    private boolean shouldHandleTransfer(Heartbeat hb) {
+        return myId == getIdFromId(hb.id);
+    }
+
+    // ?? this name is a little weird lol
+    public int getIdFromId(int id) {
+        int myId = id % CIRCLE_SIZE;
+        if (myId < 0) {
+            myId += CIRCLE_SIZE;
+        }
+
+        if (myId > nodes.lastKey()){
+            return nodes.firstEntry().getKey();
+        }
+
+        return nodes.ceilingKey(myId);
     }
 }
