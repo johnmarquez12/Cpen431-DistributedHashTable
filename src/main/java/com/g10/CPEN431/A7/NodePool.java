@@ -1,11 +1,15 @@
 package com.g10.CPEN431.A7;
 
+import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class NodePool {
 
@@ -36,11 +40,16 @@ public class NodePool {
 
     private final List<Heartbeat> heartbeats;
     private final ConcurrentSkipListMap<Integer, Host> nodes;
+    private final BlockingQueue<KeyTransferSenderThread.KeyTransfer> keysToSend;
     private final int spacing;
     private final Host me;
     private int myId;
 
     private NodePool(Host me, List<Host> servers) {
+        keysToSend = new LinkedBlockingQueue<>();
+        (new KeyTransferSenderThread(keysToSend)).start();
+
+
         this.me = me;
         heartbeats = new ArrayList<>();
 
@@ -84,16 +93,11 @@ public class NodePool {
     }
 
     public Host getHostFromId(int id) {
-        int myId = id % CIRCLE_SIZE;
-        if (myId < 0) {
-            myId += CIRCLE_SIZE;
-        }
+        return getEntryFromId(id).getValue();
+    }
 
-        if (myId > nodes.lastKey()){
-           return nodes.firstEntry().getValue();
-        }
-
-        return nodes.ceilingEntry(myId).getValue();
+    public int getIdFromKey(int key) {
+        return getEntryFromId(key).getKey();
     }
 
     public Host getHostFromIndex(int i) {
@@ -122,12 +126,20 @@ public class NodePool {
         return heartbeats;
     }
 
+    public List<Heartbeat> getAllHeartbeatsWithoutPruning() {
+        return heartbeats;
+    }
+
     /**
      * Kill node (only the one we're updating) if the updated time
      * means it should die
      */
     public void updateTimeStampFromId(int id, long epochMillis) {
         Heartbeat hb = heartbeats.get(indexFrom(id));
+
+        if(epochMillis <= hb.epochMillis) {
+            return;
+        }
 
         hb.epochMillis = Math.max(
             epochMillis,
@@ -155,15 +167,18 @@ public class NodePool {
     }
 
     private void rejoined(Heartbeat hb) {
-        // TODO: handle a rejoin (give keys back if needed)
         nodes.put(hb.id, hb.host);
         // get next alive node since this node may contain data that should
         // belong to the rejoining node. If I am that node, handle it.
         hb.deleted = false;
         Logger.log("Server "+hb.id+" has tried to rejoin");
+
+        if (shouldHandleTransfer(hb)) {
+            KeyTransferHandler.sendKeys(keysToSend, hb);
+        }
     }
 
-    private void removeNode(Heartbeat hb) {
+    public void removeNode(Heartbeat hb) {
         if (hb.deleted) return;
         hb.deleted = true;
         nodes.remove(hb.id);
@@ -171,5 +186,22 @@ public class NodePool {
 
     private int indexFrom(int id) {
         return id / spacing;
+    }
+
+    private boolean shouldHandleTransfer(Heartbeat hb) {
+        return myId == getIdFromKey(hb.id + 1);
+    }
+
+    private Map.Entry<Integer, Host> getEntryFromId(int id) {
+        int myId = id % CIRCLE_SIZE;
+        if (myId < 0) {
+            myId += CIRCLE_SIZE;
+        }
+
+        if (myId > nodes.lastKey()){
+            return nodes.firstEntry();
+        }
+
+        return nodes.ceilingEntry(myId);
     }
 }
