@@ -2,7 +2,7 @@ Group ID: G10
 
 Verification Code: `94DC532050CB425001FCD7C4A8A8B1BF`
 
-Used Run Command: `java -Xmx64m -jar A7.jar -s servers.txt -p <port number>` or `./runLocal servers.txt`
+Used Run Command: `java -Xmx64m -jar A9.jar -s servers.txt -p <port number>` or `./runLocal servers.txt`
 
 Brief Description: We use a push based epidemic protocol to maintain membership information.
 These exchanges of "heartbeats" occur at regular intervals. We forward requests
