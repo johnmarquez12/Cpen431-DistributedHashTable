@@ -62,7 +62,7 @@ public class SendHeartbeatThread extends Thread {
 
         for (Heartbeat heartbeat : heartbeats) {
             protoHeartbeats.add(InternalRequest.Heartbeat.newBuilder()
-                .setHost(heartbeat.host.toProtobuf())
+//                .setHost(heartbeat.host.toProtobuf())
                 .setId(heartbeat.id)
                 .setEpochMillis(heartbeat.epochMillis)
                 .build());
