@@ -16,7 +16,7 @@ public class KeyTransferHandler {
         for (Map.Entry<ByteString, KeyValueStore.ValueWrapper> entry : kvStore.keySet()) {
             if (nodePool.getIdFromKey(entry.getKey().hashCode()) != recipient.id) continue;
 
-            keysToSend.add(new KeyTransferSenderThread.KeyTransfer(recipient, entry));
+            keysToSend.add(new KeyTransferSenderThread.KeyTransfer(recipient, entry, false));
         }
     }
 }

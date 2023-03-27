@@ -10,7 +10,7 @@ import java.util.concurrent.BlockingQueue;
 
 public class KeyTransferSenderThread extends Thread {
 
-    public record KeyTransfer(NodePool.Heartbeat recipient, Map.Entry<ByteString, KeyValueStore.ValueWrapper> entry) {}
+    public record KeyTransfer(NodePool.Heartbeat recipient, Map.Entry<ByteString, KeyValueStore.ValueWrapper> entry, boolean replicate) {}
 
     private final BlockingQueue<KeyTransfer> messages;
 
@@ -38,36 +38,70 @@ public class KeyTransferSenderThread extends Thread {
 
             Logger.log("Sending %s (id %d) key with hash <%d> ", message.recipient.host, message.recipient.id, message.entry.getKey().hashCode());
 
-            byte[] requestPayload = generateKVRequest(message.entry);
-            KeyValueResponse.KVResponse response;
+            byte[] requestPayload = generateKVRequest(message.entry, message.replicate);
 
-            try {
-                response = InternalClient.sendRequestWithRetries(requestPayload, message.recipient.host);
-            } catch (IOException e) {
-                Logger.err("Response while sending keys failed/timed out.");
-                NodePool.getInstance().removeNode(message.recipient);
+            if (message.replicate) {
+                replicate(requestPayload, message);
                 continue;
             }
 
-            if(response == null || response.getErrCode() != Codes.Errs.SUCCESS) {
-                Logger.err("Response while sending keys failed.");
-                NodePool.getInstance().removeNode(message.recipient);
-                continue;
-            }
-
-            try {
-                KeyValueStore.getInstance().remove(message.entry.getKey());
-            } catch (KeyValueStore.NoKeyError e) {
-                Logger.err("Missing a key on transfer: "+e);
-            }
-
-            Logger.log("Sent key.");
+            partition(requestPayload, message);
         }
     }
 
-    private static byte[] generateKVRequest(Map.Entry<ByteString, KeyValueStore.ValueWrapper> keyToSend) {
+    private void replicate(byte[] requestPayload, KeyTransfer message) {
+        // TODO: We should probably retry if a kv we need to replicate fails,
+        //  currently we have it so we readd the message into the queue again to resend
+
+        KeyValueResponse.KVResponse response;
+
+        try {
+            response = InternalClient.sendRequestWithRetries(requestPayload, message.recipient.host);
+        } catch (IOException e) {
+            Logger.err("Response while sending keys failed/timed out.");
+
+            messages.add(message);
+            return;
+        }
+
+        if (response == null || response.getErrCode() != Codes.Errs.SUCCESS) {
+            Logger.err("Response while sending keys failed.");
+            messages.add(message);
+        }
+    }
+
+    private void partition(byte[] requestPayload, KeyTransfer message) {
+        KeyValueResponse.KVResponse response;
+
+        try {
+            response = InternalClient.sendRequestWithRetries(requestPayload, message.recipient.host);
+        } catch (IOException e) {
+            Logger.err("Response while sending keys failed/timed out.");
+            NodePool.getInstance().removeNode(message.recipient);
+            return;
+        }
+
+        if (response == null || response.getErrCode() != Codes.Errs.SUCCESS) {
+            Logger.err("Response while sending keys failed.");
+            NodePool.getInstance().removeNode(message.recipient);
+            return;
+        }
+
+        try {
+            KeyValueStore.getInstance().remove(message.entry.getKey());
+        } catch (KeyValueStore.NoKeyError e) {
+            Logger.err("Missing a key on transfer: "+e);
+            return;
+        }
+
+        Logger.log("Sent key.");
+    }
+
+    private static byte[] generateKVRequest(Map.Entry<ByteString, KeyValueStore.ValueWrapper> keyToSend, boolean replicate) {
+        int code = replicate ? Codes.Commands.REPLICATE : Codes.Commands.PUT;
+
         return KeyValueRequest.KVRequest.newBuilder()
-            .setCommand(Codes.Commands.PUT)
+            .setCommand(code)
             .setKey(keyToSend.getKey())
             .setValue(keyToSend.getValue().value)
             .setVersion(keyToSend.getValue().version)

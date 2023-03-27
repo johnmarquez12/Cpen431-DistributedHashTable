@@ -15,6 +15,8 @@ public class NodePool {
     private static NodePool INSTANCE;
     public static final int CIRCLE_SIZE = 128;
 
+    public static final int REPLICATION_FACTOR = 4;
+
     public static class Heartbeat {
         public Host host;
         public long epochMillis;
@@ -45,6 +47,10 @@ public class NodePool {
     private int myId;
 
     private NodePool(Host me, List<Host> servers) {
+
+        //TODO: Application may need to have access to this queue, we should have a single place where we instantiate
+        // all of our queues.
+
         keysToSend = new LinkedBlockingQueue<>();
         (new KeyTransferSenderThread(keysToSend)).start();
 
@@ -123,6 +129,22 @@ public class NodePool {
         });
 
         return heartbeats;
+    }
+
+    public Map<Integer, Host> getMyReplicaNodes() {
+        // TODO: Logic is kinda there, dont think its gonna work lol (need to consider circle)
+        Map<Integer, Host> tailMap = nodes.tailMap(myId, false);
+        Map<Integer, Host> result = new ConcurrentSkipListMap<>();
+
+        for (Map.Entry<Integer, Host> entry : tailMap.entrySet()) {
+            if (result.size() == REPLICATION_FACTOR - 1) {
+                break;
+            }
+
+            result.put(entry.getKey(), entry.getValue());
+        }
+
+        return result;
     }
 
     public List<Heartbeat> getAllHeartbeatsWithoutPruning() {
