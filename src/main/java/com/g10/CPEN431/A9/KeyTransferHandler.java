@@ -20,4 +20,8 @@ public class KeyTransferHandler {
             keysToSend.add(new KeyTransferSenderThread.KeyTransfer(recipient, entry));
         }
     }
+
+    public static void sendRequest(BlockingQueue<KeyTransferSenderThread.KeyTransfer> keysToSend, KeyValueRequest.KVRequest request, Host host) {
+        keysToSend.add(new KeyTransferSenderThread.KeyTransfer(host, request));
+    }
 }
