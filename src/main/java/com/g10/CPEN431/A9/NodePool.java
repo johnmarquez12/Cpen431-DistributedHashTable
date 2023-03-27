@@ -133,7 +133,6 @@ public class NodePool {
     }
 
     public Map<Integer, Host> getMyReplicaNodes() {
-        // TODO: Logic is kinda there, dont think its gonna work lol (need to consider circle)
         Map<Integer, Host> replicas = new HashMap<>();
 
         int nextNodeId = myId + 1;
