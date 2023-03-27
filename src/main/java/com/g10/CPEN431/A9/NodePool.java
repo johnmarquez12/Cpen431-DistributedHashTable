@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
@@ -133,18 +134,17 @@ public class NodePool {
 
     public Map<Integer, Host> getMyReplicaNodes() {
         // TODO: Logic is kinda there, dont think its gonna work lol (need to consider circle)
-        Map<Integer, Host> tailMap = nodes.tailMap(myId, false);
-        Map<Integer, Host> result = new ConcurrentSkipListMap<>();
+        Map<Integer, Host> replicas = new HashMap<>();
 
-        for (Map.Entry<Integer, Host> entry : tailMap.entrySet()) {
-            if (result.size() == REPLICATION_FACTOR - 1) {
-                break;
-            }
+        int nextNodeId = myId + 1;
 
-            result.put(entry.getKey(), entry.getValue());
+        for (int i = 0; i < REPLICATION_FACTOR - 1; i++) {
+            Map.Entry<Integer, Host> entry = getEntryFromId(nextNodeId);
+            replicas.put(entry.getKey(), entry.getValue());
+            nextNodeId = entry.getKey() + 1;
         }
 
-        return result;
+        return replicas;
     }
 
     public List<Heartbeat> getAllHeartbeatsWithoutPruning() {
