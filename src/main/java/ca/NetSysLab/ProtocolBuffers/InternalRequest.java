@@ -1338,6 +1338,12 @@ public final class InternalRequest {
      */
     ca.NetSysLab.ProtocolBuffers.InternalRequest.HeartbeatOrBuilder getHeartbeatsOrBuilder(
         int index);
+
+    /**
+     * <code>bool replicate = 3;</code>
+     * @return The replicate.
+     */
+    boolean getReplicate();
   }
   /**
    * Protobuf type {@code InternalRequestWrapper}
@@ -1447,6 +1453,17 @@ public final class InternalRequest {
       return heartbeats_.get(index);
     }
 
+    public static final int REPLICATE_FIELD_NUMBER = 3;
+    private boolean replicate_;
+    /**
+     * <code>bool replicate = 3;</code>
+     * @return The replicate.
+     */
+    @java.lang.Override
+    public boolean getReplicate() {
+      return replicate_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -1467,6 +1484,9 @@ public final class InternalRequest {
       for (int i = 0; i < heartbeats_.size(); i++) {
         output.writeMessage(2, heartbeats_.get(i));
       }
+      if (replicate_ != false) {
+        output.writeBool(3, replicate_);
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -1483,6 +1503,10 @@ public final class InternalRequest {
       for (int i = 0; i < heartbeats_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(2, heartbeats_.get(i));
+      }
+      if (replicate_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(3, replicate_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -1506,6 +1530,8 @@ public final class InternalRequest {
       }
       if (!getHeartbeatsList()
           .equals(other.getHeartbeatsList())) return false;
+      if (getReplicate()
+          != other.getReplicate()) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -1525,6 +1551,9 @@ public final class InternalRequest {
         hash = (37 * hash) + HEARTBEATS_FIELD_NUMBER;
         hash = (53 * hash) + getHeartbeatsList().hashCode();
       }
+      hash = (37 * hash) + REPLICATE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getReplicate());
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -1673,6 +1702,8 @@ public final class InternalRequest {
           heartbeatsBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000002);
+        replicate_ = false;
+
         return this;
       }
 
@@ -1718,6 +1749,7 @@ public final class InternalRequest {
         } else {
           result.heartbeats_ = heartbeatsBuilder_.build();
         }
+        result.replicate_ = replicate_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -1796,6 +1828,9 @@ public final class InternalRequest {
             }
           }
         }
+        if (other.getReplicate() != false) {
+          setReplicate(other.getReplicate());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -1842,6 +1877,11 @@ public final class InternalRequest {
                 }
                 break;
               } // case 18
+              case 24: {
+                replicate_ = input.readBool();
+
+                break;
+              } // case 24
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -2218,6 +2258,37 @@ public final class InternalRequest {
         }
         return heartbeatsBuilder_;
       }
+
+      private boolean replicate_ ;
+      /**
+       * <code>bool replicate = 3;</code>
+       * @return The replicate.
+       */
+      @java.lang.Override
+      public boolean getReplicate() {
+        return replicate_;
+      }
+      /**
+       * <code>bool replicate = 3;</code>
+       * @param value The replicate to set.
+       * @return This builder for chaining.
+       */
+      public Builder setReplicate(boolean value) {
+        
+        replicate_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bool replicate = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearReplicate() {
+        
+        replicate_ = false;
+        onChanged();
+        return this;
+      }
       @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -2309,11 +2380,11 @@ public final class InternalRequest {
       "\n\"src/protobuf/InternalRequest.proto\" \n\004" +
       "Host\022\n\n\002ip\030\001 \001(\014\022\014\n\004port\030\002 \001(\005\"A\n\tHeartb" +
       "eat\022\023\n\004host\030\001 \001(\0132\005.Host\022\n\n\002id\030\002 \001(\005\022\023\n\013" +
-      "epochMillis\030\003 \001(\003\"_\n\026InternalRequestWrap" +
+      "epochMillis\030\003 \001(\003\"r\n\026InternalRequestWrap" +
       "per\022\032\n\006client\030\001 \001(\0132\005.HostH\000\210\001\001\022\036\n\nheart" +
-      "beats\030\002 \003(\0132\n.HeartbeatB\t\n\007_clientB/\n\034ca" +
-      ".NetSysLab.ProtocolBuffersB\017InternalRequ" +
-      "estb\006proto3"
+      "beats\030\002 \003(\0132\n.Heartbeat\022\021\n\treplicate\030\003 \001" +
+      "(\010B\t\n\007_clientB/\n\034ca.NetSysLab.ProtocolBu" +
+      "ffersB\017InternalRequestb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -2336,7 +2407,7 @@ public final class InternalRequest {
     internal_static_InternalRequestWrapper_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_InternalRequestWrapper_descriptor,
-        new java.lang.String[] { "Client", "Heartbeats", "Client", });
+        new java.lang.String[] { "Client", "Heartbeats", "Replicate", "Client", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

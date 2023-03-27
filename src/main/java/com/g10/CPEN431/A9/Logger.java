@@ -15,8 +15,7 @@ public class Logger {
     }
 
     public static void err(Object message) {
-
-        System.err.println("["+now()+"] (!) "+message);
+        System.err.println(NodePool.getInstance().getMyHost()+"["+now()+"] (!) "+message);
     }
 
     private static LocalTime now() {

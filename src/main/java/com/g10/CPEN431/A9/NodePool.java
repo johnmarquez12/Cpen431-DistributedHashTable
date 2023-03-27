@@ -1,9 +1,13 @@
 package com.g10.CPEN431.A9;
 
+import ca.NetSysLab.ProtocolBuffers.InternalRequest;
+import ca.NetSysLab.ProtocolBuffers.KeyValueRequest;
+
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
@@ -14,6 +18,8 @@ public class NodePool {
 
     private static NodePool INSTANCE;
     public static final int CIRCLE_SIZE = 128;
+
+    private static final int REPLICATION_FACTOR = 4;
 
     public static class Heartbeat {
         public Host host;
@@ -45,6 +51,10 @@ public class NodePool {
     private int myId;
 
     private NodePool(Host me, List<Host> servers) {
+
+        //TODO: Application may need to have access to this queue, we should have a single place where we instantiate
+        // all of our queues.
+
         keysToSend = new LinkedBlockingQueue<>();
         (new KeyTransferSenderThread(keysToSend)).start();
 
@@ -125,6 +135,20 @@ public class NodePool {
         return heartbeats;
     }
 
+    private List<Host> getMyReplicaNodes() {
+        List<Host> replicas = new ArrayList<>();
+
+        int nextNodeId = myId + 1;
+
+        for (int i = 0; i < REPLICATION_FACTOR - 1; i++) {
+            Map.Entry<Integer, Host> entry = getEntryFromId(nextNodeId);
+            replicas.add(entry.getValue());
+            nextNodeId = entry.getKey() + 1;
+        }
+
+        return replicas;
+    }
+
     public List<Heartbeat> getAllHeartbeatsWithoutPruning() {
         return heartbeats;
     }
@@ -175,6 +199,18 @@ public class NodePool {
         if (shouldHandleTransfer(hb)) {
             KeyTransferHandler.sendKeys(keysToSend, hb);
         }
+    }
+
+    public boolean sendReplicas(KeyValueRequest.KVRequest request) {
+        for(Host host : getMyReplicaNodes()) {
+            request = request.toBuilder().setIr(
+                InternalRequest.InternalRequestWrapper.newBuilder()
+                    .setReplicate(true)
+            ).build();
+
+            KeyTransferHandler.sendRequest(keysToSend, request, host);
+        }
+        return true;
     }
 
     public void removeNode(Heartbeat hb) {

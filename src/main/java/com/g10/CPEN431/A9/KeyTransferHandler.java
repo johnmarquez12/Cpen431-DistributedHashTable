@@ -1,5 +1,6 @@
 package com.g10.CPEN431.A9;
 
+import ca.NetSysLab.ProtocolBuffers.KeyValueRequest;
 import com.google.protobuf.ByteString;
 
 import java.util.Map;

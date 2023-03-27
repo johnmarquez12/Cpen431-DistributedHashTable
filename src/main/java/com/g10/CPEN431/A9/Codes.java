@@ -12,6 +12,21 @@ class Codes {
         static final int GET_PID = 0x07;
         static final int GET_MEMBERSHIP_COUNT = 0x08;
         static final int INTERNAL_REQUEST = 0x55;
+
+        public static String cmd_name(int cmd) {
+            switch (cmd) {
+                case PUT: return "put";
+                case GET: return "get";
+                case REMOVE: return "remove";
+                case SHUTDOWN: return "shutdown";
+                case WIPEOUT: return "wipeout";
+                case IS_ALIVE: return "is_alive";
+                case GET_PID: return "get_pid";
+                case GET_MEMBERSHIP_COUNT: return "get_membership_count";
+                case INTERNAL_REQUEST: return "internal_request";
+                default: return "unknown";
+            }
+        }
     }
 
     static class Errs {

@@ -17,4 +17,5 @@ message Heartbeat {
 message InternalRequestWrapper {
   optional Host client = 1;
   repeated Heartbeat heartbeats = 2;
+  bool replicate = 3;
 }

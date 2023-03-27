@@ -105,7 +105,15 @@ public class Application implements Callable<Application.ApplicationResponse> {
         if(keyInvalid()) return;
         if(valueInvalid()) return;
 
-        if(divertRequest()) return;
+        if(!isReplication()) {
+
+            if (divertRequest()) {
+                return;
+            }
+
+            replicate(); // TODO: should we continue if this fails?
+        }
+
 
         if(outOfMemory()) System.gc();
         if (outOfMemory()) {
@@ -141,7 +149,13 @@ public class Application implements Callable<Application.ApplicationResponse> {
     void cmdRemove() {
         if(keyInvalid()) return;
 
-        if(divertRequest()) return;
+        if(!isReplication()) {
+
+            if (divertRequest()) return;
+
+            replicate(); // TODO: should we continue if this fails?
+
+        }
 
         try {
             KeyValueStore.getInstance().remove(request.getKey());
@@ -202,5 +216,19 @@ public class Application implements Callable<Application.ApplicationResponse> {
             return true;
         }
         return false;
+    }
+
+    private boolean replicate() {
+        // 1. get a list of nodes we should replicate to
+        // 2. for each one, send an IR (ensure success send) to replicate
+        // TODO: What to do if that fails?
+        NodePool.getInstance().sendReplicas(request);
+        return true;
+    }
+
+    private boolean isReplication() {
+        if (!request.hasIr() || !request.getIr().getReplicate()) return false;
+
+        return true;
     }
 }
