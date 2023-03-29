@@ -7,7 +7,6 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
@@ -20,6 +19,7 @@ public class NodePool {
     public static final int CIRCLE_SIZE = 128;
 
     private static final int REPLICATION_FACTOR = 4;
+    private KeyTransferHandler keyTransferer;
 
     public static class Heartbeat {
         public Host host;
@@ -56,6 +56,7 @@ public class NodePool {
         // all of our queues.
 
         keysToSend = new LinkedBlockingQueue<>();
+        keyTransferer = new KeyTransferHandler(keysToSend);
         (new KeyTransferSenderThread(keysToSend)).start();
 
 
@@ -135,14 +136,22 @@ public class NodePool {
         return heartbeats;
     }
 
-    private List<Host> getMyReplicaNodes() {
-        List<Host> replicas = new ArrayList<>();
+    public Heartbeat getHeartbeatFromHost(Host host) {
+        return heartbeats.stream().filter(heartbeat -> heartbeat.host.equals(host)).findFirst().get();
+    }
 
-        int nextNodeId = myId + 1;
+    private List<Map.Entry<Integer, Host>> getMyReplicaNodes() {
+        return getReplicasForId(myId);
+    }
+
+    private List<Map.Entry<Integer, Host>> getReplicasForId(int id) {
+        List<Map.Entry<Integer, Host>> replicas = new ArrayList<>();
+
+        int nextNodeId = id + 1;
 
         for (int i = 0; i < REPLICATION_FACTOR - 1; i++) {
             Map.Entry<Integer, Host> entry = getEntryFromId(nextNodeId);
-            replicas.add(entry.getValue());
+            replicas.add(entry);
             nextNodeId = entry.getKey() + 1;
         }
 
@@ -190,31 +199,58 @@ public class NodePool {
     }
 
     private void rejoined(Heartbeat hb) {
+        if (shouldHandleTransfer(hb)) {
+            keyTransferer.sendKeys(hb.host, hb.id);
+        } else {
+            List<Map.Entry<Integer, Host>> oldReplicasFromHb = getReplicasForId(getIdFromKey(hb.id));
+            if(oldReplicasFromHb.get(oldReplicasFromHb.size()-1).getKey() == myId) {
+                KeyValueStore.getInstance().deleteKeysForNodeWithId(hb.id);
+            }
+        }
+
         nodes.put(hb.id, hb.host);
         // get next alive node since this node may contain data that should
         // belong to the rejoining node. If I am that node, handle it.
         hb.deleted = false;
         Logger.log("Server "+hb.id+" has tried to rejoin");
-
-        if (shouldHandleTransfer(hb)) {
-            KeyTransferHandler.sendKeys(keysToSend, hb);
-        }
     }
 
+    /**
+     * Used to forward a request if it needs to be replicated.
+     * @param request
+     * @return
+     */
     public boolean sendReplicas(KeyValueRequest.KVRequest request) {
-        for(Host host : getMyReplicaNodes()) {
+        for(Map.Entry<Integer, Host> host : getMyReplicaNodes()) {
             request = request.toBuilder().setIr(
                 InternalRequest.InternalRequestWrapper.newBuilder()
                     .setReplicate(true)
             ).build();
 
-            KeyTransferHandler.sendRequest(keysToSend, request, host);
+            keyTransferer.sendRequest(request, host.getValue());
         }
         return true;
     }
 
     public void removeNode(Heartbeat hb) {
         if (hb.deleted) return;
+
+        /* If the removed node is one of our replicas, send all my keys to a new
+         * replica.
+         */
+        List<Map.Entry<Integer, Host>> myReplicaNodes = getMyReplicaNodes();
+        if(myReplicaNodes.stream().map(Map.Entry::getKey).anyMatch(id -> id == hb.id)) {
+            Host newReplica = getHostFromId(myReplicaNodes.get(myReplicaNodes.size()-1).getKey() + 1);
+            keyTransferer.sendKeys(newReplica, myId);
+        }
+
+        /* If we are the first replica of the removed node, we need to send
+           our copies of the removed nodes stuff to a new replica.
+         */
+        if(shouldHandleTransfer(hb)) {
+            keyTransferer.sendKeys(myReplicaNodes.get(myReplicaNodes.size()-1).getValue(), hb.id);
+        }
+
         hb.deleted = true;
         nodes.remove(hb.id);
     }

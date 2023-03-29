@@ -9,19 +9,24 @@ import java.util.concurrent.BlockingQueue;
 // TODO: Should this be a thread??
 // Since we may send many keys over, our rejoin function could take a while to run
 public class KeyTransferHandler {
+    private BlockingQueue<KeyTransferSenderThread.KeyTransfer> keysToSend;
 
-    public static void sendKeys(BlockingQueue<KeyTransferSenderThread.KeyTransfer> keysToSend, NodePool.Heartbeat recipient) {
+    public KeyTransferHandler(BlockingQueue<KeyTransferSenderThread.KeyTransfer> keysToSend) {
+        this.keysToSend = keysToSend;
+    }
+
+    public void sendKeys(Host recipient, int idToMatch) {
         NodePool nodePool = NodePool.getInstance();
         KeyValueStore kvStore = KeyValueStore.getInstance();
 
         for (Map.Entry<ByteString, KeyValueStore.ValueWrapper> entry : kvStore.keySet()) {
-            if (nodePool.getIdFromKey(entry.getKey().hashCode()) != recipient.id) continue;
+            if (nodePool.getIdFromKey(entry.getKey().hashCode()) != idToMatch) continue;
 
             keysToSend.add(new KeyTransferSenderThread.KeyTransfer(recipient, entry));
         }
     }
 
-    public static void sendRequest(BlockingQueue<KeyTransferSenderThread.KeyTransfer> keysToSend, KeyValueRequest.KVRequest request, Host host) {
+    public void sendRequest(KeyValueRequest.KVRequest request, Host host) {
         keysToSend.add(new KeyTransferSenderThread.KeyTransfer(host, request));
     }
 }

@@ -11,15 +11,15 @@ import java.util.concurrent.BlockingQueue;
 public class KeyTransferSenderThread extends Thread {
 
     public static class KeyTransfer {
-        public NodePool.Heartbeat recipient;
+        public Host host;
         public Map.Entry<ByteString, KeyValueStore.ValueWrapper> entry;
+        public boolean deleteAfterSend;
 
         public KeyValueRequest.KVRequest request;
-        public Host host;
 
-        public KeyTransfer(NodePool.Heartbeat recipient,
+        public KeyTransfer(Host host,
                            Map.Entry<ByteString, KeyValueStore.ValueWrapper> entry) {
-            this.recipient = recipient;
+            this.host = host;
             this.entry = entry;
         }
 
@@ -64,29 +64,24 @@ public class KeyTransferSenderThread extends Thread {
         // 3. if success, delete
         // 4. if failure, mark host as failed
 
-        Logger.log("Sending %s (id %d) key with hash <%d> ", message.recipient.host, message.recipient.id, message.entry.getKey().hashCode());
+        Logger.log("Sending %s key with hash <%d> ", message.host, message.entry.getKey().hashCode());
 
         byte[] requestPayload = generateKVRequest(message.entry);
         KeyValueResponse.KVResponse response;
+        NodePool.Heartbeat hb = NodePool.getInstance().getHeartbeatFromHost(message.host);
 
         try {
-            response = InternalClient.sendRequestWithRetries(requestPayload, message.recipient.host);
+            response = InternalClient.sendRequestWithRetries(requestPayload, message.host);
         } catch (IOException e) {
             Logger.err("Response while sending keys failed/timed out.");
-            NodePool.getInstance().removeNode(message.recipient);
+            NodePool.getInstance().removeNode(hb);
             return;
         }
 
         if(response == null || response.getErrCode() != Codes.Errs.SUCCESS) {
             Logger.err("Response while sending keys failed.");
-            NodePool.getInstance().removeNode(message.recipient);
+            NodePool.getInstance().removeNode(hb);
             return;
-        }
-
-        try {
-            KeyValueStore.getInstance().remove(message.entry.getKey());
-        } catch (KeyValueStore.NoKeyError e) {
-            Logger.err("Missing a key on transfer: "+e);
         }
 
         Logger.log("Sent key.");

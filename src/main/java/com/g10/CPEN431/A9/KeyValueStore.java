@@ -71,4 +71,9 @@ public class KeyValueStore {
     public Set<Map.Entry<ByteString, ValueWrapper>> keySet() {
         return store.entrySet();
     }
+
+    public void deleteKeysForNodeWithId(int id) {
+        NodePool nodePool = NodePool.getInstance();
+        store.entrySet().removeIf(item -> nodePool.getIdFromKey(item.getKey().hashCode()) == id);
+    }
 }
