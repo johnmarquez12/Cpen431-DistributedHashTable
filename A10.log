@@ -1,0 +1,1298 @@
+CPEN 431 EVALUATION test Client
+Time: Wed Mar 29 05:32:21 UTC 2023
+Build Date: Wed Mar 29 05:12:16 UTC 2023
+Java process ID: 5568
+Assignment ID: 10
+Client Version: 1
+
+[Info] A10 client running in SUBMIT mode.
+
+[Info] Starting A10 Tests
+
+[Info] Correct submission information.
+[Info] Checking if the test client is running on AWS
+[Info] Detected instance type: c6i.8xlarge
+
+[Info] Done building nodes' list.
+[Info] The deployment has 40 server nodes.
+
+[Info] Checking SSH connectivity to deployed servers ...
+[Info] SSH check passed!
+
+[Info] Checking server deployment.
+Deployment information:
+c6i.8xlarge 
+ Ubuntu 20.04.5 LTS 
+ qdisc netem 8002: root refcnt 2 limit 1000 delay 5.0ms loss 0.25% 
+ qdisc netem 8003: root refcnt 33 limit 1000 delay 5.0ms loss 0.25% 
+ net-tools 1.60+git20180626.aebd88e-1ubuntu1
+
+[Test isAlive] for 127.0.0.1:43100
+Sending GETPID to all servers... 
+[Info] Server node 127.0.0.143100 has process ID 5513.
+[ ... Completed in 0.005 seconds ]
+[OK]
+Sending GetMembershipCount to all servers... 
+[Info] Server 127.0.0.1:43100 replied with membership count = 1 (expected count = 1)
+[ ... Completed in 0.001 seconds ]
+[Ok] All servers returned the expected membership count (1)
+Sending WIPE-OUT to all servers...
+[ ... Completed in 0.006 seconds ]
+[OK]
+Waiting for 5 seconds for the cache to be cleared!
+
+[ TEST Basic PUT/GET (PUT -> GET). Value Length = 8 Bytes ]
+TEST_PASSED
+
+[ TEST Basic PUT/GET (PUT -> GET). Value Length = 32 Bytes ]
+TEST_PASSED
+
+[ TEST Basic PUT/GET (PUT -> GET). Value Length = 2048 Bytes ]
+TEST_PASSED
+
+[ TEST Basic PUT/GET (PUT -> GET). Value Length = 10000 Bytes ]
+TEST_PASSED
+
+
+[ TEST Basic KVS with message version (PUT Version 1 -> GET -> PUT Version 2 -> GET). Value Length = 8 Bytes ]
+TEST_PASSED
+
+
+[ TEST Basic KVS with message version (PUT Version 1 -> GET -> PUT Version 2 -> GET). Value Length = 32 Bytes ]
+TEST_PASSED
+
+
+[ TEST Basic KVS with message version (PUT Version 1 -> GET -> PUT Version 2 -> GET). Value Length = 2048 Bytes ]
+TEST_PASSED
+
+
+[ TEST Basic KVS with message version (PUT Version 1 -> GET -> PUT Version 2 -> GET). Value Length = 10000 Bytes ]
+TEST_PASSED
+
+[ TEST Basic REMOVE (PUT -> GET -> REM -> GET). Value Length = 32 Bytes. ]
+TEST_PASSED
+
+[ TEST Double remove (PUT -> REM -> REM). Value Length = 32 Bytes. ]
+TEST_PASSED
+
+[ TEST Invalid Command. ]
+TEST_PASSED
+
+[ TEST At-Most-Once Client Policy (PUT -> REM -> REM). Value length =  32 Bytes ]
+TEST_PASSED
+
+[ TEST At-Most-Once Client Policy Empty REMs (EMPTY -> REM -> REM) ]
+TEST_PASSED
+
+[ TEST At-Most-Once Client Policy Error Return Code (REM -> PUT -> REM) ]
+TEST_PASSED
+
+[ TEST At-Most-Once Client Policy (PUT -> REM -> many PUT -> REM). Value length =  32 Bytes ]
+Pausing for 10 seconds to wait for the cache to be cleared!
+TEST_PASSED
+
+[ TEST At-Most-Once Client Policy For PUTs (PUT1 -> PUT2 -> PUT1 -> GET2) ]
+TEST_PASSED
+
+[TEST Invalid Key ]
+TEST_PASSED
+
+[TEST Invalid Value ]
+TEST_PASSED
+
+[ TEST Single Front-End Performance (1 clients, 60.0 seconds): PUT -> GET (closed loop) ]
+Test time limit reached: 60.0s.
+Test completed after 526700 closed loops.
+[Test isAlive] for 127.0.0.1:43100
+[ ... Completed in 0.001 seconds ]
+Local Single node: Test Status: TEST_PASSED
+Clients: 1
+Total Requests (without replies): 1053400
+Total Requests (including replies): 1053400
+Successful Responses: 1053400
+Timeout Responses: 0
+Total Failed Responses: 0
+% Success: 100.0
+% Timeout: 0.0
+% Failed: 0.0
+Response Time (Successful requests):
+[max] 8ms, [min] 0ms
+[avg] 0.05045946459084868 ms, [stdev] 0.22356832578912497ms
+Throughput: 17556.374060432325 requests per second
+Goodput: 17556.374060432325 requests per second
+Retry Rate (Successful requests): 1.0
+Sending WIPE-OUT to all servers...
+[ ... Completed in 0.017 seconds ]
+[OK]
+Waiting for 5 seconds for the cache to be cleared!
+[ ... TEST Completed in 65.474 seconds ]
+
+[ TEST Single Front-End Performance (16 clients, 60.0 seconds): PUT -> GET (closed loop) ]
+Test time limit reached: 60.0s.
+Test time limit reached: 60.0s.
+Test completed after 98906 closed loops.
+Test time limit reached: 60.0s.
+Test time limit reached: 60.0s.
+Test completed after 98814 closed loops.
+Test time limit reached: 60.0s.
+Test completed after 99144 closed loops.
+Test time limit reached: 60.0s.
+Test completed after 98973 closed loops.
+Test time limit reached: 60.0s.
+Test time limit reached: 60.0s.
+Test completed after 99138 closed loops.
+Test time limit reached: 60.0s.
+Test completed after 98861 closed loops.
+Test completed after 99074 closed loops.
+Test time limit reached: 60.0s.
+Test time limit reached: 60.0s.
+Test completed after 99077 closed loops.
+Test time limit reached: 60.0s.
+Test time limit reached: 60.0s.
+Test completed after 98999 closed loops.
+Test time limit reached: 60.0s.
+Test completed after 99102 closed loops.
+Test time limit reached: 60.0s.
+Test time limit reached: 60.0s.
+Test completed after 99052 closed loops.
+Test completed after 99097 closed loops.
+Test completed after 98945 closed loops.
+Test completed after 98972 closed loops.
+Test completed after 99019 closed loops.
+Test completed after 99173 closed loops.
+[Test isAlive] for 127.0.0.1:43100
+[ ... Completed in 0.003 seconds ]
+Local Single node: Test Status: TEST_PASSED
+Clients: 16
+Total Requests (without replies): 3168684
+Total Requests (including replies): 3168693
+Successful Responses: 3168684
+Timeout Responses: 0
+Total Failed Responses: 0
+% Success: 100.0
+% Timeout: 0.0
+% Failed: 0.0
+Response Time (Successful requests):
+[max] 47ms, [min] 0ms
+[avg] 0.2938809928664392 ms, [stdev] 1.6958293541691438ms
+Throughput: 52801.71968472447 requests per second
+Goodput: 52801.71968472447 requests per second
+Retry Rate (Successful requests): 1.0000028402958452
+Sending WIPE-OUT to all servers...
+[ ... Completed in 0.018 seconds ]
+[OK]
+Waiting for 5 seconds for the cache to be cleared!
+[ ... TEST Completed in 66.105 seconds ]
+
+[ TEST Single Front-End Performance (64 clients, 60.0 seconds): PUT -> GET (closed loop) ]
+Test time limit reached: 60.0s.
+Test time limit reached: 60.0s.
+Test time limit reached: 60.0s.
+Test time limit reached: 60.0s.
+Test time limit reached: 60.0s.
+Test completed after 25189 closed loops.
+Test time limit reached: 60.0s.
+Test time limit reached: 60.0s.
+Test time limit reached: 60.0s.
+Test time limit reached: 60.0s.
+Test time limit reached: 60.0s.
+Test time limit reached: 60.0s.
+Test time limit reached: 60.0s.
+Test time limit reached: 60.0s.
+Test completed after 25176 closed loops.
+Test time limit reached: 60.0s.
+Test completed after 25181 closed loops.
+Test time limit reached: 60.0s.
+Test completed after 25191 closed loops.
+Test time limit reached: 60.0s.
+Test time limit reached: 60.0s.
+Test completed after 25184 closed loops.
+Test time limit reached: 60.0s.
+Test completed after 25188 closed loops.
+Test time limit reached: 60.0s.
+Test completed after 25190 closed loops.
+Test time limit reached: 60.0s.
+Test time limit reached: 60.0s.
+Test completed after 25186 closed loops.
+Test time limit reached: 60.0s.
+Test completed after 25192 closed loops.
+Test time limit reached: 60.0s.
+Test completed after 25192 closed loops.
+Test time limit reached: 60.0s.
+Test time limit reached: 60.0s.
+Test completed after 25173 closed loops.
+Test time limit reached: 60.0s.
+Test completed after 25205 closed loops.
+Test time limit reached: 60.0s.
+Test completed after 25173 closed loops.
+Test time limit reached: 60.0s.
+Test completed after 25193 closed loops.
+Test time limit reached: 60.0s.
+Test time limit reached: 60.0s.
+Test completed after 25186 closed loops.
+Test completed after 25186 closed loops.
+Test completed after 25182 closed loops.
+Test time limit reached: 60.0s.
+Test completed after 25178 closed loops.
+Test time limit reached: 60.0s.
+Test time limit reached: 60.0s.
+Test completed after 25176 closed loops.
+Test completed after 25180 closed loops.
+Test time limit reached: 60.0s.
+Test completed after 25195 closed loops.
+Test time limit reached: 60.0s.
+Test completed after 25173 closed loops.
+Test time limit reached: 60.0s.
+Test completed after 25181 closed loops.
+Test time limit reached: 60.0s.
+Test completed after 25184 closed loops.
+Test time limit reached: 60.0s.
+Test time limit reached: 60.0s.
+Test completed after 25179 closed loops.
+Test time limit reached: 60.0s.
+Test completed after 25184 closed loops.
+Test time limit reached: 60.0s.
+Test time limit reached: 60.0s.
+Test completed after 25193 closed loops.
+Test time limit reached: 60.0s.
+Test completed after 25197 closed loops.
+Test completed after 25182 closed loops.
+Test completed after 25195 closed loops.
+Test time limit reached: 60.0s.
+Test completed after 25183 closed loops.
+Test completed after 25197 closed loops.
+Test time limit reached: 60.0s.
+Test completed after 25176 closed loops.
+Test time limit reached: 60.0s.
+Test time limit reached: 60.0s.
+Test completed after 25198 closed loops.
+Test time limit reached: 60.0s.
+Test completed after 25186 closed loops.
+Test time limit reached: 60.0s.
+Test completed after 25190 closed loops.
+Test completed after 25192 closed loops.
+Test time limit reached: 60.0s.
+Test time limit reached: 60.0s.
+Test completed after 25175 closed loops.
+Test time limit reached: 60.0s.
+Test completed after 25185 closed loops.
+Test time limit reached: 60.0s.
+Test completed after 25186 closed loops.
+Test time limit reached: 60.0s.
+Test completed after 25170 closed loops.
+Test time limit reached: 60.0s.
+Test completed after 25183 closed loops.
+Test time limit reached: 60.0s.
+Test time limit reached: 60.0s.
+Test completed after 25177 closed loops.
+Test time limit reached: 60.0s.
+Test completed after 25191 closed loops.
+Test time limit reached: 60.0s.
+Test completed after 25179 closed loops.
+Test time limit reached: 60.0s.
+Test completed after 25193 closed loops.
+Test time limit reached: 60.0s.
+Test time limit reached: 60.0s.
+Test completed after 25179 closed loops.
+Test time limit reached: 60.0s.
+Test completed after 25163 closed loops.
+Test time limit reached: 60.0s.
+Test completed after 25187 closed loops.
+Test completed after 25168 closed loops.
+Test completed after 25179 closed loops.
+Test completed after 25181 closed loops.
+Test completed after 25193 closed loops.
+Test completed after 25179 closed loops.
+Test completed after 25189 closed loops.
+Test completed after 25182 closed loops.
+Test completed after 25174 closed loops.
+Test completed after 25172 closed loops.
+Test completed after 25187 closed loops.
+Test completed after 25193 closed loops.
+Test completed after 25197 closed loops.
+Test completed after 25194 closed loops.
+Test completed after 25191 closed loops.
+Test completed after 25180 closed loops.
+Warning: PUT failed!
+Status: ERROR_KVS
+Error Code: ERROR_OUT_OF_SPACE
+[Test isAlive] for 127.0.0.1:43100
+[ ... Completed in 0.002 seconds ]
+Local Single node: Test Status: TEST_PASSED
+Clients: 64
+Total Requests (without replies): 3223596
+Total Requests (including replies): 3223836
+Successful Responses: 3223595
+Timeout Responses: 0
+Total Failed Responses: 1
+% Success: 99.999968978743
+% Timeout: 0.0
+% Failed: 3.102125700615089E-5
+Response Time (Successful requests):
+[max] 238ms, [min] 0ms
+[avg] 1.1818209173298755 ms, [stdev] 3.3034758939604285ms
+Throughput: 53719.437408345555 requests per second
+Goodput: 53719.42074390081 requests per second
+Retry Rate (Successful requests): 1.0000744510168147
+Sending WIPE-OUT to all servers...
+[ ... Completed in 0.015 seconds ]
+[OK]
+Waiting for 5 seconds for the cache to be cleared!
+[ ... TEST Completed in 65.958 seconds ]
+
+[ TEST Single Client Capacity (Value Size = 500 bytes, Limit = 146800 PUTs, ~69.99969482421875 MiB) : PUT -> GET (closed loop) ]
+Sending WIPE-OUT to all servers...
+[ ... Completed in 0.004 seconds ]
+[OK]
+Waiting for 5 seconds for the cache to be cleared!
+ERROR_OUT_OF_SPACE
+Received error code after 90577 closed loops (~43.19047927856445 MiB).
+PUTs sent = 90577(~43.19047927856445 MiB) , Limit = 146800
+[Test isAlive]
+Test Passed. Server is ok.
+TEST_PASSED
+[Info] Shutting down local server(s)!
+[Test isAlive] for 127.0.0.1:43100
+[ ... Completed in 10.002 seconds ]
+[Info] Local tests completed in 259.629 seconds
+[Info] Finished tests for the local deployment!
+
+[Info] The deployment has 40 server nodes.
+Sending GET PID to all servers (v2) ... 
+>>> Server node 15.223.112.199:15555 has process ID 4472.
+>>> Server node 15.223.112.199:15556 has process ID 4473.
+>>> Server node 15.223.112.199:15557 has process ID 4474.
+>>> Server node 15.223.112.199:15558 has process ID 4475.
+>>> Server node 15.223.112.199:15559 has process ID 4476.
+>>> Server node 15.223.112.199:15560 has process ID 4477.
+>>> Server node 15.223.112.199:15561 has process ID 4478.
+>>> Server node 15.223.112.199:15562 has process ID 4479.
+>>> Server node 15.223.112.199:15563 has process ID 4480.
+>>> Server node 15.223.112.199:15564 has process ID 4481.
+>>> Server node 15.223.112.199:15565 has process ID 4482.
+>>> Server node 15.223.112.199:15566 has process ID 4483.
+>>> Server node 15.223.112.199:15567 has process ID 4484.
+>>> Server node 15.223.112.199:15568 has process ID 4485.
+>>> Server node 15.223.112.199:15569 has process ID 4486.
+>>> Server node 15.223.112.199:15570 has process ID 4491.
+>>> Server node 15.223.112.199:15571 has process ID 4493.
+>>> Server node 15.223.112.199:15572 has process ID 4495.
+>>> Server node 15.223.112.199:15573 has process ID 4498.
+>>> Server node 15.223.112.199:15574 has process ID 4500.
+>>> Server node 15.223.112.199:15575 has process ID 4502.
+>>> Server node 15.223.112.199:15576 has process ID 4504.
+>>> Server node 15.223.112.199:15577 has process ID 4507.
+>>> Server node 15.223.112.199:15578 has process ID 4509.
+>>> Server node 15.223.112.199:15579 has process ID 4511.
+>>> Server node 15.223.112.199:15580 has process ID 4513.
+>>> Server node 15.223.112.199:15581 has process ID 4516.
+>>> Server node 15.223.112.199:15582 has process ID 4517.
+>>> Server node 15.223.112.199:15583 has process ID 4519.
+>>> Server node 15.223.112.199:15584 has process ID 4520.
+>>> Server node 15.223.112.199:15585 has process ID 4529.
+>>> Server node 15.223.112.199:15586 has process ID 4537.
+>>> Server node 15.223.112.199:15587 has process ID 4538.
+>>> Server node 15.223.112.199:15588 has process ID 4541.
+>>> Server node 15.223.112.199:15589 has process ID 4547.
+>>> Server node 15.223.112.199:15590 has process ID 4554.
+>>> Server node 15.223.112.199:15591 has process ID 4559.
+>>> Server node 15.223.112.199:15592 has process ID 4560.
+>>> Server node 15.223.112.199:15593 has process ID 4562.
+>>> Server node 15.223.112.199:15594 has process ID 4567.
+[ ... Completed in 65.042 seconds ]
+[OK]
+
+Sending GetMembershipCount to all servers... 
+[Info] Server 15.223.112.199:15558 replied with membership count = 40 (expected count = 40)
+[Info] Server 15.223.112.199:15555 replied with membership count = 40 (expected count = 40)
+[Info] Server 15.223.112.199:15556 replied with membership count = 40 (expected count = 40)
+[Info] Server 15.223.112.199:15557 replied with membership count = 40 (expected count = 40)
+[Info] Server 15.223.112.199:15560 replied with membership count = 40 (expected count = 40)
+[Info] Server 15.223.112.199:15561 replied with membership count = 40 (expected count = 40)
+[Info] Server 15.223.112.199:15564 replied with membership count = 40 (expected count = 40)
+[Info] Server 15.223.112.199:15566 replied with membership count = 40 (expected count = 40)
+[Info] Server 15.223.112.199:15570 replied with membership count = 40 (expected count = 40)
+[Info] Server 15.223.112.199:15569 replied with membership count = 40 (expected count = 40)
+[Info] Server 15.223.112.199:15567 replied with membership count = 40 (expected count = 40)
+[Info] Server 15.223.112.199:15568 replied with membership count = 40 (expected count = 40)
+[Info] Server 15.223.112.199:15573 replied with membership count = 40 (expected count = 40)
+[Info] Server 15.223.112.199:15576 replied with membership count = 40 (expected count = 40)
+[Info] Server 15.223.112.199:15580 replied with membership count = 40 (expected count = 40)
+[Info] Server 15.223.112.199:15581 replied with membership count = 40 (expected count = 40)
+[Info] Server 15.223.112.199:15579 replied with membership count = 40 (expected count = 40)
+[Info] Server 15.223.112.199:15582 replied with membership count = 40 (expected count = 40)
+[Info] Server 15.223.112.199:15585 replied with membership count = 40 (expected count = 40)
+[Info] Server 15.223.112.199:15584 replied with membership count = 40 (expected count = 40)
+[Info] Server 15.223.112.199:15589 replied with membership count = 40 (expected count = 40)
+[Info] Server 15.223.112.199:15588 replied with membership count = 40 (expected count = 40)
+[Info] Server 15.223.112.199:15587 replied with membership count = 40 (expected count = 40)
+[Info] Server 15.223.112.199:15590 replied with membership count = 40 (expected count = 40)
+[Info] Server 15.223.112.199:15591 replied with membership count = 40 (expected count = 40)
+[Info] Server 15.223.112.199:15592 replied with membership count = 40 (expected count = 40)
+[Info] Server 15.223.112.199:15593 replied with membership count = 40 (expected count = 40)
+[Info] Server 15.223.112.199:15565 replied with membership count = 40 (expected count = 40)
+[Info] Server 15.223.112.199:15559 replied with membership count = 40 (expected count = 40)
+[Info] Server 15.223.112.199:15571 replied with membership count = 40 (expected count = 40)
+[Info] Server 15.223.112.199:15574 replied with membership count = 40 (expected count = 40)
+[Info] Server 15.223.112.199:15572 replied with membership count = 40 (expected count = 40)
+[Info] Server 15.223.112.199:15562 replied with membership count = 40 (expected count = 40)
+[Info] Server 15.223.112.199:15563 replied with membership count = 40 (expected count = 40)
+[Info] Server 15.223.112.199:15577 replied with membership count = 40 (expected count = 40)
+[Info] Server 15.223.112.199:15578 replied with membership count = 40 (expected count = 40)
+[Info] Server 15.223.112.199:15583 replied with membership count = 40 (expected count = 40)
+[Info] Server 15.223.112.199:15575 replied with membership count = 40 (expected count = 40)
+[Info] Server 15.223.112.199:15586 replied with membership count = 40 (expected count = 40)
+[Info] Server 15.223.112.199:15594 replied with membership count = 40 (expected count = 40)
+[ ... Completed in 0.015 seconds ]
+[Ok] All servers returned the expected membership count (40)
+Sending WIPE-OUT to all servers...
+[ ... Completed in 0.049 seconds ]
+[OK]
+Waiting for 5 seconds for the cache to be cleared!
+[Test isAlive] for 15.223.112.199:15555
+
+[ TEST Basic PUT/GET (PUT -> GET). Value Length = 8 Bytes ]
+TEST_PASSED
+
+[ TEST Basic PUT/GET (PUT -> GET). Value Length = 32 Bytes ]
+TEST_PASSED
+
+[ TEST Basic PUT/GET (PUT -> GET). Value Length = 512 Bytes ]
+TEST_PASSED
+
+[ TEST Basic PUT/GET (PUT -> GET). Value Length = 1024 Bytes ]
+TEST_PASSED
+Sending WIPE-OUT to all servers...
+[ ... Completed in 0.021 seconds ]
+[OK]
+Waiting for 5 seconds for the cache to be cleared!
+
+
+[ TEST Basic KVS with message version (PUT Version 1 -> GET -> PUT Version 2 -> GET). Value Length = 8 Bytes ]
+TEST_PASSED
+
+
+[ TEST Basic KVS with message version (PUT Version 1 -> GET -> PUT Version 2 -> GET). Value Length = 32 Bytes ]
+TEST_PASSED
+
+
+[ TEST Basic KVS with message version (PUT Version 1 -> GET -> PUT Version 2 -> GET). Value Length = 512 Bytes ]
+TEST_PASSED
+
+
+[ TEST Basic KVS with message version (PUT Version 1 -> GET -> PUT Version 2 -> GET). Value Length = 1024 Bytes ]
+TEST_PASSED
+Sending WIPE-OUT to all servers...
+[ ... Completed in 0.02 seconds ]
+[OK]
+Waiting for 5 seconds for the cache to be cleared!
+
+[ TEST Basic REMOVE (PUT -> GET -> REM -> GET). Value Length = 32 Bytes. ]
+TEST_PASSED
+Sending WIPE-OUT to all servers...
+[ ... Completed in 0.02 seconds ]
+[OK]
+Waiting for 5 seconds for the cache to be cleared!
+
+[ TEST Double remove (PUT -> REM -> REM). Value Length = 32 Bytes. ]
+TEST_PASSED
+Sending WIPE-OUT to all servers...
+[ ... Completed in 0.017 seconds ]
+[OK]
+Waiting for 5 seconds for the cache to be cleared!
+
+[ TEST Invalid Command. ]
+TEST_PASSED
+Sending WIPE-OUT to all servers...
+[ ... Completed in 0.018 seconds ]
+[OK]
+Waiting for 5 seconds for the cache to be cleared!
+
+[ TEST At-Most-Once Client Policy (PUT -> REM -> REM). Value length =  32 Bytes ]
+TEST_PASSED
+Sending WIPE-OUT to all servers...
+[ ... Completed in 0.018 seconds ]
+[OK]
+Waiting for 5 seconds for the cache to be cleared!
+
+[ TEST At-Most-Once Client Policy Empty REMs (EMPTY -> REM -> REM) ]
+TEST_PASSED
+Sending WIPE-OUT to all servers...
+[ ... Completed in 0.017 seconds ]
+[OK]
+Waiting for 5 seconds for the cache to be cleared!
+
+[ TEST At-Most-Once Client Policy (PUT -> REM -> many PUT -> REM). Value length =  32 Bytes ]
+Pausing for 10 seconds to wait for the cache to be cleared!
+TEST_PASSED
+
+[ TEST At-Most-Once Client Policy Error Return Code (REM -> PUT -> REM) ]
+TEST_PASSED
+Sending WIPE-OUT to all servers...
+[ ... Completed in 0.019 seconds ]
+[OK]
+Waiting for 5 seconds for the cache to be cleared!
+
+[ TEST At-Most-Once Client Policy For PUTs (PUT1 -> PUT2 -> PUT1 -> GET2) ]
+TEST_PASSED
+Sending WIPE-OUT to all servers...
+[ ... Completed in 0.017 seconds ]
+[OK]
+Waiting for 5 seconds for the cache to be cleared!
+
+[TEST Invalid Key ]
+TEST_PASSED
+Sending WIPE-OUT to all servers...
+[ ... Completed in 0.018 seconds ]
+[OK]
+Waiting for 5 seconds for the cache to be cleared!
+
+[TEST Invalid Value ]
+TEST_PASSED
+Sending WIPE-OUT to all servers...
+[ ... Completed in 0.017 seconds ]
+[OK]
+Waiting for 5 seconds for the cache to be cleared!
+
+[ TEST Multi Client Crash: PUT -> GET (closed loop) + REM -> WIPEOUT (closed loop) ]
+[Test isAlive]
+Test Passed. Server is ok.
+TEST_PASSED
+Sending WIPE-OUT to all servers...
+[ ... Completed in 0.046 seconds ]
+[OK]
+Waiting for 5 seconds for the cache to be cleared!
+[ ... TEST Completed in 77.816 seconds ]
+
+[ TEST Random Front-End Basic (PUT -> GET -> REM -> REM -> GET). Value Length = 8 Bytes ]
+TEST_PASSED
+
+[ TEST Random Front-End Basic (PUT -> GET -> REM -> REM -> GET). Value Length = 32 Bytes ]
+TEST_PASSED
+
+[ TEST Random Front-End Basic (PUT -> GET -> REM -> REM -> GET). Value Length = 512 Bytes ]
+TEST_PASSED
+
+[ TEST Random Front-End Basic (PUT -> GET -> REM -> REM -> GET). Value Length = 1024 Bytes ]
+TEST_PASSED
+[ ... TEST Completed in 0.217 seconds ]
+Sending WIPE-OUT to all servers...
+[ ... Completed in 0.018 seconds ]
+[OK]
+Waiting for 5 seconds for the cache to be cleared!
+[Info] Pausing for 6 seconds to wait for the cache to be cleared!
+
+[ TEST Random Front-End Performance (1 clients, 60.0 seconds): PUT -> GET (closed loop) ]
+[Test isAlive] for 15.223.112.199:15555
+[Test isAlive] for 15.223.112.199:15556
+[Test isAlive] for 15.223.112.199:15557
+[Test isAlive] for 15.223.112.199:15558
+[Test isAlive] for 15.223.112.199:15559
+[Test isAlive] for 15.223.112.199:15560
+[Test isAlive] for 15.223.112.199:15561
+[Test isAlive] for 15.223.112.199:15562
+[Test isAlive] for 15.223.112.199:15564
+[Test isAlive] for 15.223.112.199:15563
+[Test isAlive] for 15.223.112.199:15565
+[Test isAlive] for 15.223.112.199:15566
+[Test isAlive] for 15.223.112.199:15567
+[Test isAlive] for 15.223.112.199:15568
+[Test isAlive] for 15.223.112.199:15569
+[Test isAlive] for 15.223.112.199:15570
+[Test isAlive] for 15.223.112.199:15571
+[Test isAlive] for 15.223.112.199:15572
+[Test isAlive] for 15.223.112.199:15573
+[Test isAlive] for 15.223.112.199:15574
+[Test isAlive] for 15.223.112.199:15575
+[Test isAlive] for 15.223.112.199:15576
+[Test isAlive] for 15.223.112.199:15577
+[Test isAlive] for 15.223.112.199:15578
+[Test isAlive] for 15.223.112.199:15579
+[Test isAlive] for 15.223.112.199:15580
+[Test isAlive] for 15.223.112.199:15581
+[Test isAlive] for 15.223.112.199:15582
+[Test isAlive] for 15.223.112.199:15583
+[Test isAlive] for 15.223.112.199:15584
+[Test isAlive] for 15.223.112.199:15585
+[Test isAlive] for 15.223.112.199:15586
+[Test isAlive] for 15.223.112.199:15587
+[Test isAlive] for 15.223.112.199:15588
+[Test isAlive] for 15.223.112.199:15589
+[Test isAlive] for 15.223.112.199:15590
+[Test isAlive] for 15.223.112.199:15591
+[Test isAlive] for 15.223.112.199:15592
+[Test isAlive] for 15.223.112.199:15593
+[Test isAlive] for 15.223.112.199:15594
+[ ... Completed in 0.007 seconds ]
+TEST_PASSED
+Stage 1 Random Front-End: Test Status: TEST_PASSED
+Clients: 1
+Total Requests (without replies): 5699
+Total Requests (including replies): 5718
+Successful Responses: 5699
+Timeout Responses: 0
+Total Failed Responses: 0
+% Success: 100.0
+% Timeout: 0.0
+% Failed: 0.0
+Response Time (Successful requests):
+[max] 51ms, [min] 5ms
+[avg] 10.519740305316722 ms, [stdev] 2.4801202649172884ms
+Throughput: 94.97858440411312 requests per second
+Goodput: 94.97858440411312 requests per second
+Retry Rate (Successful requests): 1.0033339182312686
+Sending WIPE-OUT to all servers...
+[ ... Completed in 0.025 seconds ]
+[OK]
+Waiting for 5 seconds for the cache to be cleared!
+[ ... TEST Completed in 65.045 seconds ]
+[Info] Pausing for 6 seconds to wait for the cache to be cleared!
+
+[ TEST Random Front-End Performance (16 clients, 60.0 seconds): PUT -> GET (closed loop) ]
+[Test isAlive] for 15.223.112.199:15555
+[Test isAlive] for 15.223.112.199:15557
+[Test isAlive] for 15.223.112.199:15556
+[Test isAlive] for 15.223.112.199:15558
+[Test isAlive] for 15.223.112.199:15559
+[Test isAlive] for 15.223.112.199:15560
+[Test isAlive] for 15.223.112.199:15561
+[Test isAlive] for 15.223.112.199:15562
+[Test isAlive] for 15.223.112.199:15563
+[Test isAlive] for 15.223.112.199:15564
+[Test isAlive] for 15.223.112.199:15565
+[Test isAlive] for 15.223.112.199:15566
+[Test isAlive] for 15.223.112.199:15567
+[Test isAlive] for 15.223.112.199:15568
+[Test isAlive] for 15.223.112.199:15569
+[Test isAlive] for 15.223.112.199:15570
+[Test isAlive] for 15.223.112.199:15571
+[Test isAlive] for 15.223.112.199:15572
+[Test isAlive] for 15.223.112.199:15573
+[Test isAlive] for 15.223.112.199:15574
+[Test isAlive] for 15.223.112.199:15575
+[Test isAlive] for 15.223.112.199:15576
+[Test isAlive] for 15.223.112.199:15577
+[Test isAlive] for 15.223.112.199:15578
+[Test isAlive] for 15.223.112.199:15579
+[Test isAlive] for 15.223.112.199:15580
+[Test isAlive] for 15.223.112.199:15581
+[Test isAlive] for 15.223.112.199:15582
+[Test isAlive] for 15.223.112.199:15583
+[Test isAlive] for 15.223.112.199:15584
+[Test isAlive] for 15.223.112.199:15585
+[Test isAlive] for 15.223.112.199:15586
+[Test isAlive] for 15.223.112.199:15587
+[Test isAlive] for 15.223.112.199:15588
+[Test isAlive] for 15.223.112.199:15589
+[Test isAlive] for 15.223.112.199:15590
+[Test isAlive] for 15.223.112.199:15591
+[Test isAlive] for 15.223.112.199:15592
+[Test isAlive] for 15.223.112.199:15593
+[Test isAlive] for 15.223.112.199:15594
+[ ... Completed in 0.007 seconds ]
+TEST_PASSED
+Stage 1 Random Front-End: Test Status: TEST_PASSED
+Clients: 16
+Total Requests (without replies): 92292
+Total Requests (including replies): 92740
+Successful Responses: 92292
+Timeout Responses: 0
+Total Failed Responses: 0
+% Success: 100.0
+% Timeout: 0.0
+% Failed: 0.0
+Response Time (Successful requests):
+[max] 130ms, [min] 5ms
+[avg] 10.394248688943787 ms, [stdev] 2.9770370161342528ms
+Throughput: 1537.943676053991 requests per second
+Goodput: 1537.943676053991 requests per second
+Retry Rate (Successful requests): 1.0048541585402853
+Sending WIPE-OUT to all servers...
+[ ... Completed in 0.028 seconds ]
+[OK]
+Waiting for 5 seconds for the cache to be cleared!
+[ ... TEST Completed in 65.137 seconds ]
+[Info] Pausing for 6 seconds to wait for the cache to be cleared!
+
+[ TEST Random Front-End Performance (256 clients, 60.0 seconds): PUT -> GET (closed loop) ]
+[Test isAlive] for 15.223.112.199:15555
+[Test isAlive] for 15.223.112.199:15556
+[Test isAlive] for 15.223.112.199:15558
+[Test isAlive] for 15.223.112.199:15557
+[Test isAlive] for 15.223.112.199:15559
+[Test isAlive] for 15.223.112.199:15560
+[Test isAlive] for 15.223.112.199:15561
+[Test isAlive] for 15.223.112.199:15562
+[Test isAlive] for 15.223.112.199:15563
+[Test isAlive] for 15.223.112.199:15564
+[Test isAlive] for 15.223.112.199:15565
+[Test isAlive] for 15.223.112.199:15566
+[Test isAlive] for 15.223.112.199:15567
+[Test isAlive] for 15.223.112.199:15568
+[Test isAlive] for 15.223.112.199:15569
+[Test isAlive] for 15.223.112.199:15570
+[Test isAlive] for 15.223.112.199:15571
+[Test isAlive] for 15.223.112.199:15572
+[Test isAlive] for 15.223.112.199:15573
+[Test isAlive] for 15.223.112.199:15574
+[Test isAlive] for 15.223.112.199:15575
+[Test isAlive] for 15.223.112.199:15576
+[Test isAlive] for 15.223.112.199:15577
+[Test isAlive] for 15.223.112.199:15578
+[Test isAlive] for 15.223.112.199:15579
+[Test isAlive] for 15.223.112.199:15580
+[Test isAlive] for 15.223.112.199:15581
+[Test isAlive] for 15.223.112.199:15582
+[Test isAlive] for 15.223.112.199:15583
+[Test isAlive] for 15.223.112.199:15584
+[Test isAlive] for 15.223.112.199:15585
+[Test isAlive] for 15.223.112.199:15586
+[Test isAlive] for 15.223.112.199:15587
+[Test isAlive] for 15.223.112.199:15588
+[Test isAlive] for 15.223.112.199:15589
+[Test isAlive] for 15.223.112.199:15590
+[Test isAlive] for 15.223.112.199:15591
+[Test isAlive] for 15.223.112.199:15592
+[Test isAlive] for 15.223.112.199:15593
+[Test isAlive] for 15.223.112.199:15594
+[ ... Completed in 0.008 seconds ]
+TEST_PASSED
+[ CPU load (loadavg, last one minute) 1.36 ]
+Stage 1 Random Front-End: Test Status: TEST_PASSED
+Clients: 256
+Total Requests (without replies): 1477870
+Total Requests (including replies): 1485239
+Successful Responses: 1477870
+Timeout Responses: 0
+Total Failed Responses: 0
+% Success: 100.0
+% Timeout: 0.0
+% Failed: 0.0
+Response Time (Successful requests):
+[max] 131ms, [min] 5ms
+[avg] 10.383066846204335 ms, [stdev] 3.0364319917354274ms
+Throughput: 24612.70713631443 requests per second
+Goodput: 24612.70713631443 requests per second
+Retry Rate (Successful requests): 1.0049862301826278
+Sending WIPE-OUT to all servers...
+[ ... Completed in 0.161 seconds ]
+[OK]
+Waiting for 5 seconds for the cache to be cleared!
+[ ... TEST Completed in 65.617 seconds ]
+[Info] Pausing for 6 seconds to wait for the cache to be cleared!
+
+[ TEST Random Front-End Performance (512 clients, 60.0 seconds): PUT -> GET (closed loop) ]
+[Test isAlive] for 15.223.112.199:15555
+[Test isAlive] for 15.223.112.199:15556
+[Test isAlive] for 15.223.112.199:15558
+[Test isAlive] for 15.223.112.199:15557
+[Test isAlive] for 15.223.112.199:15559
+[Test isAlive] for 15.223.112.199:15560
+[Test isAlive] for 15.223.112.199:15561
+[Test isAlive] for 15.223.112.199:15562
+[Test isAlive] for 15.223.112.199:15563
+[Test isAlive] for 15.223.112.199:15564
+[Test isAlive] for 15.223.112.199:15565
+[Test isAlive] for 15.223.112.199:15566
+[Test isAlive] for 15.223.112.199:15567
+[Test isAlive] for 15.223.112.199:15568
+[Test isAlive] for 15.223.112.199:15569
+[Test isAlive] for 15.223.112.199:15570
+[Test isAlive] for 15.223.112.199:15571
+[Test isAlive] for 15.223.112.199:15572
+[Test isAlive] for 15.223.112.199:15573
+[Test isAlive] for 15.223.112.199:15574
+[Test isAlive] for 15.223.112.199:15575
+[Test isAlive] for 15.223.112.199:15576
+[Test isAlive] for 15.223.112.199:15577
+[Test isAlive] for 15.223.112.199:15578
+[Test isAlive] for 15.223.112.199:15579
+[Test isAlive] for 15.223.112.199:15580
+[Test isAlive] for 15.223.112.199:15581
+[Test isAlive] for 15.223.112.199:15582
+[Test isAlive] for 15.223.112.199:15583
+[Test isAlive] for 15.223.112.199:15584
+[Test isAlive] for 15.223.112.199:15585
+[Test isAlive] for 15.223.112.199:15586
+[Test isAlive] for 15.223.112.199:15587
+[Test isAlive] for 15.223.112.199:15588
+[Test isAlive] for 15.223.112.199:15589
+[Test isAlive] for 15.223.112.199:15590
+[Test isAlive] for 15.223.112.199:15591
+[Test isAlive] for 15.223.112.199:15592
+[Test isAlive] for 15.223.112.199:15593
+[Test isAlive] for 15.223.112.199:15594
+[ ... Completed in 0.007 seconds ]
+TEST_PASSED
+[ CPU load (loadavg, last one minute) 2.28 ]
+Stage 1 Random Front-End: Test Status: TEST_PASSED
+Clients: 512
+Total Requests (without replies): 2943878
+Total Requests (including replies): 2958472
+Successful Responses: 2943878
+Timeout Responses: 0
+Total Failed Responses: 0
+% Success: 100.0
+% Timeout: 0.0
+% Failed: 0.0
+Response Time (Successful requests):
+[max] 133ms, [min] 5ms
+[avg] 10.42301888869036 ms, [stdev] 3.090109834751679ms
+Throughput: 49027.86243650595 requests per second
+Goodput: 49027.86243650595 requests per second
+Retry Rate (Successful requests): 1.0049574065229605
+Sending WIPE-OUT to all servers...
+[ ... Completed in 0.345 seconds ]
+[OK]
+Waiting for 5 seconds for the cache to be cleared!
+[ ... TEST Completed in 66.259 seconds ]
+[Info] Pausing for 6 seconds to wait for the cache to be cleared!
+
+[ TEST Random Front-End Performance (1024 clients, 60.0 seconds): PUT -> GET (closed loop) ]
+[Test isAlive] for 15.223.112.199:15556
+[Test isAlive] for 15.223.112.199:15555
+[Test isAlive] for 15.223.112.199:15559
+[Test isAlive] for 15.223.112.199:15557
+[Test isAlive] for 15.223.112.199:15560
+[Test isAlive] for 15.223.112.199:15558
+[Test isAlive] for 15.223.112.199:15561
+[Test isAlive] for 15.223.112.199:15562
+[Test isAlive] for 15.223.112.199:15563
+[Test isAlive] for 15.223.112.199:15564
+[Test isAlive] for 15.223.112.199:15565
+[Test isAlive] for 15.223.112.199:15566
+[Test isAlive] for 15.223.112.199:15567
+[Test isAlive] for 15.223.112.199:15568
+[Test isAlive] for 15.223.112.199:15569
+[Test isAlive] for 15.223.112.199:15570
+[Test isAlive] for 15.223.112.199:15571
+[Test isAlive] for 15.223.112.199:15572
+[Test isAlive] for 15.223.112.199:15573
+[Test isAlive] for 15.223.112.199:15574
+[Test isAlive] for 15.223.112.199:15575
+[Test isAlive] for 15.223.112.199:15576
+[Test isAlive] for 15.223.112.199:15577
+[Test isAlive] for 15.223.112.199:15578
+[Test isAlive] for 15.223.112.199:15579
+[Test isAlive] for 15.223.112.199:15580
+[Test isAlive] for 15.223.112.199:15581
+[Test isAlive] for 15.223.112.199:15582
+[Test isAlive] for 15.223.112.199:15583
+[Test isAlive] for 15.223.112.199:15584
+[Test isAlive] for 15.223.112.199:15585
+[Test isAlive] for 15.223.112.199:15586
+[Test isAlive] for 15.223.112.199:15587
+[Test isAlive] for 15.223.112.199:15588
+[Test isAlive] for 15.223.112.199:15589
+[Test isAlive] for 15.223.112.199:15590
+[Test isAlive] for 15.223.112.199:15591
+[Test isAlive] for 15.223.112.199:15592
+[Test isAlive] for 15.223.112.199:15593
+[Test isAlive] for 15.223.112.199:15594
+[ ... Completed in 0.007 seconds ]
+TEST_PASSED
+[ CPU load (loadavg, last one minute) 3.32 ]
+Stage 1 Random Front-End: Test Status: TEST_PASSED
+Clients: 1024
+Total Requests (without replies): 5711497
+Total Requests (including replies): 5750379
+Successful Responses: 5711497
+Timeout Responses: 0
+Total Failed Responses: 0
+% Success: 100.0
+% Timeout: 0.0
+% Failed: 0.0
+Response Time (Successful requests):
+[max] 539ms, [min] 5ms
+[avg] 10.73948563747823 ms, [stdev] 4.763862528587292ms
+Throughput: 95123.44486451376 requests per second
+Goodput: 95123.44486451376 requests per second
+Retry Rate (Successful requests): 1.0068076723142811
+Sending WIPE-OUT to all servers...
+[ ... Completed in 0.783 seconds ]
+[OK]
+Waiting for 5 seconds for the cache to be cleared!
+[ ... TEST Completed in 67.419 seconds ]
+[Info] Pausing for 6 seconds to wait for the cache to be cleared!
+
+[ TEST Concurrent Store/Load v2; Stage 0; (Clients = 64, Limit = 40000 PUTs) ]
+Issuing PUTS ... 
+[DONE in 6.665s]
+[Info] Concurrent Store/Load v2; Stage 0; PUT Phase; Of 40000 stored keys: 40000 SUCCESS, 0 TIMEOUT, 0 KEY-NOT-FOUND, 0 ERROR-UID, 0 ERROR-INVALID-GET (value or version), 0 ERROR-OTHER.
+[Info] Concurrent Store/Load v2; Stage 0; PUT Phase; Expected Key Loss: 0.0%. Actual Key Loss: 0.0%
+[Info] Concurrent Store/Load v2; Stage 0; PUT Phase; Total Value Size (MiB): 19.053218841552734 MiB.
+[Info] Concurrent Store/Load v2; Stage 0; PUT Phase; SUCCESS Response Count: 40000.0.
+[Info] Concurrent Store/Load v2; Stage 0; PUT Phase; % SUCCESS: 100.0%.
+[Info] Concurrent Store/Load v2; Stage 0; PUT Phase; % FAILED (Not SUCCESS): 0.0%.
+[Info] Concurrent Store/Load v2; Stage 0; PUT Phase; % TIMEOUT: 0.0%.
+[Info] Concurrent Store/Load v2; Stage 0; PUT Phase; % KEY-NOT-FOUND: 0.0%.
+[Info] Concurrent Store/Load v2; Stage 0; PUT Phase; % ERROR-UID: 0.0%.
+[Info] Concurrent Store/Load v2; Stage 0; PUT Phase; % ERROR-INVALID-GET (value or version): 0.0%.
+[Info] Concurrent Store/Load v2; Stage 0; PUT Phase; % ERROR-OTHER: 0.0%.
+[Info] PUTs % SUCCESS Ok: 100.0% Success.(90.0% minimum required).
+Confirming keys were stored correctly.
+Issuing GETs ... 
+[DONE in 6.656s]
+[Info] Concurrent Store/Load v2; Stage 0; GET Phase; Of 40000 stored keys: 40000 SUCCESS, 0 TIMEOUT, 0 KEY-NOT-FOUND, 0 ERROR-UID, 0 ERROR-INVALID-GET (value or version), 0 ERROR-OTHER.
+[Info] Concurrent Store/Load v2; Stage 0; GET Phase; Expected Key Loss: 0.0%. Actual Key Loss: 0.0%
+[Info] Concurrent Store/Load v2; Stage 0; GET Phase; Total Value Size (MiB): 19.053218841552734 MiB.
+[Info] Concurrent Store/Load v2; Stage 0; GET Phase; SUCCESS Response Count: 40000.0.
+[Info] Concurrent Store/Load v2; Stage 0; GET Phase; % SUCCESS: 100.0%.
+[Info] Concurrent Store/Load v2; Stage 0; GET Phase; % FAILED (Not SUCCESS): 0.0%.
+[Info] Concurrent Store/Load v2; Stage 0; GET Phase; % TIMEOUT: 0.0%.
+[Info] Concurrent Store/Load v2; Stage 0; GET Phase; % KEY-NOT-FOUND: 0.0%.
+[Info] Concurrent Store/Load v2; Stage 0; GET Phase; % ERROR-UID: 0.0%.
+[Info] Concurrent Store/Load v2; Stage 0; GET Phase; % ERROR-INVALID-GET (value or version): 0.0%.
+[Info] Concurrent Store/Load v2; Stage 0; GET Phase; % ERROR-OTHER: 0.0%.
+[Info] GETs % SUCCESS Ok: 100.0% Success.(90.0% minimum required).
+Checking that 40 nodes are alive
+[Test isAlive] for 15.223.112.199:15555
+[Test isAlive] for 15.223.112.199:15556
+[Test isAlive] for 15.223.112.199:15557
+[Test isAlive] for 15.223.112.199:15558
+[Test isAlive] for 15.223.112.199:15559
+[Test isAlive] for 15.223.112.199:15560
+[Test isAlive] for 15.223.112.199:15561
+[Test isAlive] for 15.223.112.199:15562
+[Test isAlive] for 15.223.112.199:15563
+[Test isAlive] for 15.223.112.199:15564
+[Test isAlive] for 15.223.112.199:15565
+[Test isAlive] for 15.223.112.199:15566
+[Test isAlive] for 15.223.112.199:15567
+[Test isAlive] for 15.223.112.199:15568
+[Test isAlive] for 15.223.112.199:15569
+[Test isAlive] for 15.223.112.199:15570
+[Test isAlive] for 15.223.112.199:15571
+[Test isAlive] for 15.223.112.199:15572
+[Test isAlive] for 15.223.112.199:15573
+[Test isAlive] for 15.223.112.199:15574
+[Test isAlive] for 15.223.112.199:15575
+[Test isAlive] for 15.223.112.199:15576
+[Test isAlive] for 15.223.112.199:15577
+[Test isAlive] for 15.223.112.199:15578
+[Test isAlive] for 15.223.112.199:15579
+[Test isAlive] for 15.223.112.199:15580
+[Test isAlive] for 15.223.112.199:15581
+[Test isAlive] for 15.223.112.199:15582
+[Test isAlive] for 15.223.112.199:15583
+[Test isAlive] for 15.223.112.199:15584
+[Test isAlive] for 15.223.112.199:15585
+[Test isAlive] for 15.223.112.199:15586
+[Test isAlive] for 15.223.112.199:15587
+[Test isAlive] for 15.223.112.199:15588
+[Test isAlive] for 15.223.112.199:15589
+[Test isAlive] for 15.223.112.199:15590
+[Test isAlive] for 15.223.112.199:15591
+[Test isAlive] for 15.223.112.199:15592
+[Test isAlive] for 15.223.112.199:15593
+[Test isAlive] for 15.223.112.199:15594
+[ ... Completed in 0.007 seconds ]
+TEST_PASSED
+[ ... TEST Completed in 13.338 seconds ]
+
+[Info] Preparing for Stage 1 of the Suspend Test
+[Info] To suspend 24 node(s) in Stage 1.
+[Info] Will suspend 15.223.112.199:15576
+[Info] Will suspend 15.223.112.199:15564
+[Info] Will suspend 15.223.112.199:15579
+[Info] Will suspend 15.223.112.199:15590
+[Info] Will keep alive 15.223.112.199:15584
+[Info] Will keep alive 15.223.112.199:15582
+[Info] Will keep alive 15.223.112.199:15587
+[Info] Will keep alive 15.223.112.199:15571
+[Info] Will keep alive 15.223.112.199:15591
+[Info] Will keep alive 15.223.112.199:15585
+[Info] Will keep alive 15.223.112.199:15565
+[Info] Will keep alive 15.223.112.199:15572
+[Info] Will keep alive 15.223.112.199:15589
+[Info] Will keep alive 15.223.112.199:15593
+[Info] Will keep alive 15.223.112.199:15578
+[Info] Will keep alive 15.223.112.199:15562
+[Info] Will keep alive 15.223.112.199:15583
+[Info] Will keep alive 15.223.112.199:15575
+[Info] Will keep alive 15.223.112.199:15555
+[Info] Will keep alive 15.223.112.199:15574
+[Info] Will keep alive 15.223.112.199:15568
+[Info] Will keep alive 15.223.112.199:15559
+[Info] Will keep alive 15.223.112.199:15594
+[Info] Will keep alive 15.223.112.199:15577
+[Info] Will keep alive 15.223.112.199:15567
+[Info] Will keep alive 15.223.112.199:15566
+[Info] Will keep alive 15.223.112.199:15586
+[Info] Will keep alive 15.223.112.199:15560
+[Info] Will keep alive 15.223.112.199:15558
+[Info] Will keep alive 15.223.112.199:15570
+[Info] Will keep alive 15.223.112.199:15557
+[Info] Will keep alive 15.223.112.199:15556
+[Info] Will keep alive 15.223.112.199:15569
+[Info] Will keep alive 15.223.112.199:15581
+[Info] Will keep alive 15.223.112.199:15561
+[Info] Will keep alive 15.223.112.199:15580
+[Info] Will keep alive 15.223.112.199:15563
+[Info] Will keep alive 15.223.112.199:15588
+[Info] Will keep alive 15.223.112.199:15573
+[Info] Will keep alive 15.223.112.199:15592
+Waiting 10 seconds before suspending nodes
+[Info] Suspending 4 servers.
+Server 15.223.112.199:15564 suspended
+Server 15.223.112.199:15590 suspended
+Server 15.223.112.199:15576 suspended
+Server 15.223.112.199:15579 suspended
+[ ... Completed in 5.035 seconds ]
+Waiting 60 seconds after suspending nodes
+[Info] Stage 1 Scenario: Alive Nodes: 36. Dead Nodes: 4
+[Info] Will suspend 15.223.112.199:15584
+[Info] Will suspend 15.223.112.199:15582
+[Info] Will suspend 15.223.112.199:15587
+[Info] Will suspend 15.223.112.199:15571
+[Info] Will keep alive 15.223.112.199:15591
+[Info] Will keep alive 15.223.112.199:15585
+[Info] Will keep alive 15.223.112.199:15565
+[Info] Will keep alive 15.223.112.199:15572
+[Info] Will keep alive 15.223.112.199:15589
+[Info] Will keep alive 15.223.112.199:15593
+[Info] Will keep alive 15.223.112.199:15578
+[Info] Will keep alive 15.223.112.199:15562
+[Info] Will keep alive 15.223.112.199:15583
+[Info] Will keep alive 15.223.112.199:15575
+[Info] Will keep alive 15.223.112.199:15555
+[Info] Will keep alive 15.223.112.199:15574
+[Info] Will keep alive 15.223.112.199:15568
+[Info] Will keep alive 15.223.112.199:15559
+[Info] Will keep alive 15.223.112.199:15594
+[Info] Will keep alive 15.223.112.199:15577
+[Info] Will keep alive 15.223.112.199:15567
+[Info] Will keep alive 15.223.112.199:15566
+[Info] Will keep alive 15.223.112.199:15586
+[Info] Will keep alive 15.223.112.199:15560
+[Info] Will keep alive 15.223.112.199:15558
+[Info] Will keep alive 15.223.112.199:15570
+[Info] Will keep alive 15.223.112.199:15557
+[Info] Will keep alive 15.223.112.199:15556
+[Info] Will keep alive 15.223.112.199:15569
+[Info] Will keep alive 15.223.112.199:15581
+[Info] Will keep alive 15.223.112.199:15561
+[Info] Will keep alive 15.223.112.199:15580
+[Info] Will keep alive 15.223.112.199:15563
+[Info] Will keep alive 15.223.112.199:15588
+[Info] Will keep alive 15.223.112.199:15573
+[Info] Will keep alive 15.223.112.199:15592
+Waiting 10 seconds before suspending nodes
+[Info] Suspending 4 servers.
+Server 15.223.112.199:15571 suspended
+Server 15.223.112.199:15582 suspended
+Server 15.223.112.199:15587 suspended
+Server 15.223.112.199:15584 suspended
+[ ... Completed in 5.041 seconds ]
+Waiting 60 seconds after suspending nodes
+[Info] Stage 1 Scenario: Alive Nodes: 32. Dead Nodes: 8
+[Info] Will suspend 15.223.112.199:15591
+[Info] Will suspend 15.223.112.199:15585
+[Info] Will suspend 15.223.112.199:15565
+[Info] Will suspend 15.223.112.199:15572
+[Info] Will keep alive 15.223.112.199:15589
+[Info] Will keep alive 15.223.112.199:15593
+[Info] Will keep alive 15.223.112.199:15578
+[Info] Will keep alive 15.223.112.199:15562
+[Info] Will keep alive 15.223.112.199:15583
+[Info] Will keep alive 15.223.112.199:15575
+[Info] Will keep alive 15.223.112.199:15555
+[Info] Will keep alive 15.223.112.199:15574
+[Info] Will keep alive 15.223.112.199:15568
+[Info] Will keep alive 15.223.112.199:15559
+[Info] Will keep alive 15.223.112.199:15594
+[Info] Will keep alive 15.223.112.199:15577
+[Info] Will keep alive 15.223.112.199:15567
+[Info] Will keep alive 15.223.112.199:15566
+[Info] Will keep alive 15.223.112.199:15586
+[Info] Will keep alive 15.223.112.199:15560
+[Info] Will keep alive 15.223.112.199:15558
+[Info] Will keep alive 15.223.112.199:15570
+[Info] Will keep alive 15.223.112.199:15557
+[Info] Will keep alive 15.223.112.199:15556
+[Info] Will keep alive 15.223.112.199:15569
+[Info] Will keep alive 15.223.112.199:15581
+[Info] Will keep alive 15.223.112.199:15561
+[Info] Will keep alive 15.223.112.199:15580
+[Info] Will keep alive 15.223.112.199:15563
+[Info] Will keep alive 15.223.112.199:15588
+[Info] Will keep alive 15.223.112.199:15573
+[Info] Will keep alive 15.223.112.199:15592
+Waiting 10 seconds before suspending nodes
+[Info] Suspending 4 servers.
+Server 15.223.112.199:15591 suspended
+Server 15.223.112.199:15572 suspended
+Server 15.223.112.199:15565 suspended
+Server 15.223.112.199:15585 suspended
+[ ... Completed in 5.03 seconds ]
+Waiting 60 seconds after suspending nodes
+[Info] Stage 1 Scenario: Alive Nodes: 28. Dead Nodes: 12
+[Info] Will suspend 15.223.112.199:15589
+[Info] Will suspend 15.223.112.199:15593
+[Info] Will suspend 15.223.112.199:15578
+[Info] Will suspend 15.223.112.199:15562
+[Info] Will keep alive 15.223.112.199:15583
+[Info] Will keep alive 15.223.112.199:15575
+[Info] Will keep alive 15.223.112.199:15555
+[Info] Will keep alive 15.223.112.199:15574
+[Info] Will keep alive 15.223.112.199:15568
+[Info] Will keep alive 15.223.112.199:15559
+[Info] Will keep alive 15.223.112.199:15594
+[Info] Will keep alive 15.223.112.199:15577
+[Info] Will keep alive 15.223.112.199:15567
+[Info] Will keep alive 15.223.112.199:15566
+[Info] Will keep alive 15.223.112.199:15586
+[Info] Will keep alive 15.223.112.199:15560
+[Info] Will keep alive 15.223.112.199:15558
+[Info] Will keep alive 15.223.112.199:15570
+[Info] Will keep alive 15.223.112.199:15557
+[Info] Will keep alive 15.223.112.199:15556
+[Info] Will keep alive 15.223.112.199:15569
+[Info] Will keep alive 15.223.112.199:15581
+[Info] Will keep alive 15.223.112.199:15561
+[Info] Will keep alive 15.223.112.199:15580
+[Info] Will keep alive 15.223.112.199:15563
+[Info] Will keep alive 15.223.112.199:15588
+[Info] Will keep alive 15.223.112.199:15573
+[Info] Will keep alive 15.223.112.199:15592
+Waiting 10 seconds before suspending nodes
+[Info] Suspending 4 servers.
+Server 15.223.112.199:15593 suspended
+Server 15.223.112.199:15578 suspended
+Server 15.223.112.199:15562 suspended
+Server 15.223.112.199:15589 suspended
+[ ... Completed in 5.004 seconds ]
+Waiting 60 seconds after suspending nodes
+[Info] Stage 1 Scenario: Alive Nodes: 24. Dead Nodes: 16
+[Info] Will suspend 15.223.112.199:15583
+[Info] Will suspend 15.223.112.199:15575
+[Info] Will suspend 15.223.112.199:15555
+[Info] Will suspend 15.223.112.199:15574
+[Info] Will keep alive 15.223.112.199:15568
+[Info] Will keep alive 15.223.112.199:15559
+[Info] Will keep alive 15.223.112.199:15594
+[Info] Will keep alive 15.223.112.199:15577
+[Info] Will keep alive 15.223.112.199:15567
+[Info] Will keep alive 15.223.112.199:15566
+[Info] Will keep alive 15.223.112.199:15586
+[Info] Will keep alive 15.223.112.199:15560
+[Info] Will keep alive 15.223.112.199:15558
+[Info] Will keep alive 15.223.112.199:15570
+[Info] Will keep alive 15.223.112.199:15557
+[Info] Will keep alive 15.223.112.199:15556
+[Info] Will keep alive 15.223.112.199:15569
+[Info] Will keep alive 15.223.112.199:15581
+[Info] Will keep alive 15.223.112.199:15561
+[Info] Will keep alive 15.223.112.199:15580
+[Info] Will keep alive 15.223.112.199:15563
+[Info] Will keep alive 15.223.112.199:15588
+[Info] Will keep alive 15.223.112.199:15573
+[Info] Will keep alive 15.223.112.199:15592
+Waiting 10 seconds before suspending nodes
+[Info] Suspending 4 servers.
+Server 15.223.112.199:15574 suspended
+Server 15.223.112.199:15583 suspended
+Server 15.223.112.199:15575 suspended
+Server 15.223.112.199:15555 suspended
+[ ... Completed in 5.308 seconds ]
+Waiting 60 seconds after suspending nodes
+[Info] Stage 1 Scenario: Alive Nodes: 20. Dead Nodes: 20
+[Info] Will suspend 15.223.112.199:15568
+[Info] Will suspend 15.223.112.199:15559
+[Info] Will suspend 15.223.112.199:15594
+[Info] Will suspend 15.223.112.199:15577
+[Info] Will keep alive 15.223.112.199:15567
+[Info] Will keep alive 15.223.112.199:15566
+[Info] Will keep alive 15.223.112.199:15586
+[Info] Will keep alive 15.223.112.199:15560
+[Info] Will keep alive 15.223.112.199:15558
+[Info] Will keep alive 15.223.112.199:15570
+[Info] Will keep alive 15.223.112.199:15557
+[Info] Will keep alive 15.223.112.199:15556
+[Info] Will keep alive 15.223.112.199:15569
+[Info] Will keep alive 15.223.112.199:15581
+[Info] Will keep alive 15.223.112.199:15561
+[Info] Will keep alive 15.223.112.199:15580
+[Info] Will keep alive 15.223.112.199:15563
+[Info] Will keep alive 15.223.112.199:15588
+[Info] Will keep alive 15.223.112.199:15573
+[Info] Will keep alive 15.223.112.199:15592
+Waiting 10 seconds before suspending nodes
+[Info] Suspending 4 servers.
+Server 15.223.112.199:15594 suspended
+Server 15.223.112.199:15568 suspended
+Server 15.223.112.199:15559 suspended
+Server 15.223.112.199:15577 suspended
+[ ... Completed in 5.321 seconds ]
+Waiting 60 seconds after suspending nodes
+[Info] Stage 1 Scenario: Alive Nodes: 16. Dead Nodes: 24
+
+
+[ TEST Suspend Verify v2; Stage 1; Key Recovery; ]
+Checking that 24 nodes are suspended
+[Test isAlive] for 15.223.112.199:15576
+[Test isAlive] for 15.223.112.199:15564
+[Test isAlive] for 15.223.112.199:15579
+[Test isAlive] for 15.223.112.199:15590
+[Test isAlive] for 15.223.112.199:15584
+[Test isAlive] for 15.223.112.199:15582
+[Test isAlive] for 15.223.112.199:15587
+[Test isAlive] for 15.223.112.199:15571
+[Test isAlive] for 15.223.112.199:15591
+[Test isAlive] for 15.223.112.199:15585
+[Test isAlive] for 15.223.112.199:15565
+[Test isAlive] for 15.223.112.199:15572
+[Test isAlive] for 15.223.112.199:15589
+[Test isAlive] for 15.223.112.199:15593
+[Test isAlive] for 15.223.112.199:15578
+[Test isAlive] for 15.223.112.199:15562
+[Test isAlive] for 15.223.112.199:15583
+[Test isAlive] for 15.223.112.199:15575
+[Test isAlive] for 15.223.112.199:15555
+[Test isAlive] for 15.223.112.199:15574
+[Test isAlive] for 15.223.112.199:15568
+[Test isAlive] for 15.223.112.199:15559
+[Test isAlive] for 15.223.112.199:15594
+[Test isAlive] for 15.223.112.199:15577
+[ ... Completed in 10.002 seconds ]
+Checking that 16 nodes are alive
+[Test isAlive] for 15.223.112.199:15567
+[Test isAlive] for 15.223.112.199:15566
+[Test isAlive] for 15.223.112.199:15558
+[Test isAlive] for 15.223.112.199:15570
+[Test isAlive] for 15.223.112.199:15560
+[Test isAlive] for 15.223.112.199:15586
+[Test isAlive] for 15.223.112.199:15556
+[Test isAlive] for 15.223.112.199:15557
+[Test isAlive] for 15.223.112.199:15569
+[Test isAlive] for 15.223.112.199:15581
+[Test isAlive] for 15.223.112.199:15561
+[Test isAlive] for 15.223.112.199:15580
+[Test isAlive] for 15.223.112.199:15563
+[Test isAlive] for 15.223.112.199:15588
+[Test isAlive] for 15.223.112.199:15573
+[Test isAlive] for 15.223.112.199:15592
+[ ... Completed in 0.006 seconds ]
+Sending GetMembershipCount to all servers... 
+[Info] Server 15.223.112.199:15566 replied with membership count = 40 (expected count = 16)
+[Info] Server 15.223.112.199:15558 replied with membership count = 40 (expected count = 16)
+[Info] Server 15.223.112.199:15557 replied with membership count = 40 (expected count = 16)
+[Info] Server 15.223.112.199:15560 replied with membership count = 40 (expected count = 16)
+[Info] Server 15.223.112.199:15567 replied with membership count = 40 (expected count = 16)
+[Info] Server 15.223.112.199:15581 replied with membership count = 40 (expected count = 16)
+[Info] Server 15.223.112.199:15580 replied with membership count = 40 (expected count = 16)
+[Info] Server 15.223.112.199:15588 replied with membership count = 40 (expected count = 16)
+[Info] Server 15.223.112.199:15586 replied with membership count = 40 (expected count = 16)
+[Info] Server 15.223.112.199:15556 replied with membership count = 40 (expected count = 16)
+[Info] Server 15.223.112.199:15570 replied with membership count = 40 (expected count = 16)
+[Info] Server 15.223.112.199:15561 replied with membership count = 40 (expected count = 16)
+[Info] Server 15.223.112.199:15569 replied with membership count = 40 (expected count = 16)
+[Info] Server 15.223.112.199:15563 replied with membership count = 40 (expected count = 16)
+[Info] Server 15.223.112.199:15592 replied with membership count = 40 (expected count = 16)
+[Info] Server 15.223.112.199:15573 replied with membership count = 40 (expected count = 16)
+[ ... Completed in 0.053 seconds ]
+[Error] Not all servers returned the expected membership count (16)
+[Error] Servers Membership Count retrieval was unsuccessful. Aborting.
+TEST_FAILED
+[Error] Suspend/Resume test failed at Stage 1. Aborting.
+Testing completed in 1313.499s
