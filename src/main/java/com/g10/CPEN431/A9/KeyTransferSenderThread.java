@@ -64,7 +64,7 @@ public class KeyTransferSenderThread extends Thread {
         // 3. if success, delete
         // 4. if failure, mark host as failed
 
-        Logger.log("Sending %s key with hash <%d> ", message.host, message.entry.getKey().hashCode());
+        Logger.log("Sending %s key '%s' ", message.host, message.entry.getKey().toStringUtf8());
 
         byte[] requestPayload = generateKVRequest(message.entry);
         KeyValueResponse.KVResponse response;
@@ -88,7 +88,7 @@ public class KeyTransferSenderThread extends Thread {
     }
 
     private void sendRequest(KeyTransfer message) {
-        Logger.log("Sending replica to %s... ", message.host);
+        Logger.log("Sending '%s' replica to %s... ", message.request.getKey().toStringUtf8(), message.host);
 
         KeyValueResponse.KVResponse response;
 

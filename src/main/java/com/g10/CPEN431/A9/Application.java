@@ -124,6 +124,9 @@ public class Application implements Callable<Application.ApplicationResponse> {
 
         // TODO: do some error checking
 
+        Logger.log("Putting '%s' locally%s!%n", request.getKey().toStringUtf8(),
+            (isReplication() ? " (replicated)" : ""));
+
         KeyValueStore.getInstance().put(
             request.getKey(),
             request.getValue(),
@@ -142,6 +145,7 @@ public class Application implements Callable<Application.ApplicationResponse> {
 
             response.setValue(value.value).setVersion(value.version);
         } catch (KeyValueStore.NoKeyError e) {
+            Logger.log("Missing key '%s'%n", request.getKey().toStringUtf8());
             response.setErrCode(Codes.Errs.KEY_DOES_NOT_EXIST);
         }
     }

@@ -12,6 +12,6 @@ public class ReceiveHeartbeatHandler {
             nodePool.updateTimeStampFromId(heartbeat.getId(), heartbeat.getEpochMillis());
         }
 
-        Logger.log("Updated heartbeats.");
+        // Logger.log("Updated heartbeats.");
     }
 }

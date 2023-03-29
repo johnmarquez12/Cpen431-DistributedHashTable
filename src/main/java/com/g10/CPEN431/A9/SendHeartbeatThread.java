@@ -40,11 +40,11 @@ public class SendHeartbeatThread extends Thread {
             Host host = nodePool.getHostFromIndex(destNode);
 
             try {
-                Logger.log("Sending heartbeat to "+host + ":  "+nodePool.getAllHeartbeats());
+//                Logger.log("Sending heartbeat to "+host + ":  "+nodePool.getAllHeartbeats());
                 InternalClient.sendRequest(generateHeartbeatPayload(), host);
             } catch (IOException e) {
-                System.err.println("Uh oh! Problem sending internal request");
-                System.err.println(e.getMessage());
+                Logger.err("Uh oh! Problem sending internal request");
+                Logger.err(e.getMessage());
             }
 
             try {

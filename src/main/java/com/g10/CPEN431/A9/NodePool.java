@@ -16,7 +16,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class NodePool {
 
     private static NodePool INSTANCE;
-    public static final int CIRCLE_SIZE = 128;
+    public static final int CIRCLE_SIZE = 512;
 
     private static final int REPLICATION_FACTOR = 4;
     private KeyTransferHandler keyTransferer;
@@ -151,6 +151,8 @@ public class NodePool {
 
         for (int i = 0; i < REPLICATION_FACTOR - 1; i++) {
             Map.Entry<Integer, Host> entry = getEntryFromId(nextNodeId);
+            // should never include "id", or duplicates.
+            if(entry.getKey() == id) break;
             replicas.add(entry);
             nextNodeId = entry.getKey() + 1;
         }
@@ -199,11 +201,10 @@ public class NodePool {
     }
 
     private void rejoined(Heartbeat hb) {
-        if (shouldHandleTransfer(hb)) {
-            keyTransferer.sendKeys(hb.host, hb.id);
-        } else {
+        if(!shouldHandleTransfer(hb)) {
             List<Map.Entry<Integer, Host>> oldReplicasFromHb = getReplicasForId(getIdFromKey(hb.id));
             if(oldReplicasFromHb.get(oldReplicasFromHb.size()-1).getKey() == myId) {
+                Logger.log("Deleting unnecessary replicas since server "+hb.host.port + " rejoined.");
                 KeyValueStore.getInstance().deleteKeysForNodeWithId(hb.id);
             }
         }
@@ -213,6 +214,11 @@ public class NodePool {
         // belong to the rejoining node. If I am that node, handle it.
         hb.deleted = false;
         Logger.log("Server "+hb.id+" has tried to rejoin");
+
+        if (shouldHandleTransfer(hb)) {
+            Logger.log("Previous server rejoined.");
+            keyTransferer.sendKeys(hb.host, hb.id);
+        }
     }
 
     /**
@@ -241,13 +247,18 @@ public class NodePool {
         List<Map.Entry<Integer, Host>> myReplicaNodes = getMyReplicaNodes();
         if(myReplicaNodes.stream().map(Map.Entry::getKey).anyMatch(id -> id == hb.id)) {
             Host newReplica = getHostFromId(myReplicaNodes.get(myReplicaNodes.size()-1).getKey() + 1);
-            keyTransferer.sendKeys(newReplica, myId);
+            if(!newReplica.equals(getMyHost())) {
+                Logger.log("Our replica (" + hb.host.port +
+                    ") has died. New replica is " + newReplica.port);
+                keyTransferer.sendKeys(newReplica, myId);
+            }
         }
 
         /* If we are the first replica of the removed node, we need to send
            our copies of the removed nodes stuff to a new replica.
          */
         if(shouldHandleTransfer(hb)) {
+            Logger.log("Previous node died. Take over as master and send replicas to new node");
             keyTransferer.sendKeys(myReplicaNodes.get(myReplicaNodes.size()-1).getValue(), hb.id);
         }
 

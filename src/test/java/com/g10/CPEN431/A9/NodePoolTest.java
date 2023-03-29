@@ -43,7 +43,7 @@ public class NodePoolTest {
         assertEquals(servers.get(2),
             NodePool.getInstance().getHostFromId(NodePool.CIRCLE_SIZE/3 + 5));
         assertEquals(servers.get(0),
-            NodePool.getInstance().getHostFromId(NodePool.CIRCLE_SIZE - 1));
+            NodePool.getInstance().getHostFromId(NodePool.CIRCLE_SIZE));
     }
 
     @Test
