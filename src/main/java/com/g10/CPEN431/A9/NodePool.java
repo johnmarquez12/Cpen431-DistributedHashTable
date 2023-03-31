@@ -18,7 +18,7 @@ public class NodePool {
     private static NodePool INSTANCE;
     public static final int CIRCLE_SIZE = 512;
 
-    private static final int REPLICATION_FACTOR = 4;
+    public static final int REPLICATION_FACTOR = 4;
     private KeyTransferHandler keyTransferer;
 
     public static class Heartbeat {
@@ -149,11 +149,15 @@ public class NodePool {
     }
 
     public List<Map.Entry<Integer, Host>> getReplicasForId(int id) {
+        return getReplicasForId(id, REPLICATION_FACTOR);
+    }
+
+    public List<Map.Entry<Integer, Host>> getReplicasForId(int id, int replicationFactor) {
         List<Map.Entry<Integer, Host>> replicas = new ArrayList<>();
 
         int nextNodeId = id + 1;
 
-        for (int i = 0; i < REPLICATION_FACTOR - 1; i++) {
+        for (int i = 0; i < replicationFactor - 1; i++) {
             Map.Entry<Integer, Host> entry = getEntryFromId(nextNodeId);
             // should never include "id", or duplicates.
             if(entry.getKey() == id) break;
@@ -252,7 +256,11 @@ public class NodePool {
     }
 
     public boolean isInMyKeyspace(int key) {
-        return myId == getIdFromKey(key);
+        return isKeyInThisIdKeyspace(key, myId);
+    }
+
+    public boolean isKeyInThisIdKeyspace(int key, int id) {
+        return id == getIdFromKey(key);
     }
 
     public int hashToId(int hash) {

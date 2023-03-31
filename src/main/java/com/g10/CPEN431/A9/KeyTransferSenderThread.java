@@ -101,12 +101,13 @@ public class KeyTransferSenderThread extends Thread {
 
         Logger.log("Sending %s key '%s' ", message.host, message.entry.getKey().toStringUtf8());
 
-        byte[] requestPayload = generateKVRequest(message.entry, message.forReplication);
+        KeyValueRequest.KVRequest requestPayload = generateKVRequest(message.entry, message.forReplication);
+        byte[] arrayRequestPayload = requestPayload.toByteArray();
         KeyValueResponse.KVResponse response;
         NodePool.Heartbeat hb = NodePool.getInstance().getHeartbeatFromHost(message.host);
 
         try {
-            response = internalClient.sendRequestWithRetries(requestPayload, message.host);
+            response = internalClient.sendRequestWithRetries(requestPayload, arrayRequestPayload, message.host);
         } catch (IOException e) {
             Logger.err("Response while sending keys failed/timed out.");
             Logger.err("Failed to send key " + message.entry.getKey().toStringUtf8());
@@ -132,7 +133,7 @@ public class KeyTransferSenderThread extends Thread {
         KeyValueResponse.KVResponse response;
 
         try {
-            response = internalClient.sendRequestWithRetries(message.request.toByteArray(), message.host);
+            response = internalClient.sendRequestWithRetries(message.request, message.request.toByteArray(), message.host);
         } catch (IOException e) {
             Logger.err("Response while sending request replica failed/timed out.");
             Logger.err("Failed (and thus lost) to request send key " + message.request.getKey().toStringUtf8());
@@ -150,7 +151,7 @@ public class KeyTransferSenderThread extends Thread {
         Logger.log("Sent replica.");
     }
 
-    private static byte[] generateKVRequest(Map.Entry<ByteString, KeyValueStore.ValueWrapper> keyToSend, boolean forReplication) {
+    private static KeyValueRequest.KVRequest generateKVRequest(Map.Entry<ByteString, KeyValueStore.ValueWrapper> keyToSend, boolean forReplication) {
         KeyValueRequest.KVRequest.Builder request = KeyValueRequest.KVRequest.newBuilder()
                 .setCommand(Codes.Commands.PUT)
                 .setKey(keyToSend.getKey())
@@ -164,6 +165,6 @@ public class KeyTransferSenderThread extends Thread {
             );
         }
 
-        return request.build().toByteArray();
+        return request.build();
     }
 }

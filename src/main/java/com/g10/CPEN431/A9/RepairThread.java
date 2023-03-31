@@ -82,9 +82,10 @@ public class RepairThread extends Thread {
         List<Map.Entry<Integer, Host>> myReplicaNodes = nodePool.getMyReplicaNodes();
 
         // if I now handle its keyspace, just re-replicate all keys in my keyspace
-        if (nodePool.isInMyKeyspace(hb.id)) {
+        if (nodePool.isInMyKeyspace(hb.id) ||
+                myReplicaNodes.stream().map(Map.Entry::getKey).anyMatch(id -> nodePool.isKeyInThisIdKeyspace(hb.id, id))) {
 
-            // TODO: replace this with IR with replication
+            Logger.log("I am handling remove node repair for: " + hb.host.port);
             myReplicaNodes.forEach(node -> keyTransferer.sendKeys(node.getValue(), nodePool.getMyId(), true));
         }
 
@@ -92,7 +93,7 @@ public class RepairThread extends Thread {
 //           our copies of the removed nodes stuff to a new replica.
 //         */
 //        if(nodePool.shouldHandleTransfer(hb)) {
-//            Logger.log("Previous node died. Take over as master and send replicas to new node");
+//            Logger.log("Previous ed. Take over as master and send replicas to new node");
 //            keyTransferer.sendKeys(myReplicaNodes.get(myReplicaNodes.size()-1).getValue(), hb.id);
 //        }
     }
@@ -100,7 +101,7 @@ public class RepairThread extends Thread {
     private void handleJoinedNode(NodePool.Heartbeat hb) {
 
 //        NodePool nodePool = NodePool.getInstance();
-//
+//s
 //        if(!nodePool.shouldHandleTransfer(hb)) {
 //            List<Map.Entry<Integer, Host>> oldReplicasFromHb = nodePool.getReplicasForId(nodePool.getIdFromKey(hb.id));
 //            if(oldReplicasFromHb.get(oldReplicasFromHb.size()-1).getKey() == nodePool.getMyId()) {
@@ -111,9 +112,19 @@ public class RepairThread extends Thread {
 //
 //        if (nodePool.shouldHandleTransfer(hb)) {
 //            Logger.log("Previous server rejoined.");
-            keyTransferer.sendKeys(hb.host, hb.id, false);
+            NodePool nodePool = NodePool.getInstance();
+            List<Map.Entry<Integer, Host>> replicaNodes = nodePool.getReplicasForId(hb.id, NodePool.REPLICATION_FACTOR + 1);
+
+            if (replicaNodes.stream()
+                    .map(Map.Entry::getKey).
+                    anyMatch(id -> nodePool.isKeyInThisIdKeyspace(nodePool.getMyId(), id))) {
+                // Simply just send PUTS and allow the original node to replicate
+                Logger.log("I am handling rejoin node repair for: " + hb.host.port);
+                keyTransferer.sendKeys(hb.host, hb.id, false);
+            }
+
             KeyValueStore.getInstance().deleteKeysForNodeWithId(hb.id);
-        }
+    }
 
 
 }

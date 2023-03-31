@@ -124,8 +124,8 @@ public class Application implements Callable<Application.ApplicationResponse> {
 
         // TODO: do some error checking
 
-        Logger.log("Putting '%s' (id %d) locally%s!%n", request.getKey().toStringUtf8(), NodePool.getInstance().hashToId(request.getKey().hashCode()),
-            (isReplication() ? " (replicated)" : ""));
+//        Logger.log("Putting '%s' (id %d) locally%s!%n", request.getKey().toStringUtf8(), NodePool.getInstance().hashToId(request.getKey().hashCode()),
+//            (isReplication() ? " (replicated)" : ""));
 
         KeyValueStore.getInstance().put(
             request.getKey(),
