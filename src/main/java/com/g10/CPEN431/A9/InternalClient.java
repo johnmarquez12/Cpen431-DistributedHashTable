@@ -30,7 +30,7 @@ public class InternalClient {
         }
     }
 
-    public void sendRequest(byte[] payload, Host recipient) throws IOException {
+    public synchronized void sendRequest(byte[] payload, Host recipient) throws IOException {
 
         try {
 
@@ -58,9 +58,11 @@ public class InternalClient {
         }
     }
 
-    public KeyValueResponse.KVResponse sendRequestWithRetries(byte[] payload, Host recipient) throws IOException {
+    public synchronized KeyValueResponse.KVResponse sendRequestWithRetries(byte[] payload, Host recipient) throws IOException {
 
         byte[] requestID = generateRequestId(recipient);
+
+
         long checksum = generateCheckSum(requestID, payload);
 
         Message.Msg m = Message.Msg.newBuilder()
@@ -68,6 +70,8 @@ public class InternalClient {
                 .setPayload(ByteString.copyFrom(payload))
                 .setCheckSum(checksum)
                 .build();
+
+        Logger.log("Sent packet with id hash " + m.getMessageID().toString() + " to port" + recipient.port);
 
         byte[] txBuf = m.toByteArray();
         DatagramPacket txPacket = new DatagramPacket(txBuf, txBuf.length, recipient.address, recipient.port);
@@ -77,13 +81,16 @@ public class InternalClient {
         int timeoutMs = 100;
         Message.Msg resp = null;
 
+        boolean mismatched = false;
+
         while (retries <= MAX_RETRIES) {
             byte[] rxBuf = new byte[MAX_PAYLOAD_SIZE];
             DatagramPacket rxPacket = new DatagramPacket(rxBuf, rxBuf.length);
             CRC32 crc32 = new CRC32();
 
             try {
-                socket.send(txPacket);
+                if(!mismatched)
+                    socket.send(txPacket);
                 socket.setSoTimeout(timeoutMs);
                 socket.receive(rxPacket);
 
@@ -101,12 +108,22 @@ public class InternalClient {
                     throw new SocketException("CRC32 failed");
                 }
 
+                mismatched = false;
+
                 for (int i = 0; i < requestID.length; i++) {
                     if (requestID[i] != resp.getMessageID().byteAt(i)) {
                         // TODO: Why do we hit this?
-                        throw new SocketException("Mismatched request IDs");
+                        Logger.log("err >>>");
+                        Logger.log("Received packet with id hash " + resp.getMessageID().toString());
+
+                        Logger.log("Received from port %d. On try %d.", rxPacket.getPort(), retries);
+
+                        Logger.log("err <<<");
+                        mismatched = true;
+//                        throw new SocketException("Mismatched request IDs");
                     }
                 }
+                if(mismatched) continue;
                 break;
             } catch (SocketTimeoutException | SocketException |
                      InvalidProtocolBufferException e) {
