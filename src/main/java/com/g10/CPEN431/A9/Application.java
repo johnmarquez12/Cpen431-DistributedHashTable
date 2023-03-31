@@ -33,7 +33,8 @@ public class Application implements Callable<Application.ApplicationResponse> {
         throws InvalidProtocolBufferException, UnknownHostException {
         // Start building a response object
         response = KeyValueResponse.KVResponse.newBuilder()
-            .setErrCode(Codes.Errs.SUCCESS);
+            .setErrCode(Codes.Errs.SUCCESS)
+            .setPid((int) App.pid);
 
         // TODO: do something if this fails
         request = KeyValueRequest.KVRequest.parseFrom(payload);
@@ -123,7 +124,7 @@ public class Application implements Callable<Application.ApplicationResponse> {
 
         // TODO: do some error checking
 
-        Logger.log("Putting '%s' locally%s!%n", request.getKey().toStringUtf8(),
+        Logger.log("Putting '%s' (id %d) locally%s!%n", request.getKey().toStringUtf8(), NodePool.getInstance().hashToId(request.getKey().hashCode()),
             (isReplication() ? " (replicated)" : ""));
 
         KeyValueStore.getInstance().put(

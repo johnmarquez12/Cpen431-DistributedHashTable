@@ -103,6 +103,7 @@ public class InternalClient {
 
                 for (int i = 0; i < requestID.length; i++) {
                     if (requestID[i] != resp.getMessageID().byteAt(i)) {
+                        // TODO: Why do we hit this?
                         throw new SocketException("Mismatched request IDs");
                     }
                 }

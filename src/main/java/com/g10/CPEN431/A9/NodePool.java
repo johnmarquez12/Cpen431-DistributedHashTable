@@ -213,12 +213,16 @@ public class NodePool {
         // get next alive node since this node may contain data that should
         // belong to the rejoining node. If I am that node, handle it.
         hb.deleted = false;
-        Logger.log("Server "+hb.id+" has tried to rejoin");
+        Logger.log("Server "+hb.host+" has tried to rejoin");
 
         if (shouldHandleTransfer(hb)) {
             Logger.log("Previous server rejoined.");
             keyTransferer.sendKeys(hb.host, hb.id);
         }
+    }
+
+    public boolean isAlive(Host host) {
+        return !expired(getHeartbeatFromHost(host).epochMillis);
     }
 
     /**
@@ -274,16 +278,21 @@ public class NodePool {
         return myId == getIdFromKey(hb.id + 1);
     }
 
-    private Map.Entry<Integer, Host> getEntryFromId(int id) {
-        int myId = id % CIRCLE_SIZE;
-        if (myId < 0) {
-            myId += CIRCLE_SIZE;
+    public int hashToId(int hash) {
+        int myHash = hash % CIRCLE_SIZE;
+        if (myHash < 0) {
+            myHash += CIRCLE_SIZE;
         }
+        return myHash;
+    }
 
-        if (myId > nodes.lastKey()){
+    private Map.Entry<Integer, Host> getEntryFromId(int hash) {
+        int id = hashToId(hash);
+
+        if (id > nodes.lastKey()){
             return nodes.firstEntry();
         }
 
-        return nodes.ceilingEntry(myId);
+        return nodes.ceilingEntry(id);
     }
 }

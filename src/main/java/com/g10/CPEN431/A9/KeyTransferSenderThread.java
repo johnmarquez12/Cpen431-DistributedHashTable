@@ -5,6 +5,8 @@ import ca.NetSysLab.ProtocolBuffers.KeyValueResponse;
 import com.google.protobuf.ByteString;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 
@@ -13,7 +15,6 @@ public class KeyTransferSenderThread extends Thread {
     public static class KeyTransfer {
         public Host host;
         public Map.Entry<ByteString, KeyValueStore.ValueWrapper> entry;
-        public boolean deleteAfterSend;
 
         public KeyValueRequest.KVRequest request;
 
@@ -39,23 +40,43 @@ public class KeyTransferSenderThread extends Thread {
     }
 
     public void run() {
-        while(true) {
+        try {
+            while (true) {
 
-            KeyTransfer message = null;
+                KeyTransfer message = null;
 
-            try {
-                message = messages.take();
-            } catch (InterruptedException e) {
-                Logger.err(e.getMessage());
+                try {
+                    message = messages.take();
+                } catch (InterruptedException e) {
+                    Logger.err(e.getMessage());
+                }
+
+                if (message == null) {
+                    Logger.log("Ruh roh! Null message!");
+                    continue;
+                }
+
+                if (!NodePool.getInstance().isAlive(message.host)) {
+//                    Logger.log(
+//                        "Message to %s with id %s failed cuz host deaaad",
+//                        message.host, message.entry.getKey().toStringUtf8());
+                    continue;
+                }
+
+                if (message.request == null) {
+                    sendKeyMessage(message);
+                } else {
+                    sendRequest(message);
+                }
             }
+        } catch (Exception e) {
+            Logger.err("BROKEN BROKEN, the keytransferSenderThread crashed.");
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            e.printStackTrace(pw);
+            String stackTrace = sw.toString();
 
-            if(message == null) continue;
-
-            if(message.request == null) {
-                sendKeyMessage(message);
-            } else {
-                sendRequest(message);
-            }
+            Logger.err("[keytransferSenderThread] Err: "+stackTrace);
         }
     }
 
@@ -100,13 +121,13 @@ public class KeyTransferSenderThread extends Thread {
             response = internalClient.sendRequestWithRetries(message.request.toByteArray(), message.host);
         } catch (IOException e) {
             Logger.err("Response while sending request replica failed/timed out.");
-            Logger.err("Failed to request send key " + message.entry.getKey().toStringUtf8());
+            Logger.err("Failed (and thus lost) to request send key " + message.request.getKey().toStringUtf8());
             return;
         }
 
         if(response == null || response.getErrCode() != Codes.Errs.SUCCESS) {
             Logger.err("Response while sending request replica failed.");
-            Logger.err("Failed to request send key " + message.entry.getKey().toStringUtf8());
+            Logger.err("Failed (and thus lost) to request send key " + message.request.getKey().toStringUtf8());
             return;
         }
 
