@@ -17,10 +17,13 @@ public class SendHeartbeatThread extends Thread {
 
     private final int myId;
 
+    private final InternalClient internalClient;
+
     public SendHeartbeatThread() {
         super("SendHeartbeatThread");
         this.nodePool = NodePool.getInstance();
         this.myId = nodePool.getMyId();
+        this.internalClient = new InternalClient();
     }
 
     public void run() {
@@ -41,7 +44,7 @@ public class SendHeartbeatThread extends Thread {
 
             try {
 //                Logger.log("Sending heartbeat to "+host + ":  "+nodePool.getAllHeartbeats());
-                InternalClient.sendRequest(generateHeartbeatPayload(), host);
+                internalClient.sendRequest(generateHeartbeatPayload(), host);
             } catch (IOException e) {
                 Logger.err("Uh oh! Problem sending internal request");
                 Logger.err(e.getMessage());

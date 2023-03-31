@@ -21,9 +21,18 @@ public class InternalClient {
     private static final int MAX_RETRIES = 3;
     private static final int MAX_PAYLOAD_SIZE = 16384;
 
-    public static void sendRequest(byte[] payload, Host recipient) throws IOException {
+    private final DatagramSocket socket;
+    public InternalClient() {
+        try {
+            socket = new DatagramSocket();
+        } catch(SocketException socketException) {
+            throw new RuntimeException(socketException);
+        }
+    }
 
-        try (DatagramSocket socket = new DatagramSocket()) {
+    public void sendRequest(byte[] payload, Host recipient) throws IOException {
+
+        try {
 
             byte[] requestId = generateRequestId(recipient);
             long checksum = generateCheckSum(requestId, payload);
@@ -49,13 +58,7 @@ public class InternalClient {
         }
     }
 
-    public static KeyValueResponse.KVResponse sendRequestWithRetries(byte[] payload, Host recipient) throws IOException {
-        DatagramSocket socket;
-        try {
-            socket = new DatagramSocket();
-        } catch (SocketException e) {
-            throw new RuntimeException(e);
-        }
+    public KeyValueResponse.KVResponse sendRequestWithRetries(byte[] payload, Host recipient) throws IOException {
 
         byte[] requestID = generateRequestId(recipient);
         long checksum = generateCheckSum(requestID, payload);

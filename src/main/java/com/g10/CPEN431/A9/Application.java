@@ -114,7 +114,6 @@ public class Application implements Callable<Application.ApplicationResponse> {
             replicate(); // TODO: should we continue if this fails?
         }
 
-
         if(outOfMemory()) System.gc();
         if (outOfMemory()) {
             response.setErrCode(Codes.Errs.OUT_OF_SPACE);
@@ -158,10 +157,10 @@ public class Application implements Callable<Application.ApplicationResponse> {
             if (divertRequest()) return;
 
             replicate(); // TODO: should we continue if this fails?
-
         }
 
         try {
+            Logger.log("Deleting Key "+request.getKey().toStringUtf8()+ " Locally");
             KeyValueStore.getInstance().remove(request.getKey());
         } catch (KeyValueStore.NoKeyError e) {
             response.setErrCode(Codes.Errs.KEY_DOES_NOT_EXIST);

@@ -11,7 +11,7 @@ public class Logger {
 
     public static void log(String format, Object... args) {
         System.out.print("["+now()+"] ");
-        System.out.printf(format, args);
+        System.out.printf(format+"\n", args);
     }
 
     public static void err(Object message) {

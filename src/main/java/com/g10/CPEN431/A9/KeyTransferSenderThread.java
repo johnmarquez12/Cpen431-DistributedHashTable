@@ -31,9 +31,11 @@ public class KeyTransferSenderThread extends Thread {
     }
 
     private final BlockingQueue<KeyTransfer> messages;
+    private final InternalClient internalClient;
 
     public KeyTransferSenderThread(BlockingQueue<KeyTransfer> messages) {
         this.messages = messages;
+        this.internalClient = new InternalClient();
     }
 
     public void run() {
@@ -71,15 +73,17 @@ public class KeyTransferSenderThread extends Thread {
         NodePool.Heartbeat hb = NodePool.getInstance().getHeartbeatFromHost(message.host);
 
         try {
-            response = InternalClient.sendRequestWithRetries(requestPayload, message.host);
+            response = internalClient.sendRequestWithRetries(requestPayload, message.host);
         } catch (IOException e) {
             Logger.err("Response while sending keys failed/timed out.");
+            Logger.err("Failed to send key " + message.entry.getKey().toStringUtf8());
             NodePool.getInstance().removeNode(hb);
             return;
         }
 
         if(response == null || response.getErrCode() != Codes.Errs.SUCCESS) {
             Logger.err("Response while sending keys failed.");
+            Logger.err("Failed to send key " + message.entry.getKey().toStringUtf8());
             NodePool.getInstance().removeNode(hb);
             return;
         }
@@ -88,19 +92,21 @@ public class KeyTransferSenderThread extends Thread {
     }
 
     private void sendRequest(KeyTransfer message) {
-        Logger.log("Sending '%s' replica to %s... ", message.request.getKey().toStringUtf8(), message.host);
+        Logger.log("Sending '%s' '%s' replica to %s... ", Codes.Commands.cmd_name(message.request.getCommand()), message.request.getKey().toStringUtf8(), message.host);
 
         KeyValueResponse.KVResponse response;
 
         try {
-            response = InternalClient.sendRequestWithRetries(message.request.toByteArray(), message.host);
+            response = internalClient.sendRequestWithRetries(message.request.toByteArray(), message.host);
         } catch (IOException e) {
-            Logger.err("Response while sending replica failed/timed out.");
+            Logger.err("Response while sending request replica failed/timed out.");
+            Logger.err("Failed to request send key " + message.entry.getKey().toStringUtf8());
             return;
         }
 
         if(response == null || response.getErrCode() != Codes.Errs.SUCCESS) {
-            Logger.err("Response while sending replica failed.");
+            Logger.err("Response while sending request replica failed.");
+            Logger.err("Failed to request send key " + message.entry.getKey().toStringUtf8());
             return;
         }
 
