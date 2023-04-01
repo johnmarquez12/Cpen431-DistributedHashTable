@@ -118,12 +118,12 @@ public class RepairThread extends Thread {
 
             if (possibleReplicaNodes.stream()
                     .map(Map.Entry::getKey).
-                    anyMatch(id -> nodePool.isKeyInThisIdKeyspace(nodePool.getMyId(), id))) {
+                    anyMatch(id -> nodePool.getMyId() == id)) {
                 // Simply just send PUTS and allow the original node to replicate
                 Logger.log("I am handling rejoin node repair for: " + hb.host.port);
 
                 boolean shouldDelete = actualReplicaNodes.stream()
-                        .map(Map.Entry::getKey).noneMatch(id -> nodePool.isKeyInThisIdKeyspace(nodePool.getMyId(), id));
+                        .map(Map.Entry::getKey).noneMatch(id -> nodePool.getMyId() == id);
 
                 keyTransferer.sendKeysAndDelete(hb.host, hb.id, false, shouldDelete);
 
