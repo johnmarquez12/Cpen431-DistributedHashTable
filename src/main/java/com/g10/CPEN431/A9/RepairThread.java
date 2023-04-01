@@ -37,7 +37,7 @@ public class RepairThread extends Thread {
                 if (first) {
                     try {
                         // Sleep to allow queue to accumulate nodes to repair
-                        Thread.sleep(5000);
+                        Thread.sleep(15000);
                         Logger.log("Starting Repair");
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
@@ -112,26 +112,29 @@ public class RepairThread extends Thread {
 //
 //        if (nodePool.shouldHandleTransfer(hb)) {
 //            Logger.log("Previous server rejoined.");
+
             NodePool nodePool = NodePool.getInstance();
-            List<Map.Entry<Integer, Host>> possibleReplicaNodes = nodePool.getReplicasForId(hb.id, NodePool.REPLICATION_FACTOR *2);
             List<Map.Entry<Integer, Host>> actualReplicaNodes = nodePool.getReplicasForId(hb.id);
+            List<Map.Entry<Integer, Host>> possibleReplicaNodes = nodePool.getReplicasForId(hb.id, NodePool.REPLICATION_FACTOR*2);
+
+        // Simply just send PUTS and allow the original node to replicate
+            Logger.log("I am handling rejoin node repair for: " + hb.host.port);
 
             if (possibleReplicaNodes.stream()
-                    .map(Map.Entry::getKey).
-                    anyMatch(id -> nodePool.getMyId() == id)) {
-                // Simply just send PUTS and allow the original node to replicate
-                Logger.log("I am handling rejoin node repair for: " + hb.host.port);
+                    .map(Map.Entry::getKey).anyMatch(id -> nodePool.getMyId() == id)) {
 
-                boolean shouldDelete = actualReplicaNodes.stream()
-                        .map(Map.Entry::getKey).noneMatch(id -> nodePool.getMyId() == id);
+                if (actualReplicaNodes.stream()
+                        .map(Map.Entry::getKey).noneMatch(id -> nodePool.getMyId() == id)) {
 
-                keyTransferer.sendKeysAndDelete(hb.host, hb.id, false, shouldDelete);
-
+                    // if myId not any of its actual replicas
+                    keyTransferer.sendKeysAndDelete(hb.host, hb.id, false, true);
+                } else {
+                    keyTransferer.sendKeys(hb.host, hb.id, false);
+                }
             } else {
-
-                // safe delete key
                 KeyValueStore.getInstance().deleteKeysForNodeWithId(hb.id);
             }
+
     }
 
 

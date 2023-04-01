@@ -12,7 +12,7 @@ public class SendHeartbeatThread extends Thread {
 
     //These values are arbitrary at the moment
     public static final long SLEEP = 1000;
-    public static final long MARGIN = 20;
+    public static final long MARGIN = 10;
     private final NodePool nodePool;
 
     private final int myId;
