@@ -46,8 +46,6 @@ public class NodePool {
     private final List<Heartbeat> heartbeats;
     private final ConcurrentSkipListMap<Integer, Host> nodes;
     private final BlockingQueue<KeyTransferSenderThread.KeyTransfer> keysToSend;
-    private final BlockingQueue<RepairThread.NodeToRepair> nodesToRepair;
-
     private final int spacing;
     private final Host me;
     private int myId;
@@ -61,8 +59,6 @@ public class NodePool {
         keyTransferer = new KeyTransferHandler(keysToSend);
         (new KeyTransferSenderThread(keysToSend)).start();
 
-        nodesToRepair = new LinkedBlockingQueue<>();
-        (new RepairThread(nodesToRepair, keyTransferer)).start();
 
         this.me = me;
         heartbeats = new ArrayList<>();
@@ -144,11 +140,11 @@ public class NodePool {
         return heartbeats.stream().filter(heartbeat -> heartbeat.host.equals(host)).findFirst().get();
     }
 
-    public List<Map.Entry<Integer, Host>> getMyReplicaNodes() {
+    private List<Map.Entry<Integer, Host>> getMyReplicaNodes() {
         return getReplicasForId(myId);
     }
 
-    public List<Map.Entry<Integer, Host>> getReplicasForId(int id) {
+    private List<Map.Entry<Integer, Host>> getReplicasForId(int id) {
         List<Map.Entry<Integer, Host>> replicas = new ArrayList<>();
 
         int nextNodeId = id + 1;
@@ -204,13 +200,25 @@ public class NodePool {
         return now - epochMillis >= margin;
     }
 
-    private synchronized void rejoined(Heartbeat hb) {
+    private void rejoined(Heartbeat hb) {
+        if(!shouldHandleTransfer(hb)) {
+            List<Map.Entry<Integer, Host>> oldReplicasFromHb = getReplicasForId(getIdFromKey(hb.id));
+            if(oldReplicasFromHb.get(oldReplicasFromHb.size()-1).getKey() == myId) {
+                Logger.log("Deleting unnecessary replicas since server "+hb.host.port + " rejoined.");
+                KeyValueStore.getInstance().deleteKeysForNodeWithId(hb.id);
+            }
+        }
+
         nodes.put(hb.id, hb.host);
         // get next alive node since this node may contain data that should
         // belong to the rejoining node. If I am that node, handle it.
         hb.deleted = false;
-        nodesToRepair.add(new RepairThread.NodeToRepair(hb, RepairThread.RepairType.REJOIN));
         Logger.log("Server "+hb.host+" has tried to rejoin");
+
+        if (shouldHandleTransfer(hb)) {
+            Logger.log("Previous server rejoined.");
+            keyTransferer.sendKeys(hb.host, hb.id);
+        }
     }
 
     public boolean isAlive(Host host) {
@@ -234,25 +242,40 @@ public class NodePool {
         return true;
     }
 
-    public synchronized void removeNode(Heartbeat hb) {
+    public void removeNode(Heartbeat hb) {
         if (hb.deleted) return;
+
+        /* If the removed node is one of our replicas, send all my keys to a new
+         * replica.
+         */
+        List<Map.Entry<Integer, Host>> myReplicaNodes = getMyReplicaNodes();
+        if(myReplicaNodes.stream().map(Map.Entry::getKey).anyMatch(id -> id == hb.id)) {
+            Host newReplica = getHostFromId(myReplicaNodes.get(myReplicaNodes.size()-1).getKey() + 1);
+            if(!newReplica.equals(getMyHost())) {
+                Logger.log("Our replica (" + hb.host.port +
+                    ") has died. New replica is " + newReplica.port);
+                keyTransferer.sendKeys(newReplica, myId);
+            }
+        }
+
+        /* If we are the first replica of the removed node, we need to send
+           our copies of the removed nodes stuff to a new replica.
+         */
+        if(shouldHandleTransfer(hb)) {
+            Logger.log("Previous node died. Take over as master and send replicas to new node");
+            keyTransferer.sendKeys(myReplicaNodes.get(myReplicaNodes.size()-1).getValue(), hb.id);
+        }
 
         hb.deleted = true;
         nodes.remove(hb.id);
-        nodesToRepair.add(new RepairThread.NodeToRepair(hb, RepairThread.RepairType.REMOVE));
-        Logger.log("Server "+hb.host+" is being removed");
     }
 
     private int indexFrom(int id) {
         return id / spacing;
     }
 
-    public boolean shouldHandleTransfer(Heartbeat hb) {
+    private boolean shouldHandleTransfer(Heartbeat hb) {
         return myId == getIdFromKey(hb.id + 1);
-    }
-
-    public boolean isInMyKeyspace(int key) {
-        return myId == getIdFromKey(key);
     }
 
     public int hashToId(int hash) {

@@ -1,6 +1,5 @@
 package com.g10.CPEN431.A9;
 
-import ca.NetSysLab.ProtocolBuffers.InternalRequest;
 import ca.NetSysLab.ProtocolBuffers.KeyValueRequest;
 import ca.NetSysLab.ProtocolBuffers.KeyValueResponse;
 import com.google.protobuf.ByteString;
@@ -18,28 +17,17 @@ public class KeyTransferSenderThread extends Thread {
         public Map.Entry<ByteString, KeyValueStore.ValueWrapper> entry;
 
         public KeyValueRequest.KVRequest request;
-        public boolean forReplication;
 
         public KeyTransfer(Host host,
                            Map.Entry<ByteString, KeyValueStore.ValueWrapper> entry) {
             this.host = host;
             this.entry = entry;
-            this.forReplication = false;
         }
 
         public KeyTransfer(Host host,
                            KeyValueRequest.KVRequest request) {
             this.host = host;
             this.request = request;
-            this.forReplication = false;
-        }
-
-        public KeyTransfer(Host host,
-                           Map.Entry<ByteString, KeyValueStore.ValueWrapper> entry,
-                           boolean forReplication) {
-            this.host = host;
-            this.entry = entry;
-            this.forReplication = forReplication;
         }
     }
 
@@ -101,7 +89,7 @@ public class KeyTransferSenderThread extends Thread {
 
         Logger.log("Sending %s key '%s' ", message.host, message.entry.getKey().toStringUtf8());
 
-        byte[] requestPayload = generateKVRequest(message.entry, message.forReplication);
+        byte[] requestPayload = generateKVRequest(message.entry);
         KeyValueResponse.KVResponse response;
         NodePool.Heartbeat hb = NodePool.getInstance().getHeartbeatFromHost(message.host);
 
@@ -150,20 +138,12 @@ public class KeyTransferSenderThread extends Thread {
         Logger.log("Sent replica.");
     }
 
-    private static byte[] generateKVRequest(Map.Entry<ByteString, KeyValueStore.ValueWrapper> keyToSend, boolean forReplication) {
-        KeyValueRequest.KVRequest.Builder request = KeyValueRequest.KVRequest.newBuilder()
-                .setCommand(Codes.Commands.PUT)
-                .setKey(keyToSend.getKey())
-                .setValue(keyToSend.getValue().value)
-                .setVersion(keyToSend.getValue().version);
-
-        if (forReplication) {
-            request.setIr(
-                    InternalRequest.InternalRequestWrapper.newBuilder()
-                        .setReplicate(true)
-            );
-        }
-
-        return request.build().toByteArray();
+    private static byte[] generateKVRequest(Map.Entry<ByteString, KeyValueStore.ValueWrapper> keyToSend) {
+        return KeyValueRequest.KVRequest.newBuilder()
+            .setCommand(Codes.Commands.PUT)
+            .setKey(keyToSend.getKey())
+            .setValue(keyToSend.getValue().value)
+            .setVersion(keyToSend.getValue().version)
+            .build().toByteArray();
     }
 }
