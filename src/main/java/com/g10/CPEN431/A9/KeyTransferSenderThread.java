@@ -107,7 +107,7 @@ public class KeyTransferSenderThread extends Thread {
         NodePool.Heartbeat hb = NodePool.getInstance().getHeartbeatFromHost(message.host);
 
         try {
-            response = internalClient.sendRequestWithRetries(requestPayload, arrayRequestPayload, message.host);
+            response = internalClient.sendRequestWithRetries(arrayRequestPayload, message.host);
         } catch (IOException e) {
             Logger.err("Response while sending keys failed/timed out.");
             Logger.err("Failed to send key " + message.entry.getKey().toStringUtf8());
@@ -133,7 +133,7 @@ public class KeyTransferSenderThread extends Thread {
         KeyValueResponse.KVResponse response;
 
         try {
-            response = internalClient.sendRequestWithRetries(message.request, message.request.toByteArray(), message.host);
+            response = internalClient.sendRequestWithRetries(message.request.toByteArray(), message.host);
         } catch (IOException e) {
             Logger.err("Response while sending request replica failed/timed out.");
             Logger.err("Failed (and thus lost) to request send key " + message.request.getKey().toStringUtf8());

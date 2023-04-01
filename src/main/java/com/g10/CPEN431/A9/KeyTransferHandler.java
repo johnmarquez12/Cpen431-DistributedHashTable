@@ -26,6 +26,25 @@ public class KeyTransferHandler {
         }
     }
 
+    public void sendKeysAndDelete(Host recipient, int idToMatch, boolean forReplication, boolean shouldDelete) {
+        NodePool nodePool = NodePool.getInstance();
+        KeyValueStore kvStore = KeyValueStore.getInstance();
+
+        for (Map.Entry<ByteString, KeyValueStore.ValueWrapper> entry : kvStore.keySet()) {
+            if (nodePool.getIdFromKey(entry.getKey().hashCode()) != idToMatch) continue;
+
+            if (shouldDelete) {
+                try {
+                    kvStore.remove(entry.getKey());
+                } catch (KeyValueStore.NoKeyError e) {
+                    Logger.log("Key to transfer missing");
+                }
+            }
+
+            keysToSend.add(new KeyTransferSenderThread.KeyTransfer(recipient, entry, forReplication));
+        }
+    }
+
     public void sendRequest(KeyValueRequest.KVRequest request, Host host) {
         keysToSend.add(new KeyTransferSenderThread.KeyTransfer(host, request));
     }

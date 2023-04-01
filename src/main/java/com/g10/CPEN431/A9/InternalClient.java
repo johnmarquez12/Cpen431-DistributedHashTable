@@ -114,8 +114,6 @@ public class InternalClient {
                 for (int i = 0; i < requestID.length; i++) {
                     if (requestID[i] != resp.getMessageID().byteAt(i)) {
 
-                        Logger.log("Request " + Codes.Commands.cmd_name(request.getCommand()) +
-                                " has mismatched ids" + (request.hasIr() ? " also has an IR" : ""));
                         // TODO: Why do we hit this?
                         Logger.log("err >>>");
                         Logger.log("Received packet with id hash " + resp.getMessageID().toString());

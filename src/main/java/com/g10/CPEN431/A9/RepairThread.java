@@ -113,17 +113,25 @@ public class RepairThread extends Thread {
 //        if (nodePool.shouldHandleTransfer(hb)) {
 //            Logger.log("Previous server rejoined.");
             NodePool nodePool = NodePool.getInstance();
-            List<Map.Entry<Integer, Host>> replicaNodes = nodePool.getReplicasForId(hb.id, NodePool.REPLICATION_FACTOR + 1);
+            List<Map.Entry<Integer, Host>> possibleReplicaNodes = nodePool.getReplicasForId(hb.id, NodePool.REPLICATION_FACTOR *2);
+            List<Map.Entry<Integer, Host>> actualReplicaNodes = nodePool.getReplicasForId(hb.id);
 
-            if (replicaNodes.stream()
+            if (possibleReplicaNodes.stream()
                     .map(Map.Entry::getKey).
                     anyMatch(id -> nodePool.isKeyInThisIdKeyspace(nodePool.getMyId(), id))) {
                 // Simply just send PUTS and allow the original node to replicate
                 Logger.log("I am handling rejoin node repair for: " + hb.host.port);
-                keyTransferer.sendKeys(hb.host, hb.id, false);
-            }
 
-            KeyValueStore.getInstance().deleteKeysForNodeWithId(hb.id);
+                boolean shouldDelete = actualReplicaNodes.stream()
+                        .map(Map.Entry::getKey).noneMatch(id -> nodePool.isKeyInThisIdKeyspace(nodePool.getMyId(), id));
+
+                keyTransferer.sendKeysAndDelete(hb.host, hb.id, false, shouldDelete);
+
+            } else {
+
+                // safe delete key
+                KeyValueStore.getInstance().deleteKeysForNodeWithId(hb.id);
+            }
     }
 
 
