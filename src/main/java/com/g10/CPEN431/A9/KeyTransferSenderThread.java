@@ -110,14 +110,16 @@ public class KeyTransferSenderThread extends Thread {
         } catch (IOException e) {
             Logger.err("Response while sending keys failed/timed out.");
             Logger.err("Failed to send key " + message.entry.getKey().toStringUtf8());
-            NodePool.getInstance().removeNode(hb);
+//            NodePool.getInstance().removeNode(hb);
+            messages.add(message);
             return;
         }
 
         if(response == null || response.getErrCode() != Codes.Errs.SUCCESS) {
             Logger.err("Response while sending keys failed.");
             Logger.err("Failed to send key " + message.entry.getKey().toStringUtf8());
-            NodePool.getInstance().removeNode(hb);
+//            NodePool.getInstance().removeNode(hb);
+            messages.add(message);
             return;
         }
 
@@ -134,12 +136,14 @@ public class KeyTransferSenderThread extends Thread {
         } catch (IOException e) {
             Logger.err("Response while sending request replica failed/timed out.");
             Logger.err("Failed (and thus lost) to request send key " + message.request.getKey().toStringUtf8());
+            messages.add(message);
             return;
         }
 
         if(response == null || response.getErrCode() != Codes.Errs.SUCCESS) {
             Logger.err("Response while sending request replica failed.");
             Logger.err("Failed (and thus lost) to request send key " + message.request.getKey().toStringUtf8());
+            messages.add(message);
             return;
         }
 
