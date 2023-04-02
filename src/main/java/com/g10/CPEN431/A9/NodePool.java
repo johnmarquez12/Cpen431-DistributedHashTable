@@ -16,7 +16,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class NodePool {
 
     private static NodePool INSTANCE;
-    public static final int CIRCLE_SIZE = 512;
+    public static final int CIRCLE_SIZE = 1048576;
 
     private static final int REPLICATION_FACTOR = 4;
     private KeyTransferHandler keyTransferer;
@@ -123,7 +123,7 @@ public class NodePool {
     /**
      * Kill nodes (all) if updated time means it should die
      */
-    public List<Heartbeat> getAllHeartbeats() {
+    public synchronized List<Heartbeat> getAllHeartbeats() {
         heartbeats.get(indexFrom(myId)).epochMillis = System.currentTimeMillis();
 
         heartbeats.forEach(hb -> {
@@ -168,7 +168,7 @@ public class NodePool {
      * Kill node (only the one we're updating) if the updated time
      * means it should die
      */
-    public void updateTimeStampFromId(int id, long epochMillis) {
+    public synchronized void updateTimeStampFromId(int id, long epochMillis) {
         Heartbeat hb = heartbeats.get(indexFrom(id));
 
         if(epochMillis <= hb.epochMillis) {
@@ -217,7 +217,9 @@ public class NodePool {
 
         if (shouldHandleTransfer(hb)) {
             Logger.log("Previous server rejoined.");
-            keyTransferer.sendKeys(hb.host, hb.id);
+            keyTransferer.sendKeys(hb.host, hb.id, false);
+        } else if(getMyReplicaNodes().stream().map(Map.Entry::getKey).anyMatch(id -> id == hb.id)) { // new node should replicate us
+            keyTransferer.sendKeys(hb.host, myId, true);
         }
     }
 
@@ -254,7 +256,7 @@ public class NodePool {
             if(!newReplica.equals(getMyHost())) {
                 Logger.log("Our replica (" + hb.host.port +
                     ") has died. New replica is " + newReplica.port);
-                keyTransferer.sendKeys(newReplica, myId);
+                keyTransferer.sendKeys(newReplica, myId, true);
             }
         }
 
@@ -263,7 +265,7 @@ public class NodePool {
          */
         if(shouldHandleTransfer(hb)) {
             Logger.log("Previous node died. Take over as master and send replicas to new node");
-            keyTransferer.sendKeys(myReplicaNodes.get(myReplicaNodes.size()-1).getValue(), hb.id);
+            keyTransferer.sendKeys(myReplicaNodes.get(myReplicaNodes.size()-1).getValue(), hb.id, true);
         }
 
         hb.deleted = true;

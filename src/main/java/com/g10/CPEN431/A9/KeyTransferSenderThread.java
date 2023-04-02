@@ -1,5 +1,6 @@
 package com.g10.CPEN431.A9;
 
+import ca.NetSysLab.ProtocolBuffers.InternalRequest;
 import ca.NetSysLab.ProtocolBuffers.KeyValueRequest;
 import ca.NetSysLab.ProtocolBuffers.KeyValueResponse;
 import com.google.protobuf.ByteString;
@@ -17,11 +18,14 @@ public class KeyTransferSenderThread extends Thread {
         public Map.Entry<ByteString, KeyValueStore.ValueWrapper> entry;
 
         public KeyValueRequest.KVRequest request;
+        public boolean isReplica = false;
 
         public KeyTransfer(Host host,
-                           Map.Entry<ByteString, KeyValueStore.ValueWrapper> entry) {
+                           Map.Entry<ByteString, KeyValueStore.ValueWrapper> entry,
+                           boolean isReplica) {
             this.host = host;
             this.entry = entry;
+            this.isReplica = isReplica;
         }
 
         public KeyTransfer(Host host,
@@ -89,9 +93,9 @@ public class KeyTransferSenderThread extends Thread {
 
         Logger.log("Sending %s key '%s' ", message.host, message.entry.getKey().toStringUtf8());
 
-        byte[] requestPayload = generateKVRequest(message.entry);
+        byte[] requestPayload = generateKVRequest(message.entry, message.isReplica);
         KeyValueResponse.KVResponse response;
-        NodePool.Heartbeat hb = NodePool.getInstance().getHeartbeatFromHost(message.host);
+//        NodePool.Heartbeat hb = NodePool.getInstance().getHeartbeatFromHost(message.host);
 
         try {
             response = internalClient.sendRequestWithRetries(requestPayload, message.host);
@@ -138,12 +142,14 @@ public class KeyTransferSenderThread extends Thread {
         Logger.log("Sent replica.");
     }
 
-    private static byte[] generateKVRequest(Map.Entry<ByteString, KeyValueStore.ValueWrapper> keyToSend) {
+    private static byte[] generateKVRequest(Map.Entry<ByteString, KeyValueStore.ValueWrapper> keyToSend,
+                                            boolean isReplica) {
         return KeyValueRequest.KVRequest.newBuilder()
             .setCommand(Codes.Commands.PUT)
             .setKey(keyToSend.getKey())
             .setValue(keyToSend.getValue().value)
             .setVersion(keyToSend.getValue().version)
+            .setIr(InternalRequest.InternalRequestWrapper.newBuilder().setReplicate(isReplica).build())
             .build().toByteArray();
     }
 }
