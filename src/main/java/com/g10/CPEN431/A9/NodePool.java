@@ -201,7 +201,7 @@ public class NodePool {
     }
 
     private void rejoined(Heartbeat hb) {
-        if(!shouldHandleTransfer(hb)) {
+        if(!isPredecessor(hb.id)) {
             List<Map.Entry<Integer, Host>> oldReplicasFromHb = getReplicasForId(getIdFromKey(hb.id));
             if(oldReplicasFromHb.get(oldReplicasFromHb.size()-1).getKey() == myId) {
                 Logger.log("Deleting unnecessary replicas since server "+hb.host.port + " rejoined.");
@@ -215,7 +215,7 @@ public class NodePool {
         hb.deleted = false;
         Logger.log("Server "+hb.host+" has tried to rejoin");
 
-        if (shouldHandleTransfer(hb)) {
+        if (isPredecessor(hb.id)) {
             Logger.log("Previous server rejoined.");
             keyTransferer.sendKeys(hb.host, hb.id, false);
         } else if(getMyReplicaNodes().stream().map(Map.Entry::getKey).anyMatch(id -> id == hb.id)) { // new node should replicate us
@@ -263,7 +263,7 @@ public class NodePool {
         /* If we are the first replica of the removed node, we need to send
            our copies of the removed nodes stuff to a new replica.
          */
-        if(shouldHandleTransfer(hb)) {
+        if(isPredecessor(hb.id)) {
             Logger.log("Previous node died. Take over as master and send replicas to new node");
             keyTransferer.sendKeys(myReplicaNodes.get(myReplicaNodes.size()-1).getValue(), hb.id, true);
         }
@@ -276,8 +276,8 @@ public class NodePool {
         return id / spacing;
     }
 
-    private boolean shouldHandleTransfer(Heartbeat hb) {
-        return myId == getIdFromKey(hb.id + 1);
+    private boolean isPredecessor(int id) {
+        return myId == getIdFromKey(id + 1);
     }
 
     public int hashToId(int hash) {
