@@ -12,7 +12,7 @@ public class SendHeartbeatThread extends Thread {
 
     //These values are arbitrary at the moment
     public static final long SLEEP = 1000;
-    public static final long MARGIN = 20;
+    public static final long MARGIN = 10;
     private final NodePool nodePool;
 
     private final int myId;
@@ -41,10 +41,11 @@ public class SendHeartbeatThread extends Thread {
             }
 
             Host host = nodePool.getHostFromIndex(destNode);
+            Host hostWithUpdatedEpidemicPort = new Host(host.address, host.port + NodePool.TOTAL_NUM_NODES);
 
             try {
 //                Logger.log("Sending heartbeat to "+host + ":  "+nodePool.getAllHeartbeats());
-                internalClient.sendRequest(generateHeartbeatPayload(), host);
+                internalClient.sendRequest(generateHeartbeatPayload(), hostWithUpdatedEpidemicPort);
             } catch (IOException e) {
                 Logger.err("Uh oh! Problem sending internal request");
                 Logger.err(e.getMessage());
@@ -52,7 +53,7 @@ public class SendHeartbeatThread extends Thread {
 
             try {
                 // Todo: is there a better way to do this?
-                Thread.sleep(SLEEP);
+                Thread.sleep(500);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }

@@ -71,7 +71,7 @@ public class InternalClient {
                 .setCheckSum(checksum)
                 .build();
 
-        Logger.log("Sent packet with id hash " + m.getMessageID().toString() + " to port" + recipient.port);
+        Logger.logVerbose("Sent packet with id hash " + m.getMessageID().toString() + " to port" + recipient.port);
 
         byte[] txBuf = m.toByteArray();
         DatagramPacket txPacket = new DatagramPacket(txBuf, txBuf.length, recipient.address, recipient.port);

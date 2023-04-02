@@ -20,6 +20,7 @@ public class NodePool {
 
     private static final int REPLICATION_FACTOR = 4;
     private KeyTransferHandler keyTransferer;
+    public static int TOTAL_NUM_NODES;
 
     public static class Heartbeat {
         public Host host;
@@ -54,6 +55,7 @@ public class NodePool {
 
         //TODO: Application may need to have access to this queue, we should have a single place where we instantiate
         // all of our queues.
+        TOTAL_NUM_NODES = servers.size();
 
         keysToSend = new LinkedBlockingQueue<>();
         keyTransferer = new KeyTransferHandler(keysToSend);
@@ -216,9 +218,10 @@ public class NodePool {
         Logger.log("Server "+hb.host+" has tried to rejoin");
 
         if (isPredecessor(hb.id)) {
-            Logger.log("Previous server rejoined.");
+            Logger.log("Previous server (%d) rejoined. Send keys that we have that belong to it", hb.host.port);
             keyTransferer.sendKeys(hb.host, hb.id, false);
         } else if(getMyReplicaNodes().stream().map(Map.Entry::getKey).anyMatch(id -> id == hb.id)) { // new node should replicate us
+            Logger.log("Rejoined server (%d) is one of our replicas. Replicate our keys");
             keyTransferer.sendKeys(hb.host, myId, true);
         }
     }
@@ -264,7 +267,7 @@ public class NodePool {
            our copies of the removed nodes stuff to a new replica.
          */
         if(isPredecessor(hb.id)) {
-            Logger.log("Previous node died. Take over as master and send replicas to new node");
+            Logger.log("Previous node (%d) died. Take over as master and send replicas to new node", hb.host.port);
             keyTransferer.sendKeys(myReplicaNodes.get(myReplicaNodes.size()-1).getValue(), hb.id, true);
         }
 

@@ -61,9 +61,9 @@ public class KeyTransferSenderThread extends Thread {
                 }
 
                 if (!NodePool.getInstance().isAlive(message.host)) {
-//                    Logger.log(
-//                        "Message to %s with id %s failed cuz host deaaad",
-//                        message.host, message.entry.getKey().toStringUtf8());
+                    Logger.log(
+                        "Message to %s with id %s failed cuz host deaaad",
+                        message.host, message.entry.getKey().toStringUtf8());
                     continue;
                 }
 
@@ -91,7 +91,7 @@ public class KeyTransferSenderThread extends Thread {
         // 3. if success, delete
         // 4. if failure, mark host as failed
 
-        Logger.log("Sending %s key '%s' ", message.host, message.entry.getKey().toStringUtf8());
+        Logger.logVerbose("Sending %s key '%s' ", message.host, message.entry.getKey().toStringUtf8());
 
         byte[] requestPayload = generateKVRequest(message.entry, message.isReplica);
         KeyValueResponse.KVResponse response;
@@ -115,11 +115,11 @@ public class KeyTransferSenderThread extends Thread {
             return;
         }
 
-        Logger.log("Sent key.");
+        Logger.logVerbose("Sent key.");
     }
 
     private void sendRequest(KeyTransfer message) {
-        Logger.log("Sending '%s' '%s' replica to %s... ", Codes.Commands.cmd_name(message.request.getCommand()), message.request.getKey().toStringUtf8(), message.host);
+        Logger.logVerbose("Sending '%s' '%s' replica to %s... ", Codes.Commands.cmd_name(message.request.getCommand()), message.request.getKey().toStringUtf8(), message.host);
 
         KeyValueResponse.KVResponse response;
 
@@ -139,7 +139,7 @@ public class KeyTransferSenderThread extends Thread {
             return;
         }
 
-        Logger.log("Sent replica.");
+        Logger.logVerbose("Sent replica.");
     }
 
     private static byte[] generateKVRequest(Map.Entry<ByteString, KeyValueStore.ValueWrapper> keyToSend,
