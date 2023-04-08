@@ -71,7 +71,7 @@ public class InternalClient {
                 .setCheckSum(checksum)
                 .build();
 
-        Logger.logVerbose("Sent packet with id hash " + m.getMessageID().toString() + " to port" + recipient.port);
+        Logger.log("Sent packet with id hash " + m.getMessageID().toString() + " to port" + recipient.port);
 
         byte[] txBuf = m.toByteArray();
         DatagramPacket txPacket = new DatagramPacket(txBuf, txBuf.length, recipient.address, recipient.port);
@@ -120,6 +120,7 @@ public class InternalClient {
 
                         Logger.log("err <<<");
                         mismatched = true;
+                        break;
 //                        throw new SocketException("Mismatched request IDs");
                     }
                 }
@@ -128,9 +129,9 @@ public class InternalClient {
             } catch (SocketTimeoutException | SocketException |
                      InvalidProtocolBufferException e) {
                 if (e.getClass().equals(SocketTimeoutException.class)) {
-                    System.err.printf("Timed out after %d ms... retrying%n", timeoutMs);
+                    Logger.err("Timed out after %d ms... retrying%n", timeoutMs);
                 } else { 
-                    System.err.printf("%s... retrying%n", e.getMessage());
+                    Logger.err("%s... retrying%n", e.getMessage());
                 }
                 if(retries++ == MAX_RETRIES) {
                     if (e.getClass() == InvalidProtocolBufferException.class)

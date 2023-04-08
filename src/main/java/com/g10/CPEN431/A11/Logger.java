@@ -31,6 +31,11 @@ public class Logger {
         System.err.println(NodePool.getInstance().getMyHost()+"["+now()+"] (!) "+message);
     }
 
+    public static void err(String format, Object... args) {
+        System.err.print("["+now()+"] ");
+        System.err.printf(format+"\n", args);
+    }
+
     public static void errVerbose(Object message) {
         if (VERBOSE)
             System.err.println(NodePool.getInstance().getMyHost()+"["+now()+"] (!) "+message);

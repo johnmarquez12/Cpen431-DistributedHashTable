@@ -145,7 +145,7 @@ public class Application implements Callable<Application.ApplicationResponse> {
 
             response.setValue(value.value).setVersion(value.version);
         } catch (KeyValueStore.NoKeyError e) {
-            Logger.log("Missing key '%s'%n", request.getKey().toStringUtf8());
+            Logger.log("Missing key '%s'%n", request.getKey().toString());
             response.setErrCode(Codes.Errs.KEY_DOES_NOT_EXIST);
         }
     }

@@ -18,12 +18,15 @@ public class KeyTransferHandler {
     public void sendKeys(Host recipient, int idToMatch, boolean isReplica) {
         NodePool nodePool = NodePool.getInstance();
         KeyValueStore kvStore = KeyValueStore.getInstance();
+        int keysSent = 0;
 
         for (Map.Entry<ByteString, KeyValueStore.ValueWrapper> entry : kvStore.keySet()) {
             if (nodePool.getIdFromKey(entry.getKey().hashCode()) != idToMatch) continue;
-
+            keysSent++;
             keysToSend.add(new KeyTransferSenderThread.KeyTransfer(recipient, entry, isReplica));
         }
+
+        Logger.log("Sent " + keysSent + " keys to: " + recipient);
     }
 
     public void sendRequest(KeyValueRequest.KVRequest request, Host host) {

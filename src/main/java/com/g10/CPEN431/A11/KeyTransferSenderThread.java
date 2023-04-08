@@ -19,6 +19,7 @@ public class KeyTransferSenderThread extends Thread {
 
         public KeyValueRequest.KVRequest request;
         public boolean isReplica = false;
+        public boolean isRejoin = false;
 
         public KeyTransfer(Host host,
                            Map.Entry<ByteString, KeyValueStore.ValueWrapper> entry,
@@ -29,10 +30,21 @@ public class KeyTransferSenderThread extends Thread {
         }
 
         public KeyTransfer(Host host,
+                           Map.Entry<ByteString, KeyValueStore.ValueWrapper> entry,
+                           boolean isReplica,
+                           boolean isRejoin) {
+            this.host = host;
+            this.entry = entry;
+            this.isReplica = isReplica;
+            this.isRejoin = isRejoin;
+        }
+
+        public KeyTransfer(Host host,
                            KeyValueRequest.KVRequest request) {
             this.host = host;
             this.request = request;
         }
+
     }
 
     private final BlockingQueue<KeyTransfer> messages;
@@ -62,8 +74,7 @@ public class KeyTransferSenderThread extends Thread {
 
                 if (!NodePool.getInstance().isAlive(message.host)) {
                     Logger.log(
-                        "Message to %s with id %s failed cuz host deaaad",
-                        message.host, message.entry.getKey().toStringUtf8());
+                        "Message to %s with id %s failed cuz host deaaad");
                     continue;
                 }
 
@@ -91,7 +102,7 @@ public class KeyTransferSenderThread extends Thread {
         // 3. if success, delete
         // 4. if failure, mark host as failed
 
-        Logger.logVerbose("Sending %s key '%s' ", message.host, message.entry.getKey().toStringUtf8());
+        Logger.logVerbose("Sending %s key '%s' ", message.host, message.entry.getKey().toString());
 
         byte[] requestPayload = generateKVRequest(message.entry, message.isReplica);
         KeyValueResponse.KVResponse response;
@@ -100,16 +111,16 @@ public class KeyTransferSenderThread extends Thread {
         try {
             response = internalClient.sendRequestWithRetries(requestPayload, message.host);
         } catch (IOException e) {
-            Logger.err("Response while sending keys failed/timed out.");
-            Logger.err("Failed to send key " + message.entry.getKey().toStringUtf8());
+            Logger.err("Response while sending keys failed/timed out to host: " + message.host);
+            Logger.err("Failed to send key " + message.entry.getKey().toString());
 //            NodePool.getInstance().removeNode(hb);
             messages.add(message);
             return;
         }
 
         if(response == null || response.getErrCode() != Codes.Errs.SUCCESS) {
-            Logger.err("Response while sending keys failed.");
-            Logger.err("Failed to send key " + message.entry.getKey().toStringUtf8());
+            Logger.err("Response while sending keys failed/not success to host: " + message.host);
+            Logger.err("Failed to send key " + message.entry.getKey().toString());
 //            NodePool.getInstance().removeNode(hb);
             messages.add(message);
             return;
@@ -126,15 +137,15 @@ public class KeyTransferSenderThread extends Thread {
         try {
             response = internalClient.sendRequestWithRetries(message.request.toByteArray(), message.host);
         } catch (IOException e) {
-            Logger.err("Response while sending request replica failed/timed out.");
-            Logger.err("Failed (and thus lost) to request send key " + message.request.getKey().toStringUtf8());
+            Logger.err("Response while sending keys failed/timed out to host: " + message.host);
+            Logger.err("Failed (and thus lost) to request send key " + message.request.getKey().toString());
             messages.add(message);
             return;
         }
 
         if(response == null || response.getErrCode() != Codes.Errs.SUCCESS) {
-            Logger.err("Response while sending request replica failed.");
-            Logger.err("Failed (and thus lost) to request send key " + message.request.getKey().toStringUtf8());
+            Logger.err("Response while sending keys failed/not success to host: " + message.host);
+            Logger.err("Failed (and thus lost) to request send key " + message.request.getKey().toString());
             messages.add(message);
             return;
         }
