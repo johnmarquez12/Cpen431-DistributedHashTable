@@ -129,7 +129,7 @@ public class InternalClient {
                      InvalidProtocolBufferException e) {
                 if (e.getClass().equals(SocketTimeoutException.class)) {
                     System.err.printf("Timed out after %d ms... retrying%n", timeoutMs);
-                } else {
+                } else { 
                     System.err.printf("%s... retrying%n", e.getMessage());
                 }
                 if(retries++ == MAX_RETRIES) {

@@ -124,8 +124,8 @@ public class Application implements Callable<Application.ApplicationResponse> {
 
         // TODO: do some error checking
 
-//        Logger.log("Putting '%s' (id %d) locally%s!%n", request.getKey().toStringUtf8(), NodePool.getInstance().hashToId(request.getKey().hashCode()),
-//            (isReplication() ? " (replicated)" : ""));
+        Logger.logVerbose("Putting '%s' (id %d) locally%s!%n", request.getKey().toStringUtf8(), NodePool.getInstance().hashToId(request.getKey().hashCode()),
+            (isReplication() ? " (replicated)" : ""));
 
         KeyValueStore.getInstance().put(
             request.getKey(),
@@ -161,7 +161,7 @@ public class Application implements Callable<Application.ApplicationResponse> {
         }
 
         try {
-            Logger.log("Deleting Key "+request.getKey().toStringUtf8()+ " Locally");
+            Logger.logVerbose("Deleting Key "+request.getKey().toStringUtf8()+ " Locally");
             KeyValueStore.getInstance().remove(request.getKey());
         } catch (KeyValueStore.NoKeyError e) {
             response.setErrCode(Codes.Errs.KEY_DOES_NOT_EXIST);
