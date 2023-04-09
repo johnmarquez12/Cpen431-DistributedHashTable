@@ -59,6 +59,10 @@ public class InternalClient {
     }
 
     public synchronized KeyValueResponse.KVResponse sendRequestWithRetries(byte[] payload, Host recipient) throws IOException {
+        return sendRequestWithRetries(MAX_RETRIES, payload, recipient);
+    }
+
+    public synchronized KeyValueResponse.KVResponse sendRequestWithRetries(int numRetries, byte[] payload, Host recipient) throws IOException {
 
         byte[] requestID = generateRequestId(recipient);
 
@@ -71,8 +75,6 @@ public class InternalClient {
                 .setCheckSum(checksum)
                 .build();
 
-        Logger.log("Sent packet with id hash " + m.getMessageID().toString() + " to port" + recipient.port);
-
         byte[] txBuf = m.toByteArray();
         DatagramPacket txPacket = new DatagramPacket(txBuf, txBuf.length, recipient.address, recipient.port);
 
@@ -83,7 +85,7 @@ public class InternalClient {
 
         boolean mismatched = false;
 
-        while (retries <= MAX_RETRIES) {
+        while (retries <= numRetries) {
             byte[] rxBuf = new byte[MAX_PAYLOAD_SIZE];
             DatagramPacket rxPacket = new DatagramPacket(rxBuf, rxBuf.length);
             CRC32 crc32 = new CRC32();
@@ -114,7 +116,8 @@ public class InternalClient {
                     if (requestID[i] != resp.getMessageID().byteAt(i)) {
                         // TODO: Why do we hit this?
                         Logger.log("err >>>");
-                        Logger.log("Received packet with id hash " + resp.getMessageID().toString());
+                        Logger.log("Error sending packet with id: " + m.getMessageID().toString());
+                        Logger.log("Received packet with id hash: " + resp.getMessageID().toString());
 
                         Logger.log("Received from port %d. On try %d.", rxPacket.getPort(), retries);
 
@@ -130,7 +133,7 @@ public class InternalClient {
                      InvalidProtocolBufferException e) {
                 if (e.getClass().equals(SocketTimeoutException.class)) {
                     Logger.err("Timed out after %d ms... retrying%n", timeoutMs);
-                } else { 
+                } else {
                     Logger.err("%s... retrying%n", e.getMessage());
                 }
                 if(retries++ == MAX_RETRIES) {
@@ -145,9 +148,9 @@ public class InternalClient {
         // This should never occur, but we have it to help Intellij with typechecking
         if (resp == null) throw new SocketException("Protobuf message not fully initialized");
 
+        Logger.logVerbose("Sent packet with id hash " + m.getMessageID().toString() + " to port: " + recipient.port);
         return KeyValueResponse.KVResponse.parseFrom(resp.getPayload());
     }
-
     private static byte[] generateRequestId(Host recipient) {
         ByteBuffer bb = ByteBuffer.allocate(16);
 

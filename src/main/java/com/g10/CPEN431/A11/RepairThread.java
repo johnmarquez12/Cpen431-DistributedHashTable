@@ -32,6 +32,8 @@ public class RepairThread extends Thread {
     private final BlockingQueue<NodeToRepair> nodesToRepair;
     private final KeyTransferHandler keyTransferer;
 
+    private boolean replicated = false;
+
     public RepairThread(BlockingQueue<NodeToRepair> nodesToRepair, KeyTransferHandler keyTransferer) {
         super("Repair Thread");
         this.nodesToRepair = nodesToRepair;
@@ -41,6 +43,7 @@ public class RepairThread extends Thread {
     public void run() {
         while(true) {
             boolean first = true;
+            replicated = false;
 
             while(!nodesToRepair.isEmpty()) {
                 if (first) {
@@ -95,16 +98,18 @@ public class RepairThread extends Thread {
         List<Map.Entry<Integer, Host>> myReplicaNodes = nodePool.getMyReplicaNodes();
         int myId = nodePool.getMyId();
 
-        if (nodePool.getIdFromKey(hb.id) == nodePool.getIdFromKey(myId)) {
+        if (nodePool.getIdFromKey(hb.id) == nodePool.getIdFromKey(myId) && !replicated) {
             Logger.log("Our replica (" + hb.host.port +
                 ") has died. Re-replicate our keys");
 
-            myReplicaNodes.forEach(entry -> keyTransferer.sendKeys(entry.getValue(), myId, true));
+            myReplicaNodes.forEach(entry -> keyTransferer.sendKeys2(entry.getValue(), myId, true));
+            replicated = true;
         }
 
-        if (nodePool.isPredecessor(hb.id)) {
+        if (nodePool.isPredecessor(hb.id) && !replicated) {
             Logger.log("Previous node (%d) died. Replicate its replicas to new node", hb.host.port);
-            myReplicaNodes.forEach(entry -> keyTransferer.sendKeys(entry.getValue(), myId, true));
+            myReplicaNodes.forEach(entry -> keyTransferer.sendKeys2(entry.getValue(), myId, true));
+            replicated = true;
         }
     }
 
@@ -113,11 +118,11 @@ public class RepairThread extends Thread {
 
 //        if (nodePool.isPredecessor(hb.id)) {
         Logger.log("Server (%d) rejoined. Send keys that we have that belong to it", hb.host.port);
-        keyTransferer.sendKeys(hb.host, hb.id, false);
+        keyTransferer.sendKeysRejoin2(hb.host, hb.id, false);
 
         if (nodePool.getMyReplicaNodes().stream().map(Map.Entry::getKey).anyMatch(id -> id == hb.id)) { // new node should replicate us
             Logger.log("Rejoined server (%d) is one of our replicas. Replicate our keys", hb.host.port);
-            keyTransferer.sendKeys(hb.host, nodePool.getMyId(), true);
+            keyTransferer.sendKeys2(hb.host, nodePool.getMyId(), true);
         }
 
     }
