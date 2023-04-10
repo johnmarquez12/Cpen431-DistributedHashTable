@@ -11,7 +11,7 @@ import java.util.Random;
 public class SendHeartbeatThread extends Thread {
 
     //These values are arbitrary at the moment
-    public static final long SLEEP = 1000;
+    public static final long SLEEP = 500;
     public static final long MARGIN = 20;
     private final NodePool nodePool;
 

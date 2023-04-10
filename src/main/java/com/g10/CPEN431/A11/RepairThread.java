@@ -49,7 +49,7 @@ public class RepairThread extends Thread {
                     try {
                         // Sleep to allow queue to accumulate nodes to repair
                         Logger.log("Received a repair, waiting for nodes to accumulate");
-                        Thread.sleep(10000);
+                        Thread.sleep(5000);
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
