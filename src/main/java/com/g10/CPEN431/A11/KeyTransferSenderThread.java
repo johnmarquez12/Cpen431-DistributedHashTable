@@ -165,7 +165,9 @@ public class KeyTransferSenderThread extends Thread {
             .setKey(keyToSend.getKey())
             .setValue(keyToSend.getValue().value)
             .setVersion(keyToSend.getValue().version)
-            .setIr(InternalRequest.InternalRequestWrapper.newBuilder().setReplicate(isReplica).build())
+            .setIr(InternalRequest.InternalRequestWrapper.newBuilder().setReplicate(isReplica)
+                .setCounter(keyToSend.getValue().counter)
+                .build())
             .build().toByteArray();
     }
 }

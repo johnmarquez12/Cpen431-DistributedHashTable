@@ -52,7 +52,7 @@ public class KeyValueStore {
         int counter = getCounterValue(key);
 
         if(counter < newCounter) {
-            store.put(key, new ValueWrapper(value, version, counter+1));
+            store.put(key, new ValueWrapper(value, version, newCounter));
         } else {
             // Todo: maybe return an error?
             Logger.err("Consistency says ignore new value!");
