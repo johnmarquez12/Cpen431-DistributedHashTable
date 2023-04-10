@@ -106,19 +106,12 @@ public class Application implements Callable<Application.ApplicationResponse> {
         if(keyInvalid()) return;
         if(valueInvalid()) return;
 
-        if(!isReplication()) {
+        if(!isReplication() && divertRequest()) return;
 
-            if (divertRequest()) {
-                return;
-            }
-
-            replicate(); // TODO: should we continue if this fails?
-        }
-
-        if(outOfMemory()) System.gc();
+        if (outOfMemory()) System.gc();
         if (outOfMemory()) {
             response.setErrCode(Codes.Errs.OUT_OF_SPACE);
-            System.err.println("OUT OF SPACE!!");
+            Logger.err("OUT OF SPACE!!");
             return;
         }
 
@@ -127,11 +120,21 @@ public class Application implements Callable<Application.ApplicationResponse> {
         Logger.logVerbose("Putting '%s' (id %d) locally%s!%n", request.getKey().toStringUtf8(), NodePool.getInstance().hashToId(request.getKey().hashCode()),
             (isReplication() ? " (replicated)" : ""));
 
-        KeyValueStore.getInstance().put(
-            request.getKey(),
-            request.getValue(),
-            request.getVersion()
-        );
+        if(isReplication()) {
+            KeyValueStore.getInstance().putConsistency(
+                request.getKey(),
+                request.getValue(),
+                request.getVersion(),
+                request.getIr().getCounter()
+            );
+        } else {
+            replicate(); // TODO: should we continue if this fails?
+            KeyValueStore.getInstance().put(
+                request.getKey(),
+                request.getValue(),
+                request.getVersion()
+            );
+        }
     }
 
     void cmdGet() {

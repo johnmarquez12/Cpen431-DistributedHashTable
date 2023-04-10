@@ -15,10 +15,12 @@ public class KeyValueStore {
     public static class ValueWrapper {
         public final ByteString value;
         public final int version;
+        public final int counter;
 
-        ValueWrapper(ByteString value, int version) {
+        ValueWrapper(ByteString value, int version, int counter) {
             this.value = value;
             this.version = version;
+            this.counter = counter;
         }
     }
 
@@ -41,7 +43,30 @@ public class KeyValueStore {
     }
 
     public void put(ByteString key, ByteString value, int version) {
-        store.put(key, new ValueWrapper(value, version));
+        int counter = getCounterValue(key);
+
+        store.put(key, new ValueWrapper(value, version, counter + 1));
+    }
+
+    public void putConsistency(ByteString key, ByteString value, int version, int newCounter) {
+        int counter = getCounterValue(key);
+
+        if(counter < newCounter) {
+            store.put(key, new ValueWrapper(value, version, counter+1));
+        } else {
+            // Todo: maybe return an error?
+            Logger.err("Consistency says ignore new value!");
+        }
+    }
+
+    public int getCounterValue(ByteString key) {
+        int counter = 0;
+        ValueWrapper existing = store.get(key);
+        if(existing != null) {
+            counter = existing.counter;
+        }
+
+        return counter;
     }
 
     public ValueWrapper get(ByteString key) throws NoKeyError {

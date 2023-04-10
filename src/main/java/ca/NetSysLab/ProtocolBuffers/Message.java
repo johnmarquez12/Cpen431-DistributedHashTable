@@ -79,7 +79,7 @@ public final class Message {
     }
 
     public static final int MESSAGEID_FIELD_NUMBER = 1;
-    private com.google.protobuf.ByteString messageID_;
+    private com.google.protobuf.ByteString messageID_ = com.google.protobuf.ByteString.EMPTY;
     /**
      * <code>bytes messageID = 1;</code>
      * @return The messageID.
@@ -90,7 +90,7 @@ public final class Message {
     }
 
     public static final int PAYLOAD_FIELD_NUMBER = 2;
-    private com.google.protobuf.ByteString payload_;
+    private com.google.protobuf.ByteString payload_ = com.google.protobuf.ByteString.EMPTY;
     /**
      * <code>bytes payload = 2;</code>
      * @return The payload.
@@ -101,7 +101,7 @@ public final class Message {
     }
 
     public static final int CHECKSUM_FIELD_NUMBER = 3;
-    private long checkSum_;
+    private long checkSum_ = 0L;
     /**
      * <code>fixed64 checkSum = 3;</code>
      * @return The checkSum.
@@ -322,12 +322,10 @@ public final class Message {
       @java.lang.Override
       public Builder clear() {
         super.clear();
+        bitField0_ = 0;
         messageID_ = com.google.protobuf.ByteString.EMPTY;
-
         payload_ = com.google.protobuf.ByteString.EMPTY;
-
         checkSum_ = 0L;
-
         return this;
       }
 
@@ -354,11 +352,22 @@ public final class Message {
       @java.lang.Override
       public ca.NetSysLab.ProtocolBuffers.Message.Msg buildPartial() {
         ca.NetSysLab.ProtocolBuffers.Message.Msg result = new ca.NetSysLab.ProtocolBuffers.Message.Msg(this);
-        result.messageID_ = messageID_;
-        result.payload_ = payload_;
-        result.checkSum_ = checkSum_;
+        if (bitField0_ != 0) { buildPartial0(result); }
         onBuilt();
         return result;
+      }
+
+      private void buildPartial0(ca.NetSysLab.ProtocolBuffers.Message.Msg result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.messageID_ = messageID_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.payload_ = payload_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.checkSum_ = checkSum_;
+        }
       }
 
       @java.lang.Override
@@ -442,17 +451,17 @@ public final class Message {
                 break;
               case 10: {
                 messageID_ = input.readBytes();
-
+                bitField0_ |= 0x00000001;
                 break;
               } // case 10
               case 18: {
                 payload_ = input.readBytes();
-
+                bitField0_ |= 0x00000002;
                 break;
               } // case 18
               case 25: {
                 checkSum_ = input.readFixed64();
-
+                bitField0_ |= 0x00000004;
                 break;
               } // case 25
               default: {
@@ -470,6 +479,7 @@ public final class Message {
         } // finally
         return this;
       }
+      private int bitField0_;
 
       private com.google.protobuf.ByteString messageID_ = com.google.protobuf.ByteString.EMPTY;
       /**
@@ -486,11 +496,9 @@ public final class Message {
        * @return This builder for chaining.
        */
       public Builder setMessageID(com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
+        if (value == null) { throw new NullPointerException(); }
         messageID_ = value;
+        bitField0_ |= 0x00000001;
         onChanged();
         return this;
       }
@@ -499,7 +507,7 @@ public final class Message {
        * @return This builder for chaining.
        */
       public Builder clearMessageID() {
-        
+        bitField0_ = (bitField0_ & ~0x00000001);
         messageID_ = getDefaultInstance().getMessageID();
         onChanged();
         return this;
@@ -520,11 +528,9 @@ public final class Message {
        * @return This builder for chaining.
        */
       public Builder setPayload(com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
+        if (value == null) { throw new NullPointerException(); }
         payload_ = value;
+        bitField0_ |= 0x00000002;
         onChanged();
         return this;
       }
@@ -533,7 +539,7 @@ public final class Message {
        * @return This builder for chaining.
        */
       public Builder clearPayload() {
-        
+        bitField0_ = (bitField0_ & ~0x00000002);
         payload_ = getDefaultInstance().getPayload();
         onChanged();
         return this;
@@ -556,6 +562,7 @@ public final class Message {
       public Builder setCheckSum(long value) {
         
         checkSum_ = value;
+        bitField0_ |= 0x00000004;
         onChanged();
         return this;
       }
@@ -564,7 +571,7 @@ public final class Message {
        * @return This builder for chaining.
        */
       public Builder clearCheckSum() {
-        
+        bitField0_ = (bitField0_ & ~0x00000004);
         checkSum_ = 0L;
         onChanged();
         return this;

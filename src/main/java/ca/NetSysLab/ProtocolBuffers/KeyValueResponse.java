@@ -122,7 +122,7 @@ public final class KeyValueResponse {
 
     private int bitField0_;
     public static final int ERRCODE_FIELD_NUMBER = 1;
-    private int errCode_;
+    private int errCode_ = 0;
     /**
      * <code>uint32 errCode = 1;</code>
      * @return The errCode.
@@ -133,7 +133,7 @@ public final class KeyValueResponse {
     }
 
     public static final int VALUE_FIELD_NUMBER = 2;
-    private com.google.protobuf.ByteString value_;
+    private com.google.protobuf.ByteString value_ = com.google.protobuf.ByteString.EMPTY;
     /**
      * <code>optional bytes value = 2;</code>
      * @return Whether the value field is set.
@@ -152,7 +152,7 @@ public final class KeyValueResponse {
     }
 
     public static final int PID_FIELD_NUMBER = 3;
-    private int pid_;
+    private int pid_ = 0;
     /**
      * <code>optional int32 pid = 3;</code>
      * @return Whether the pid field is set.
@@ -171,7 +171,7 @@ public final class KeyValueResponse {
     }
 
     public static final int VERSION_FIELD_NUMBER = 4;
-    private int version_;
+    private int version_ = 0;
     /**
      * <code>optional int32 version = 4;</code>
      * @return Whether the version field is set.
@@ -190,7 +190,7 @@ public final class KeyValueResponse {
     }
 
     public static final int OVERLOADWAITTIME_FIELD_NUMBER = 5;
-    private int overloadWaitTime_;
+    private int overloadWaitTime_ = 0;
     /**
      * <code>optional int32 overloadWaitTime = 5;</code>
      * @return Whether the overloadWaitTime field is set.
@@ -209,7 +209,7 @@ public final class KeyValueResponse {
     }
 
     public static final int MEMBERSHIPCOUNT_FIELD_NUMBER = 6;
-    private int membershipCount_;
+    private int membershipCount_ = 0;
     /**
      * <code>optional int32 membershipCount = 6;</code>
      * @return Whether the membershipCount field is set.
@@ -495,18 +495,13 @@ public final class KeyValueResponse {
       @java.lang.Override
       public Builder clear() {
         super.clear();
+        bitField0_ = 0;
         errCode_ = 0;
-
         value_ = com.google.protobuf.ByteString.EMPTY;
-        bitField0_ = (bitField0_ & ~0x00000001);
         pid_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000002);
         version_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000004);
         overloadWaitTime_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000008);
         membershipCount_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000010);
         return this;
       }
 
@@ -533,32 +528,38 @@ public final class KeyValueResponse {
       @java.lang.Override
       public ca.NetSysLab.ProtocolBuffers.KeyValueResponse.KVResponse buildPartial() {
         ca.NetSysLab.ProtocolBuffers.KeyValueResponse.KVResponse result = new ca.NetSysLab.ProtocolBuffers.KeyValueResponse.KVResponse(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(ca.NetSysLab.ProtocolBuffers.KeyValueResponse.KVResponse result) {
         int from_bitField0_ = bitField0_;
-        int to_bitField0_ = 0;
-        result.errCode_ = errCode_;
         if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.errCode_ = errCode_;
+        }
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.value_ = value_;
           to_bitField0_ |= 0x00000001;
         }
-        result.value_ = value_;
-        if (((from_bitField0_ & 0x00000002) != 0)) {
+        if (((from_bitField0_ & 0x00000004) != 0)) {
           result.pid_ = pid_;
           to_bitField0_ |= 0x00000002;
         }
-        if (((from_bitField0_ & 0x00000004) != 0)) {
+        if (((from_bitField0_ & 0x00000008) != 0)) {
           result.version_ = version_;
           to_bitField0_ |= 0x00000004;
         }
-        if (((from_bitField0_ & 0x00000008) != 0)) {
+        if (((from_bitField0_ & 0x00000010) != 0)) {
           result.overloadWaitTime_ = overloadWaitTime_;
           to_bitField0_ |= 0x00000008;
         }
-        if (((from_bitField0_ & 0x00000010) != 0)) {
+        if (((from_bitField0_ & 0x00000020) != 0)) {
           result.membershipCount_ = membershipCount_;
           to_bitField0_ |= 0x00000010;
         }
-        result.bitField0_ = to_bitField0_;
-        onBuilt();
-        return result;
+        result.bitField0_ |= to_bitField0_;
       }
 
       @java.lang.Override
@@ -651,32 +652,32 @@ public final class KeyValueResponse {
                 break;
               case 8: {
                 errCode_ = input.readUInt32();
-
+                bitField0_ |= 0x00000001;
                 break;
               } // case 8
               case 18: {
                 value_ = input.readBytes();
-                bitField0_ |= 0x00000001;
+                bitField0_ |= 0x00000002;
                 break;
               } // case 18
               case 24: {
                 pid_ = input.readInt32();
-                bitField0_ |= 0x00000002;
+                bitField0_ |= 0x00000004;
                 break;
               } // case 24
               case 32: {
                 version_ = input.readInt32();
-                bitField0_ |= 0x00000004;
+                bitField0_ |= 0x00000008;
                 break;
               } // case 32
               case 40: {
                 overloadWaitTime_ = input.readInt32();
-                bitField0_ |= 0x00000008;
+                bitField0_ |= 0x00000010;
                 break;
               } // case 40
               case 48: {
                 membershipCount_ = input.readInt32();
-                bitField0_ |= 0x00000010;
+                bitField0_ |= 0x00000020;
                 break;
               } // case 48
               default: {
@@ -713,6 +714,7 @@ public final class KeyValueResponse {
       public Builder setErrCode(int value) {
         
         errCode_ = value;
+        bitField0_ |= 0x00000001;
         onChanged();
         return this;
       }
@@ -721,7 +723,7 @@ public final class KeyValueResponse {
        * @return This builder for chaining.
        */
       public Builder clearErrCode() {
-        
+        bitField0_ = (bitField0_ & ~0x00000001);
         errCode_ = 0;
         onChanged();
         return this;
@@ -734,7 +736,7 @@ public final class KeyValueResponse {
        */
       @java.lang.Override
       public boolean hasValue() {
-        return ((bitField0_ & 0x00000001) != 0);
+        return ((bitField0_ & 0x00000002) != 0);
       }
       /**
        * <code>optional bytes value = 2;</code>
@@ -750,11 +752,9 @@ public final class KeyValueResponse {
        * @return This builder for chaining.
        */
       public Builder setValue(com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000001;
+        if (value == null) { throw new NullPointerException(); }
         value_ = value;
+        bitField0_ |= 0x00000002;
         onChanged();
         return this;
       }
@@ -763,7 +763,7 @@ public final class KeyValueResponse {
        * @return This builder for chaining.
        */
       public Builder clearValue() {
-        bitField0_ = (bitField0_ & ~0x00000001);
+        bitField0_ = (bitField0_ & ~0x00000002);
         value_ = getDefaultInstance().getValue();
         onChanged();
         return this;
@@ -776,7 +776,7 @@ public final class KeyValueResponse {
        */
       @java.lang.Override
       public boolean hasPid() {
-        return ((bitField0_ & 0x00000002) != 0);
+        return ((bitField0_ & 0x00000004) != 0);
       }
       /**
        * <code>optional int32 pid = 3;</code>
@@ -792,8 +792,9 @@ public final class KeyValueResponse {
        * @return This builder for chaining.
        */
       public Builder setPid(int value) {
-        bitField0_ |= 0x00000002;
+        
         pid_ = value;
+        bitField0_ |= 0x00000004;
         onChanged();
         return this;
       }
@@ -802,7 +803,7 @@ public final class KeyValueResponse {
        * @return This builder for chaining.
        */
       public Builder clearPid() {
-        bitField0_ = (bitField0_ & ~0x00000002);
+        bitField0_ = (bitField0_ & ~0x00000004);
         pid_ = 0;
         onChanged();
         return this;
@@ -815,7 +816,7 @@ public final class KeyValueResponse {
        */
       @java.lang.Override
       public boolean hasVersion() {
-        return ((bitField0_ & 0x00000004) != 0);
+        return ((bitField0_ & 0x00000008) != 0);
       }
       /**
        * <code>optional int32 version = 4;</code>
@@ -831,8 +832,9 @@ public final class KeyValueResponse {
        * @return This builder for chaining.
        */
       public Builder setVersion(int value) {
-        bitField0_ |= 0x00000004;
+        
         version_ = value;
+        bitField0_ |= 0x00000008;
         onChanged();
         return this;
       }
@@ -841,7 +843,7 @@ public final class KeyValueResponse {
        * @return This builder for chaining.
        */
       public Builder clearVersion() {
-        bitField0_ = (bitField0_ & ~0x00000004);
+        bitField0_ = (bitField0_ & ~0x00000008);
         version_ = 0;
         onChanged();
         return this;
@@ -854,7 +856,7 @@ public final class KeyValueResponse {
        */
       @java.lang.Override
       public boolean hasOverloadWaitTime() {
-        return ((bitField0_ & 0x00000008) != 0);
+        return ((bitField0_ & 0x00000010) != 0);
       }
       /**
        * <code>optional int32 overloadWaitTime = 5;</code>
@@ -870,8 +872,9 @@ public final class KeyValueResponse {
        * @return This builder for chaining.
        */
       public Builder setOverloadWaitTime(int value) {
-        bitField0_ |= 0x00000008;
+        
         overloadWaitTime_ = value;
+        bitField0_ |= 0x00000010;
         onChanged();
         return this;
       }
@@ -880,7 +883,7 @@ public final class KeyValueResponse {
        * @return This builder for chaining.
        */
       public Builder clearOverloadWaitTime() {
-        bitField0_ = (bitField0_ & ~0x00000008);
+        bitField0_ = (bitField0_ & ~0x00000010);
         overloadWaitTime_ = 0;
         onChanged();
         return this;
@@ -893,7 +896,7 @@ public final class KeyValueResponse {
        */
       @java.lang.Override
       public boolean hasMembershipCount() {
-        return ((bitField0_ & 0x00000010) != 0);
+        return ((bitField0_ & 0x00000020) != 0);
       }
       /**
        * <code>optional int32 membershipCount = 6;</code>
@@ -909,8 +912,9 @@ public final class KeyValueResponse {
        * @return This builder for chaining.
        */
       public Builder setMembershipCount(int value) {
-        bitField0_ |= 0x00000010;
+        
         membershipCount_ = value;
+        bitField0_ |= 0x00000020;
         onChanged();
         return this;
       }
@@ -919,7 +923,7 @@ public final class KeyValueResponse {
        * @return This builder for chaining.
        */
       public Builder clearMembershipCount() {
-        bitField0_ = (bitField0_ & ~0x00000010);
+        bitField0_ = (bitField0_ & ~0x00000020);
         membershipCount_ = 0;
         onChanged();
         return this;

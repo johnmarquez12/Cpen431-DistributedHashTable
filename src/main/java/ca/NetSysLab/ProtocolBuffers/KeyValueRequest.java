@@ -116,7 +116,7 @@ public final class KeyValueRequest {
 
     private int bitField0_;
     public static final int COMMAND_FIELD_NUMBER = 1;
-    private int command_;
+    private int command_ = 0;
     /**
      * <code>uint32 command = 1;</code>
      * @return The command.
@@ -127,7 +127,7 @@ public final class KeyValueRequest {
     }
 
     public static final int KEY_FIELD_NUMBER = 2;
-    private com.google.protobuf.ByteString key_;
+    private com.google.protobuf.ByteString key_ = com.google.protobuf.ByteString.EMPTY;
     /**
      * <code>optional bytes key = 2;</code>
      * @return Whether the key field is set.
@@ -146,7 +146,7 @@ public final class KeyValueRequest {
     }
 
     public static final int VALUE_FIELD_NUMBER = 3;
-    private com.google.protobuf.ByteString value_;
+    private com.google.protobuf.ByteString value_ = com.google.protobuf.ByteString.EMPTY;
     /**
      * <code>optional bytes value = 3;</code>
      * @return Whether the value field is set.
@@ -165,7 +165,7 @@ public final class KeyValueRequest {
     }
 
     public static final int VERSION_FIELD_NUMBER = 4;
-    private int version_;
+    private int version_ = 0;
     /**
      * <code>optional int32 version = 4;</code>
      * @return Whether the version field is set.
@@ -467,20 +467,16 @@ public final class KeyValueRequest {
       @java.lang.Override
       public Builder clear() {
         super.clear();
+        bitField0_ = 0;
         command_ = 0;
-
         key_ = com.google.protobuf.ByteString.EMPTY;
-        bitField0_ = (bitField0_ & ~0x00000001);
         value_ = com.google.protobuf.ByteString.EMPTY;
-        bitField0_ = (bitField0_ & ~0x00000002);
         version_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000004);
-        if (irBuilder_ == null) {
-          ir_ = null;
-        } else {
-          irBuilder_.clear();
+        ir_ = null;
+        if (irBuilder_ != null) {
+          irBuilder_.dispose();
+          irBuilder_ = null;
         }
-        bitField0_ = (bitField0_ & ~0x00000008);
         return this;
       }
 
@@ -507,32 +503,36 @@ public final class KeyValueRequest {
       @java.lang.Override
       public ca.NetSysLab.ProtocolBuffers.KeyValueRequest.KVRequest buildPartial() {
         ca.NetSysLab.ProtocolBuffers.KeyValueRequest.KVRequest result = new ca.NetSysLab.ProtocolBuffers.KeyValueRequest.KVRequest(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(ca.NetSysLab.ProtocolBuffers.KeyValueRequest.KVRequest result) {
         int from_bitField0_ = bitField0_;
-        int to_bitField0_ = 0;
-        result.command_ = command_;
         if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.command_ = command_;
+        }
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.key_ = key_;
           to_bitField0_ |= 0x00000001;
         }
-        result.key_ = key_;
-        if (((from_bitField0_ & 0x00000002) != 0)) {
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.value_ = value_;
           to_bitField0_ |= 0x00000002;
         }
-        result.value_ = value_;
-        if (((from_bitField0_ & 0x00000004) != 0)) {
+        if (((from_bitField0_ & 0x00000008) != 0)) {
           result.version_ = version_;
           to_bitField0_ |= 0x00000004;
         }
-        if (((from_bitField0_ & 0x00000008) != 0)) {
-          if (irBuilder_ == null) {
-            result.ir_ = ir_;
-          } else {
-            result.ir_ = irBuilder_.build();
-          }
+        if (((from_bitField0_ & 0x00000010) != 0)) {
+          result.ir_ = irBuilder_ == null
+              ? ir_
+              : irBuilder_.build();
           to_bitField0_ |= 0x00000008;
         }
-        result.bitField0_ = to_bitField0_;
-        onBuilt();
-        return result;
+        result.bitField0_ |= to_bitField0_;
       }
 
       @java.lang.Override
@@ -622,29 +622,29 @@ public final class KeyValueRequest {
                 break;
               case 8: {
                 command_ = input.readUInt32();
-
+                bitField0_ |= 0x00000001;
                 break;
               } // case 8
               case 18: {
                 key_ = input.readBytes();
-                bitField0_ |= 0x00000001;
+                bitField0_ |= 0x00000002;
                 break;
               } // case 18
               case 26: {
                 value_ = input.readBytes();
-                bitField0_ |= 0x00000002;
+                bitField0_ |= 0x00000004;
                 break;
               } // case 26
               case 32: {
                 version_ = input.readInt32();
-                bitField0_ |= 0x00000004;
+                bitField0_ |= 0x00000008;
                 break;
               } // case 32
               case 802: {
                 input.readMessage(
                     getIrFieldBuilder().getBuilder(),
                     extensionRegistry);
-                bitField0_ |= 0x00000008;
+                bitField0_ |= 0x00000010;
                 break;
               } // case 802
               default: {
@@ -681,6 +681,7 @@ public final class KeyValueRequest {
       public Builder setCommand(int value) {
         
         command_ = value;
+        bitField0_ |= 0x00000001;
         onChanged();
         return this;
       }
@@ -689,7 +690,7 @@ public final class KeyValueRequest {
        * @return This builder for chaining.
        */
       public Builder clearCommand() {
-        
+        bitField0_ = (bitField0_ & ~0x00000001);
         command_ = 0;
         onChanged();
         return this;
@@ -702,7 +703,7 @@ public final class KeyValueRequest {
        */
       @java.lang.Override
       public boolean hasKey() {
-        return ((bitField0_ & 0x00000001) != 0);
+        return ((bitField0_ & 0x00000002) != 0);
       }
       /**
        * <code>optional bytes key = 2;</code>
@@ -718,11 +719,9 @@ public final class KeyValueRequest {
        * @return This builder for chaining.
        */
       public Builder setKey(com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000001;
+        if (value == null) { throw new NullPointerException(); }
         key_ = value;
+        bitField0_ |= 0x00000002;
         onChanged();
         return this;
       }
@@ -731,7 +730,7 @@ public final class KeyValueRequest {
        * @return This builder for chaining.
        */
       public Builder clearKey() {
-        bitField0_ = (bitField0_ & ~0x00000001);
+        bitField0_ = (bitField0_ & ~0x00000002);
         key_ = getDefaultInstance().getKey();
         onChanged();
         return this;
@@ -744,7 +743,7 @@ public final class KeyValueRequest {
        */
       @java.lang.Override
       public boolean hasValue() {
-        return ((bitField0_ & 0x00000002) != 0);
+        return ((bitField0_ & 0x00000004) != 0);
       }
       /**
        * <code>optional bytes value = 3;</code>
@@ -760,11 +759,9 @@ public final class KeyValueRequest {
        * @return This builder for chaining.
        */
       public Builder setValue(com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000002;
+        if (value == null) { throw new NullPointerException(); }
         value_ = value;
+        bitField0_ |= 0x00000004;
         onChanged();
         return this;
       }
@@ -773,7 +770,7 @@ public final class KeyValueRequest {
        * @return This builder for chaining.
        */
       public Builder clearValue() {
-        bitField0_ = (bitField0_ & ~0x00000002);
+        bitField0_ = (bitField0_ & ~0x00000004);
         value_ = getDefaultInstance().getValue();
         onChanged();
         return this;
@@ -786,7 +783,7 @@ public final class KeyValueRequest {
        */
       @java.lang.Override
       public boolean hasVersion() {
-        return ((bitField0_ & 0x00000004) != 0);
+        return ((bitField0_ & 0x00000008) != 0);
       }
       /**
        * <code>optional int32 version = 4;</code>
@@ -802,8 +799,9 @@ public final class KeyValueRequest {
        * @return This builder for chaining.
        */
       public Builder setVersion(int value) {
-        bitField0_ |= 0x00000004;
+        
         version_ = value;
+        bitField0_ |= 0x00000008;
         onChanged();
         return this;
       }
@@ -812,7 +810,7 @@ public final class KeyValueRequest {
        * @return This builder for chaining.
        */
       public Builder clearVersion() {
-        bitField0_ = (bitField0_ & ~0x00000004);
+        bitField0_ = (bitField0_ & ~0x00000008);
         version_ = 0;
         onChanged();
         return this;
@@ -826,7 +824,7 @@ public final class KeyValueRequest {
        * @return Whether the ir field is set.
        */
       public boolean hasIr() {
-        return ((bitField0_ & 0x00000008) != 0);
+        return ((bitField0_ & 0x00000010) != 0);
       }
       /**
        * <code>optional .InternalRequestWrapper ir = 100;</code>
@@ -848,11 +846,11 @@ public final class KeyValueRequest {
             throw new NullPointerException();
           }
           ir_ = value;
-          onChanged();
         } else {
           irBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00000008;
+        bitField0_ |= 0x00000010;
+        onChanged();
         return this;
       }
       /**
@@ -862,11 +860,11 @@ public final class KeyValueRequest {
           ca.NetSysLab.ProtocolBuffers.InternalRequest.InternalRequestWrapper.Builder builderForValue) {
         if (irBuilder_ == null) {
           ir_ = builderForValue.build();
-          onChanged();
         } else {
           irBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00000008;
+        bitField0_ |= 0x00000010;
+        onChanged();
         return this;
       }
       /**
@@ -874,39 +872,38 @@ public final class KeyValueRequest {
        */
       public Builder mergeIr(ca.NetSysLab.ProtocolBuffers.InternalRequest.InternalRequestWrapper value) {
         if (irBuilder_ == null) {
-          if (((bitField0_ & 0x00000008) != 0) &&
-              ir_ != null &&
-              ir_ != ca.NetSysLab.ProtocolBuffers.InternalRequest.InternalRequestWrapper.getDefaultInstance()) {
-            ir_ =
-              ca.NetSysLab.ProtocolBuffers.InternalRequest.InternalRequestWrapper.newBuilder(ir_).mergeFrom(value).buildPartial();
+          if (((bitField0_ & 0x00000010) != 0) &&
+            ir_ != null &&
+            ir_ != ca.NetSysLab.ProtocolBuffers.InternalRequest.InternalRequestWrapper.getDefaultInstance()) {
+            getIrBuilder().mergeFrom(value);
           } else {
             ir_ = value;
           }
-          onChanged();
         } else {
           irBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00000008;
+        bitField0_ |= 0x00000010;
+        onChanged();
         return this;
       }
       /**
        * <code>optional .InternalRequestWrapper ir = 100;</code>
        */
       public Builder clearIr() {
-        if (irBuilder_ == null) {
-          ir_ = null;
-          onChanged();
-        } else {
-          irBuilder_.clear();
+        bitField0_ = (bitField0_ & ~0x00000010);
+        ir_ = null;
+        if (irBuilder_ != null) {
+          irBuilder_.dispose();
+          irBuilder_ = null;
         }
-        bitField0_ = (bitField0_ & ~0x00000008);
+        onChanged();
         return this;
       }
       /**
        * <code>optional .InternalRequestWrapper ir = 100;</code>
        */
       public ca.NetSysLab.ProtocolBuffers.InternalRequest.InternalRequestWrapper.Builder getIrBuilder() {
-        bitField0_ |= 0x00000008;
+        bitField0_ |= 0x00000010;
         onChanged();
         return getIrFieldBuilder().getBuilder();
       }

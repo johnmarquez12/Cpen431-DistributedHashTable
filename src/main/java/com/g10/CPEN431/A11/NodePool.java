@@ -239,10 +239,13 @@ public class NodePool {
      * @return
      */
     public boolean sendReplicas(KeyValueRequest.KVRequest request) {
+        int counter = KeyValueStore.getInstance().getCounterValue(request.getKey()) + 1;
+
         for(Map.Entry<Integer, Host> host : getMyReplicaNodes()) {
             request = request.toBuilder().setIr(
                 InternalRequest.InternalRequestWrapper.newBuilder()
                     .setReplicate(true)
+                    .setCounter(counter)
             ).build();
 
             keyTransferer.sendRequest(request, host.getValue());
