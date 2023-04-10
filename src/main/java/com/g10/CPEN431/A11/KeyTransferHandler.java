@@ -81,7 +81,7 @@ public class KeyTransferHandler {
         sendKeyTransferBatches(keyTransferList, recipient);
     }
 
-    public void sendKeysRejoin2(Host recipient, int idToMatch, boolean isReplica) {
+    public void sendKeysRejoin2(Host recipient, int idToMatch, boolean isReplica, boolean deleteKeys) {
         NodePool nodePool = NodePool.getInstance();
         KeyValueStore kvStore = KeyValueStore.getInstance();
 
@@ -91,6 +91,14 @@ public class KeyTransferHandler {
             if (nodePool.getIdFromKey(entry.getKey().hashCode()) != idToMatch) continue;
 
             keyTransferList.add(new KeyTransferSenderThread.KeyTransfer(recipient, entry, isReplica, true));
+
+            if (deleteKeys) {
+                try {
+                    kvStore.remove(entry.getKey());
+                } catch (KeyValueStore.NoKeyError nke) {
+                    Logger.err("Key to remove was not found");
+                }
+            }
         }
 
         if (keyTransferList.size() == 0) {

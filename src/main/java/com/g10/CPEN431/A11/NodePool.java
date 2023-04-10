@@ -162,7 +162,7 @@ public class NodePool {
         return getReplicasForId(myId);
     }
 
-    private List<Map.Entry<Integer, Host>> getReplicasForId(int id) {
+    public List<Map.Entry<Integer, Host>> getReplicasForId(int id) {
         List<Map.Entry<Integer, Host>> replicas = new ArrayList<>();
 
         int nextNodeId = id + 1;
@@ -219,34 +219,12 @@ public class NodePool {
     }
 
     private void rejoined(Heartbeat hb) {
-//        if(!isPredecessor(hb.id)) {
-//            List<Map.Entry<Integer, Host>> oldReplicasFromHb = getReplicasForId(getIdFromKey(hb.id));
-//            if(oldReplicasFromHb.get(oldReplicasFromHb.size()-1).getKey() == myId) {
-//                Logger.log("Deleting unnecessary replicas since server "+hb.host.port + " rejoined.");
-//                KeyValueStore.getInstance().deleteKeysForNodeWithId(hb.id);
-//            }
-//        }
-
         nodes.put(hb.id, hb.host);
         // get next alive node since this node may contain data that should
         // belong to the rejoining node. If I am that node, handle it.
         hb.deleted = false;
         Logger.log("Server "+hb.host+" has tried to rejoin");
-
-//        if (isPredecessor(hb.id)) {
-//            Logger.log("Previous server (%d) rejoined. Send keys that we have that belong to it", hb.host.port);
-//            keyTransferer.sendKeys(hb.host, hb.id, false);
-//        } else if(getMyReplicaNodes().stream().map(Map.Entry::getKey).anyMatch(id -> id == hb.id)) { // new node should replicate us
-//            Logger.log("Rejoined server (%d) is one of our replicas. Replicate our keys", hb.host.port);
-//            keyTransferer.sendKeys(hb.host, myId, true);
-//        }
         RepairThread.NodeToRepair repair = new RepairThread.NodeToRepair(hb, RepairThread.RepairType.REJOIN);
-//        if (nodesToRepair.contains(repair)) {
-//            Logger.log("Removing unnecessary remove repairs since we received a rejoin");
-//            while (!nodesToRepair.isEmpty()) {
-//                nodesToRepair.poll();
-//            }
-//        }
 
         nodesToRepair.add(repair);
     }
@@ -274,27 +252,6 @@ public class NodePool {
 
     public void removeNode(Heartbeat hb) {
         if (hb.deleted) return;
-
-        /* If the removed node is one of our replicas, send all my keys to a new
-         * replica.
-         */
-//        List<Map.Entry<Integer, Host>> myReplicaNodes = getMyReplicaNodes();
-//        if(myReplicaNodes.stream().map(Map.Entry::getKey).anyMatch(id -> id == hb.id)) {
-//            Host newReplica = getHostFromId(myReplicaNodes.get(myReplicaNodes.size()-1).getKey() + 1);
-//            if(!newReplica.equals(getMyHost())) {
-//                Logger.log("Our replica (" + hb.host.port +
-//                    ") has died. New replica is " + newReplica.port);
-//                keyTransferer.sendKeys(newReplica, myId, true);
-//            }
-//        }
-//
-//        /* If we are the first replica of the removed node, we need to send
-//           our copies of the removed nodes stuff to a new replica.
-//         */
-//        if(isPredecessor(hb.id)) {
-//            Logger.log("Previous node (%d) died. Take over as master and send replicas to new node", hb.host.port);
-//            keyTransferer.sendKeys(myReplicaNodes.get(myReplicaNodes.size()-1).getValue(), hb.id, true);
-//        }
 
         hb.deleted = true;
         nodes.remove(hb.id);

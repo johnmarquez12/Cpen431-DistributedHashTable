@@ -2,7 +2,6 @@ package com.g10.CPEN431.A11;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.BlockingQueue;
 
 public class RepairThread extends Thread {
@@ -81,7 +80,7 @@ public class RepairThread extends Thread {
 
                 if (repair.repairType == RepairType.REMOVE) {
                     // handle remove
-                    handleRemovedNodeRepair(repair.hb);
+                    handleRemovedNode(repair.hb);
                 } else if (repair.repairType == RepairType.REJOIN) {
                     // handle rejoin
                     handleJoinedNode(repair.hb);
@@ -92,7 +91,7 @@ public class RepairThread extends Thread {
         }
     }
 
-    private void handleRemovedNodeRepair(NodePool.Heartbeat hb) {
+    private void handleRemovedNode(NodePool.Heartbeat hb) {
         NodePool nodePool = NodePool.getInstance();
 
         List<Map.Entry<Integer, Host>> myReplicaNodes = nodePool.getMyReplicaNodes();
@@ -115,14 +114,16 @@ public class RepairThread extends Thread {
 
     private void handleJoinedNode(NodePool.Heartbeat hb) {
         NodePool nodePool = NodePool.getInstance();
+        int myId = nodePool.getMyId();
 
-//        if (nodePool.isPredecessor(hb.id)) {
+        boolean deleteKeys = nodePool.getReplicasForId(hb.id).stream().map(Map.Entry::getKey).noneMatch(id -> id == myId);
+
         Logger.log("Server (%d) rejoined. Send keys that we have that belong to it", hb.host.port);
-        keyTransferer.sendKeysRejoin2(hb.host, hb.id, false);
+        keyTransferer.sendKeysRejoin2(hb.host, hb.id, false, deleteKeys);
 
         if (nodePool.getMyReplicaNodes().stream().map(Map.Entry::getKey).anyMatch(id -> id == hb.id)) { // new node should replicate us
             Logger.log("Rejoined server (%d) is one of our replicas. Replicate our keys", hb.host.port);
-            keyTransferer.sendKeys2(hb.host, nodePool.getMyId(), true);
+            keyTransferer.sendKeys2(hb.host, myId, true);
         }
 
     }
