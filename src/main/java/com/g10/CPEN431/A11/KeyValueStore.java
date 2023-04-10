@@ -51,7 +51,7 @@ public class KeyValueStore {
     public void putConsistency(ByteString key, ByteString value, int version, int newCounter) {
         int counter = getCounterValue(key);
 
-        if(counter < newCounter) {
+        if(counter <= newCounter) {
             store.put(key, new ValueWrapper(value, version, newCounter));
         } else {
             // Todo: maybe return an error?
