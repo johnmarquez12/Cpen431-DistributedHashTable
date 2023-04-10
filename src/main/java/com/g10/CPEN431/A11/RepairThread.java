@@ -101,13 +101,13 @@ public class RepairThread extends Thread {
             Logger.log("Our replica (" + hb.host.port +
                 ") has died. Re-replicate our keys");
 
-            myReplicaNodes.forEach(entry -> keyTransferer.sendKeys2(entry.getValue(), myId, true));
+            myReplicaNodes.forEach(entry -> keyTransferer.sendKeys(entry.getValue(), myId, true));
             replicated = true;
         }
 
         if (nodePool.isPredecessor(hb.id) && !replicated) {
             Logger.log("Previous node (%d) died. Replicate its replicas to new node", hb.host.port);
-            myReplicaNodes.forEach(entry -> keyTransferer.sendKeys2(entry.getValue(), myId, true));
+            myReplicaNodes.forEach(entry -> keyTransferer.sendKeys(entry.getValue(), myId, true));
             replicated = true;
         }
     }
@@ -119,11 +119,11 @@ public class RepairThread extends Thread {
         boolean deleteKeys = nodePool.getReplicasForId(hb.id).stream().map(Map.Entry::getKey).noneMatch(id -> id == myId);
 
         Logger.log("Server (%d) rejoined. Send keys that we have that belong to it", hb.host.port);
-        keyTransferer.sendKeysRejoin2(hb.host, hb.id, false, deleteKeys);
+        keyTransferer.sendKeysRejoin(hb.host, hb.id, false, deleteKeys);
 
         if (nodePool.getMyReplicaNodes().stream().map(Map.Entry::getKey).anyMatch(id -> id == hb.id)) { // new node should replicate us
             Logger.log("Rejoined server (%d) is one of our replicas. Replicate our keys", hb.host.port);
-            keyTransferer.sendKeys2(hb.host, myId, true);
+            keyTransferer.sendKeys(hb.host, myId, true);
         }
 
     }
