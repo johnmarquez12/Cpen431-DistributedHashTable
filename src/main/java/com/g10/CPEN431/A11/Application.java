@@ -120,7 +120,7 @@ public class Application implements Callable<Application.ApplicationResponse> {
         Logger.logVerbose("Putting '%s' (id %d) locally%s!%n", request.getKey().toStringUtf8(), NodePool.getInstance().hashToId(request.getKey().hashCode()),
             (isReplication() ? " (replicated)" : ""));
 
-        if(isReplication()) {
+        if(isReplication() || hasKeyCounter()) {
             KeyValueStore.getInstance().putConsistency(
                 request.getKey(),
                 request.getValue(),
@@ -235,6 +235,12 @@ public class Application implements Callable<Application.ApplicationResponse> {
 
     private boolean isReplication() {
         if (!request.hasIr() || !request.getIr().getReplicate()) return false;
+
+        return true;
+    }
+
+    private boolean hasKeyCounter() {
+        if(!request.hasIr() || !request.getIr().hasCounter()) return false;
 
         return true;
     }
