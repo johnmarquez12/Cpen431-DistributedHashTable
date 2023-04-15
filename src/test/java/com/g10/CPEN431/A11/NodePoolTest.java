@@ -1,5 +1,7 @@
 package com.g10.CPEN431.A11;
 
+import com.g10.CPEN431.A12.Host;
+import com.g10.CPEN431.A12.NodePool;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

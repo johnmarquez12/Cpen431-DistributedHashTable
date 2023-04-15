@@ -1,6 +1,6 @@
 Group ID: G10
 
-Verification Code: `18AE4BEB0139EAE329091F903059DF37`
+Verification Code: `D7D3A088B33688ECD2909F4304FA487A`
 
 Used Run Command: `java -Xmx512m -jar A11.jar -s servers.txt -p <port number>` or `./runLocal servers.txt`
 

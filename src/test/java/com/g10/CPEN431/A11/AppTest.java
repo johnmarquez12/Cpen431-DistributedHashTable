@@ -1,6 +1,7 @@
 package com.g10.CPEN431.A11;
 
 import ca.NetSysLab.ProtocolBuffers.KeyValueResponse;
+import com.g10.CPEN431.A12.Host;
 import com.google.protobuf.InvalidProtocolBufferException;
 import org.junit.Test;
 
@@ -8,7 +9,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.List;
 
-import static com.g10.CPEN431.A11.App.parseServerFile;
+import static com.g10.CPEN431.A12.App.parseServerFile;
 import static org.junit.Assert.*;
 
 /**

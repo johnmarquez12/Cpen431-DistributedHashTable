@@ -2,12 +2,12 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.g10.CPEN431.A11</groupId>
-  <artifactId>CPEN431_2023_A11</artifactId>
+  <groupId>com.g10.CPEN431.A12</groupId>
+  <artifactId>CPEN431_2023_A12</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
-  <name>CPEN431_2023_A11</name>
+  <name>CPEN431_2023_A12</name>
   <url>http://maven.apache.org</url>
 
   <properties>
@@ -53,7 +53,7 @@
       <configuration>
         <archive>
           <manifest>
-            <mainClass>com.g10.CPEN431.A11.App</mainClass>
+            <mainClass>com.g10.CPEN431.A12.App</mainClass>
           </manifest>
         </archive>
         <descriptorRefs>
